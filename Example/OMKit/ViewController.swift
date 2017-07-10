@@ -18,8 +18,8 @@ class ViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let view = MediaPlayerPlaybackControlsView(frame: .init(x: 10, y: 100, width: UIScreen.main.bounds.width - 20, height: 200))
-        self.view.addSubview(view)
+//        let view = MediaPlayerPlaybackControlsView(frame: .init(x: 10, y: 100, width: UIScreen.main.bounds.width - 20, height: 200))
+//        self.view.addSubview(view)
         
     }
 

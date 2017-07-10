@@ -40,6 +40,7 @@ NS_SWIFT_NAME(AppExport)
 
 + (OMAppExport *)exportWithContext:(nonnull JSContext *)context delegate:(nullable id<OMAppExportDelegate>)delegate;
 
+- (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation currentUser:(OMAppUserExport *)currentUser NS_DESIGNATED_INITIALIZER;
 
 @property (nonatomic, weak, nullable) id<OMAppExportDelegate> delegate;

@@ -12,12 +12,25 @@
 @class OMAppNavigationExport, OMAppUserExport;
 @protocol OMAppExportDelegate;
 
+NS_ASSUME_NONNULL_BEGIN
+
 /// AppPage 枚举
 typedef NSString *OMAppPage NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppPage);
+FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageMall;
+FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageTask;
+FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageNewsDetail;
+FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageNewsList;
+FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageVideoList;
+FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageVideoDetail;
+
 /// AppTheme 枚举
 typedef NSString *OMAppTheme NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppTheme);
+FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeDay;
+FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeNight;
 
-NS_ASSUME_NONNULL_BEGIN
+
+
+
 
 
 /** 定义了 OMApp 对 JavaScript 的接口。 */
@@ -96,12 +109,7 @@ NS_SWIFT_NAME(AppExportDelegate)
 
 
 
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageMall;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageTask;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageNewsDetail;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageNewsList;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageVideoList;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageVideoDetail;
+
 
 NS_SWIFT_NAME(AppPageExportProtocol)
 @protocol OMAppPageExport <NSObject, JSExport>
@@ -113,14 +121,11 @@ NS_SWIFT_NAME(AppPageExportProtocol)
 @property (nonatomic, readonly, nonnull) OMAppPage videoDetail;
 @end
 
+
 NS_SWIFT_NAME(AppPageExport)
 @interface OMAppPageExport : NSObject <OMAppPageExport>
 @end
 
-
-
-FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeDay;
-FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeNight;
 
 NS_SWIFT_NAME(AppThemeExportProtocol)
 @protocol OMAppThemeExport <NSObject, JSExport>

@@ -1,0 +1,25 @@
+PODS:
+  - OMKit (1.0.0):
+    - SDWebImage (~> 4.0)
+    - XZKit
+  - SDWebImage (4.0.0):
+    - SDWebImage/Core (= 4.0.0)
+  - SDWebImage/Core (4.0.0)
+  - XZKit (2.0.6)
+
+DEPENDENCIES:
+  - OMKit (from `../`)
+  - XZKit
+
+EXTERNAL SOURCES:
+  OMKit:
+    :path: ../
+
+SPEC CHECKSUMS:
+  OMKit: 1a41fd4fb509ad46e8dbd2f96861d8f600f01abd
+  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+  XZKit: 5076f7dae5558191cdcc143af77df64a83dbc6c6
+
+PODFILE CHECKSUM: 14a18d000c211cd981e0ba4e4bef550c84169788
+
+COCOAPODS: 1.2.1

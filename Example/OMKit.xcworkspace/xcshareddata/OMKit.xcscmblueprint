@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "2134090C132D8A8236D900B58005470E487F41BF",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "C14E7A180EB9FF1846E8F87ECA94FE6A452122E9" : 9223372036854775807,
+    "2134090C132D8A8236D900B58005470E487F41BF" : 9223372036854775807
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "D1620D63-30F3-42C1-9CCA-15DDA9BFC971",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "C14E7A180EB9FF1846E8F87ECA94FE6A452122E9" : "..",
+    "2134090C132D8A8236D900B58005470E487F41BF" : "OMKit\/"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "OMKit",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "Example\/OMKit.xcworkspace",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/mlibai\/OMKit.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "2134090C132D8A8236D900B58005470E487F41BF"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/onemena\/ios_anaween.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "C14E7A180EB9FF1846E8F87ECA94FE6A452122E9"
+    }
+  ]
+}

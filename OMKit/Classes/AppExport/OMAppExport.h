@@ -51,9 +51,7 @@ JSExportAs(alert, - (void)alert:(nonnull NSDictionary<NSString *, id> *)message 
 NS_SWIFT_NAME(AppExport)
 @interface OMAppExport : NSObject <OMAppExport>
 
-+ (OMAppExport *)exportWithContext:(nonnull JSContext *)context delegate:(nullable id<OMAppExportDelegate>)delegate;
-
-- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)init;
 - (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation currentUser:(OMAppUserExport *)currentUser NS_DESIGNATED_INITIALIZER;
 
 @property (nonatomic, weak, nullable) id<OMAppExportDelegate> delegate;
@@ -100,7 +98,7 @@ NS_SWIFT_NAME(AppExportDelegate)
 - (void)appExport:(OMAppExport *)appExport updateNavigationBarVisibility:(BOOL)isHidden;
 - (void)appExport:(OMAppExport *)appExport updateNavigationBarBackgroundColor:(UIColor *)backgroundColor;
 
-- (void)appExport:(OMAppExport *)appExport didCatchAnException:(NSString *)expection;
+//- (void)appExport:(OMAppExport *)appExport didCatchAnException:(NSString *)expection;
 
 @end
 

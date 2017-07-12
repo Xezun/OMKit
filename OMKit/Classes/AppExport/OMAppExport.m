@@ -39,29 +39,8 @@
 #endif
 }
 
-+ (OMAppExport *)exportWithContext:(nonnull JSContext *)context delegate:(nullable id<OMAppExportDelegate>)delegate {
-    OMAppNavigationExport *navigation = [[OMAppNavigationExport alloc] init];
-    OMAppUserExport *currentUser = [[OMAppUserExport alloc] init];
-    
-    OMAppExport *appExport = [[OMAppExport alloc] initWithNavigation:navigation currentUser:currentUser];
-    
-    context[@"OMAppPage"] = [[OMAppPageExport alloc] init];
-    context[@"OMAppTheme"] = [[OMAppThemeExport alloc] init];
-    context[@"OMUserType"] = [[OMAppUserExport alloc] init];
-    
-    context[@"omApp"] = appExport;
-    
-    OMAppExport * __weak weakObject = appExport;
-    [context setExceptionHandler:^(JSContext *context, JSValue *exception) {
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [weakObject.delegate appExport:weakObject didCatchAnException:exception.toString];
-        });
-    }];
-    
-    appExport.context = context;
-    appExport.delegate = delegate;
-    
-    return appExport;
+- (instancetype)init {
+    return [self initWithNavigation:[[OMAppNavigationExport alloc] init] currentUser:[[OMAppUserExport alloc] init]];
 }
 
 - (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation currentUser:(OMAppUserExport *)currentUser {

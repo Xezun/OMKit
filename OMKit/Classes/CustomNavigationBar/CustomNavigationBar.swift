@@ -241,4 +241,8 @@ extension UIViewController {
         return navigationController?.popToRootViewController(animated: true)
     }
     
+    
+    public func dismiss(animated: Any?) {
+        dismiss(animated: (animated as? Bool) ?? true, completion: nil)
+    }
 }

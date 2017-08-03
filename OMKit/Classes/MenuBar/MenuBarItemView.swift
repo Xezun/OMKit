@@ -8,31 +8,131 @@
 
 import Foundation
 
-class MenuBarItemView: UIControl {
+
+open class MenuBarItemView: UIControl {
     
-    override var intrinsicContentSize: CGSize {
-        let labelSize = _titleLabel?.intrinsicContentSize ?? .zero
-        let imageSize = _imageView?.intrinsicContentSize ?? .zero
-        return CGSize(width: max(labelSize.width, imageSize.width), height: labelSize.height + imageSize.height)
-    }
+    open let textLabel: UILabel     = UILabel()
+    open let imageView: UIImageView  = UIImageView()
     
-    override func layoutSubviews() {
-        super.layoutSubviews()
-    }
-    
-    var title: String? {
-        get {
-            return _titleLabel?.text
-        }
-        set {
-            titleLabel.text = newValue
+    open var contentInsets: UIEdgeInsets = .zero {
+        didSet {
             setNeedsLayout()
         }
     }
     
-    var image: UIImage? {
+    open var textInsets: UIEdgeInsets = .zero {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+    
+    open var imageInsets: UIEdgeInsets = .zero {
+        didSet {
+            setNeedsLayout()
+        }
+    }
+    
+    
+    
+    open override var contentMode: UIViewContentMode {
+        didSet {
+            imageView.contentMode = contentMode
+            textLabel.contentMode = contentMode
+        }
+    }
+    
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        didInitialize()
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+        didInitialize()
+    }
+    
+    private func didInitialize() {
+        addSubview(textLabel)
+        addSubview(imageView)
+    }
+    
+    override open var intrinsicContentSize: CGSize {
+        let labelSize = textLabel.intrinsicContentSize
+        let imageSize = imageView.intrinsicContentSize
+        return CGSize(width: max(labelSize.width, imageSize.width), height: labelSize.height + imageSize.height)
+    }
+    
+    override open func layoutSubviews() {
+        super.layoutSubviews()
+        
+        imageView.sizeToFit()
+        textLabel.sizeToFit()
+        
+        let kBounds = self.bounds
+        
+        let hasImage = (imageView.image != nil)
+        let hasText = (textLabel.text != nil && textLabel.text!.characters.count > 0)
+        
+        if hasImage && !hasText {
+            let frame = imageView.frame
+            let width = min(frame.width, kBounds.width)
+            let height = min(frame.height, kBounds.height)
+            imageView.frame = CGRect(
+                x: (kBounds.width - width) * 0.5,
+                y: (kBounds.height - height) * 0.5,
+                width: width,
+                height: height
+            )
+        } else if !hasImage && hasText {
+            let frame = textLabel.frame
+            let width = min(frame.width, kBounds.width)
+            let height = min(frame.height, kBounds.height)
+            textLabel.frame = CGRect(
+                x: (kBounds.width - width) * 0.5,
+                y: (kBounds.height - height) * 0.5,
+                width: width,
+                height: height
+            )
+        } else if !hasImage && !hasText {
+            imageView.frame = .zero
+            textLabel.frame = .zero
+        } else {
+            var imageFrame = imageView.frame
+            var textFrame = textLabel.frame
+            
+            imageFrame.size.width = min(imageFrame.width, kBounds.width)
+            textFrame.size.width = min(textFrame.width, kBounds.width)
+            
+            let totalHeight = (imageFrame.height + textFrame.height)
+            let contentHeight = kBounds.height - 8.0
+            
+            imageFrame.size.height = min(imageFrame.height, contentHeight * imageFrame.height / totalHeight)
+            textFrame.size.height = min(textFrame.height, contentHeight * textFrame.height / totalHeight)
+            
+            imageFrame.origin.x = (kBounds.width - imageFrame.width) * 0.5
+            imageFrame.origin.y = (kBounds.height - imageFrame.height - textFrame.height - 8.0) * 0.5
+            imageView.frame = imageFrame
+            
+            
+            textFrame.origin.x = (kBounds.width - textFrame.width) * 0.5
+            textFrame.origin.y = imageFrame.maxY + 8.0
+            textLabel.frame = textFrame
+        }
+    }
+    
+    open var text: String? {
         get {
-            return _imageView?.image
+            return textLabel.text
+        }
+        set {
+            textLabel.text = newValue
+            setNeedsLayout()
+        }
+    }
+    
+    open var image: UIImage? {
+        get {
+            return imageView.image
         }
         set {
             imageView.image = newValue
@@ -40,45 +140,23 @@ class MenuBarItemView: UIControl {
         }
     }
     
-    var _titleLabel: UILabel?
-    var titleLabel: UILabel {
-        if let titleLabel = _titleLabel {
-            return titleLabel
-        }
-        let titleLabel = UILabel()
-        addSubview(titleLabel)
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        let layout1 = NSLayoutConstraint(item: titleLabel, attribute: .bottom, relatedBy: .equal, toItem: self, attribute: .bottom, multiplier: 1.0, constant: 0)
-        let layout2 = NSLayoutConstraint(item: titleLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0)
-        addConstraint(layout1)
-        addConstraint(layout2)
-        _titleLabel = titleLabel
-        
-        return titleLabel
+    open var titleColor: UIColor? {
+        get { return textLabel.textColor }
+        set { textLabel.textColor = newValue }
     }
     
-    var _imageView: UIImageView?
-    var imageView: UIImageView {
-        if let iconImageView = _imageView {
-            return iconImageView
-        }
-        let iconImageView = UIImageView()
-        addSubview(iconImageView)
-        
-        iconImageView.translatesAutoresizingMaskIntoConstraints = false
-        
-        let layout1 = NSLayoutConstraint(item: iconImageView, attribute: .top, relatedBy: .equal, toItem: self, attribute: .top, multiplier: 1.0, constant: 0)
-        let layout2 = NSLayoutConstraint(item: iconImageView, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0)
-        let layout3 = NSLayoutConstraint(item: iconImageView, attribute: .width, relatedBy: .equal, toItem: iconImageView, attribute: .height, multiplier: 1.0, constant: 0)
-        let layout4 = NSLayoutConstraint(item: iconImageView, attribute: .width, relatedBy: .equal, toItem: nil, attribute: .notAnAttribute, multiplier: 1.0, constant: 24)
-        addConstraint(layout1)
-        addConstraint(layout2)
-        iconImageView.addConstraint(layout3)
-        addConstraint(layout4)
-        
-        _imageView = iconImageView
-        return iconImageView
+    open var titleFont: UIFont? {
+        get { return textLabel.font }
+        set { textLabel.font = newValue }
     }
-    
 }
+
+
+
+
+
+
+
+
+
+

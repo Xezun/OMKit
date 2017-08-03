@@ -20,7 +20,12 @@ class ViewController: UIViewController {
         
 //        let view = MediaPlayerPlaybackControlsView(frame: .init(x: 10, y: 100, width: UIScreen.main.bounds.width - 20, height: 200))
 //        self.view.addSubview(view)
-        
+        let view = MenuBarItemView()
+        view.backgroundColor = .red;
+        view.text = "SBCP"
+//        view.image = #imageLiteral(resourceName: "avatarTeam")
+        view.frame = CGRect(x: 100, y: 100, width: 50, height: 50)
+        self.view.addSubview(view)
     }
 
     override func didReceiveMemoryWarning() {

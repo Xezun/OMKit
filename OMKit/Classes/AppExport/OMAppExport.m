@@ -12,6 +12,7 @@
 
 #import "OMAppNavigationExport.h"
 #import "OMAppUserExport.h"
+#import "OMAppNetworkExport.h"
 #import <OMKit/OMKit-Swift.h>
 
 
@@ -31,7 +32,7 @@
 
 @implementation OMAppExport
 
-@synthesize currentUser = _currentUser, currentTheme = _currentTheme, navigation = _navigation;
+@synthesize currentUser = _currentUser, currentTheme = _currentTheme, navigation = _navigation, network = _network;
 
 - (void)dealloc {
 #if DEBUG
@@ -40,17 +41,28 @@
 }
 
 - (instancetype)init {
-    return [self initWithNavigation:[[OMAppNavigationExport alloc] init] currentUser:[[OMAppUserExport alloc] init]];
+    return [self initWithNavigation:[[OMAppNavigationExport alloc] init]
+                        currentUser:[[OMAppUserExport alloc] init]
+                            network:[[OMAppNetworkExport alloc] init]];
 }
 
-- (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation currentUser:(OMAppUserExport *)currentUser {
+- (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation
+                       currentUser:(OMAppUserExport *)currentUser
+                           network:(nonnull OMAppNetworkExport *)network {
     self = [super init];
     if (self != nil) {
+        _network = network;
         _currentUser = currentUser;
         _navigation = navigation;
         _navigation.delegate = self;
     }
     return self;
+}
+
+- (void)ready:(JSValue *)completion {
+    dispatch_async(dispatch_get_main_queue(), ^{
+         [completion callWithArguments:nil];
+    });
 }
 
 - (void)setCurrentTheme:(NSString *)currentTheme {

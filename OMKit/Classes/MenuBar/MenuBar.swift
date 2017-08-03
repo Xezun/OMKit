@@ -12,9 +12,10 @@ import SDWebImage
 
 
 
-public protocol MenuBarDelegate: NSObjectProtocol {
-    
+public protocol MenuBarDelegate: class {
+
     func menuBar(_ menuBar: MenuBar, didSelectItemAt index: Int) -> Void
+    
 }
 
 open class MenuBar: UIView {
@@ -126,14 +127,14 @@ open class MenuBar: UIView {
         didSet {
             for itemView in itemViews {
                 if !itemView.isEqual(selectedItemView) {
-                    itemView._titleLabel?.textColor   = titleColor
+                    itemView.textLabel.textColor   = titleColor
                 }
             }
         }
     }
     open var selectedTitleColor: UIColor? {
         didSet {
-            selectedItemView?._titleLabel?.textColor = selectedTitleColor ?? titleColor
+            selectedItemView?.textLabel.textColor = selectedTitleColor ?? titleColor
         }
     }
     
@@ -141,14 +142,14 @@ open class MenuBar: UIView {
         didSet {
             for itemView in itemViews {
                 if !itemView.isEqual(selectedItemView) {
-                    itemView._titleLabel?.font = titleFont
+                    itemView.textLabel.font = titleFont
                 }
             }
         }
     }
     open var selectedTitleFont: UIFont? {
         didSet {
-            selectedItemView?._titleLabel?.font = selectedTitleFont ?? titleFont
+            selectedItemView?.textLabel.font = selectedTitleFont ?? titleFont
         }
     }
     
@@ -156,7 +157,7 @@ open class MenuBar: UIView {
         didSet {
             for itemView in itemViews {
                 if !itemView.isEqual(selectedItemView) {
-                    itemView._imageView?.alpha = imageAlpha ?? 1.0
+                    itemView.imageView.alpha = imageAlpha ?? 1.0
                 }
             }
         }
@@ -164,7 +165,7 @@ open class MenuBar: UIView {
     
     open var selectedImageAlpha: CGFloat? {
         didSet {
-            selectedItemView?._imageView?.alpha = selectedImageAlpha ?? imageAlpha ?? 1.0
+            selectedItemView?.imageView.alpha = selectedImageAlpha ?? imageAlpha ?? 1.0
         }
     }
     
@@ -179,15 +180,15 @@ open class MenuBar: UIView {
             }
             
             if let old = oldValue {
-                old._titleLabel?.textColor = titleColor
-                old._titleLabel?.font = titleFont
-                old._imageView?.alpha = imageAlpha ?? 1.0
+                old.textLabel.textColor = titleColor
+                old.textLabel.font = titleFont
+                old.imageView.alpha = imageAlpha ?? 1.0
             }
             
             if let new = selectedItemView {
-                new._titleLabel?.textColor = selectedTitleColor ?? titleColor
-                new._titleLabel?.font = selectedTitleFont ?? titleFont
-                new._imageView?.alpha = selectedImageAlpha ?? imageAlpha ?? 1.0
+                new.textLabel.textColor = selectedTitleColor ?? titleColor
+                new.textLabel.font = selectedTitleFont ?? titleFont
+                new.imageView.alpha = selectedImageAlpha ?? imageAlpha ?? 1.0
                 
                 let center = new.center
                 let width = scrollView.bounds.width
@@ -209,7 +210,7 @@ open class MenuBar: UIView {
             } else if count > itemViews.count {
                 for index in itemViews.count ..< count {
                     let itemView = MenuBarItemView(frame: .zero)
-                    itemView.title                  = items?[index].title
+                    itemView.text                  = items?[index].title
                     itemView.image                  = items?[index].image
                     if let imageURL = items?[index].imageURL {
                         SDWebImageManager.shared().loadImage(with: imageURL, options: .retryFailed, progress: nil, completed: { (image, data, error, cacheType, success, imageURL) in
@@ -218,8 +219,8 @@ open class MenuBar: UIView {
                             }
                         })
                     }
-                    itemView.titleLabel.textColor   = titleColor
-                    itemView.titleLabel.font        = titleFont
+                    itemView.textLabel.textColor   = titleColor
+                    itemView.textLabel.font        = titleFont
                     itemView.addTarget(self, action: #selector(itemViewAction(_:)), for: .touchUpInside)
                     scrollView.addSubview(itemView)
                     itemViews.append(itemView)
@@ -230,7 +231,7 @@ open class MenuBar: UIView {
         for index in 0 ..< itemViews.count {
             let itemView = itemViews[index]
             items?[index].delegate = self
-            itemView.title  = items?[index].title
+            itemView.text  = items?[index].title
             itemView.image  = items?[index].image
             if let imageURL = items?[index].imageURL {
                 SDWebImageManager.shared().loadImage(with: imageURL, options: .retryFailed, progress: nil, completed: { (image, data, error, cacheType, success, imageURL) in
@@ -240,13 +241,13 @@ open class MenuBar: UIView {
                 })
             }
             if itemView != selectedItemView {
-                itemView._titleLabel?.textColor = titleColor
-                itemView._titleLabel?.font      = titleFont
-                itemView._imageView?.alpha      = imageAlpha ?? 1.0
+                itemView.textLabel.textColor = titleColor
+                itemView.textLabel.font      = titleFont
+                itemView.imageView.alpha      = imageAlpha ?? 1.0
             } else {
-                itemView._titleLabel?.textColor = selectedTitleColor ?? titleColor
-                itemView._titleLabel?.font      = selectedTitleFont ?? titleFont
-                itemView._imageView?.alpha      = selectedImageAlpha ?? imageAlpha ?? 1.0
+                itemView.textLabel.textColor = selectedTitleColor ?? titleColor
+                itemView.textLabel.font      = selectedTitleFont ?? titleFont
+                itemView.imageView.alpha      = selectedImageAlpha ?? imageAlpha ?? 1.0
             }
         }
         
@@ -287,7 +288,7 @@ open class MenuBar: UIView {
         for item in itemViews {
             let width = itemWidth ?? { () -> CGFloat in
                 item.layoutIfNeeded()
-                return max(item.titleLabel.frame.width, item.imageView.frame.width)
+                return max(item.textLabel.frame.width, item.imageView.frame.width)
                 }()
             widths.append(width)
             if contentWidth > 0 {
@@ -342,17 +343,17 @@ extension MenuBar: MenuBarItemDelegate {
         
         let itemView = itemViews[index]
         if itemView == selectedItemView {
-            itemView.title                  = items?[index].title
+            itemView.text                  = items?[index].title
             itemView.image                  = items?[index].image
-            itemView._titleLabel?.textColor = selectedTitleColor
-            itemView._titleLabel?.font      = selectedTitleFont
-            itemView._imageView?.alpha      = selectedImageAlpha ?? imageAlpha ?? 1.0
+            itemView.textLabel.textColor = selectedTitleColor
+            itemView.textLabel.font      = selectedTitleFont
+            itemView.imageView.alpha      = selectedImageAlpha ?? imageAlpha ?? 1.0
         } else {
-            itemView.title                  = items?[index].title
+            itemView.text                  = items?[index].title
             itemView.image                  = items?[index].image
-            itemView._titleLabel?.textColor = titleColor
-            itemView._titleLabel?.font      = titleFont
-            itemView._imageView?.alpha      = imageAlpha ?? 1.0
+            itemView.textLabel.textColor = titleColor
+            itemView.textLabel.font      = titleFont
+            itemView.imageView.alpha      = imageAlpha ?? 1.0
         }
         
         

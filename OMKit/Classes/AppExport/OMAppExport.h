@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
 
-@class OMAppNavigationExport, OMAppUserExport;
+@class OMAppNavigationExport, OMAppUserExport, OMAppNetworkExport;
 @protocol OMAppExportDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
@@ -29,22 +29,31 @@ FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeDay;
 FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeNight;
 
 
-
-
-
-
 /** 定义了 OMApp 对 JavaScript 的接口。 */
 NS_SWIFT_NAME(AppExportProtocol)
 @protocol OMAppExport <NSObject, JSExport>
+// 4.0
+- (void)ready:(nullable JSValue *)completion;
+// 4.1
+- (void)login:(nullable JSValue *)completion;
+// 4.2
+JSExportAs(open, - (void)open:(nonnull NSString *)page parameters:(nullable NSDictionary<NSString *, id> *)parameters);
+// 4.3
 @property (nonatomic, strong, nonnull, readonly) OMAppNavigationExport *navigation;
+// 4.4
 @property (nonatomic, strong, nonnull) NSString *currentTheme;
 @property (nonatomic, strong, nonnull) NSString *theme __deprecated;
+// 4.5
+// TODO: 4.5
+// 4.6
 @property (nonatomic, strong, nonnull, readonly) OMAppUserExport *currentUser;
-- (void)login:(nullable JSValue *)completion;
-JSExportAs(open, - (void)open:(nonnull NSString *)page parameters:(nullable NSDictionary<NSString *, id> *)parameters);
-- (void)present:(nonnull NSString *)url;
+// 4.7
 JSExportAs(http, - (void)http:(nonnull NSDictionary<NSString *, id> *)request completion:(nullable JSValue *)completion);
+// 4.8
 JSExportAs(alert, - (void)alert:(nonnull NSDictionary<NSString *, id> *)message completion:(nullable JSValue *)completion);
+// 4.9
+@property (nonatomic, strong, nonnull, readonly) OMAppNetworkExport *network;
+- (void)present:(nonnull NSString *)url;
 @end
 
 
@@ -52,7 +61,9 @@ NS_SWIFT_NAME(AppExport)
 @interface OMAppExport : NSObject <OMAppExport>
 
 - (instancetype)init;
-- (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation currentUser:(OMAppUserExport *)currentUser NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation
+                       currentUser:(OMAppUserExport *)currentUser
+                           network:(OMAppNetworkExport *)network NS_DESIGNATED_INITIALIZER;
 
 @property (nonatomic, weak, nullable) id<OMAppExportDelegate> delegate;
 

@@ -14,7 +14,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// AppPage 枚举
+/// AppPage 枚举 NS_EXTENSIBLE_STRING_ENUM
 typedef NSString *OMAppPage NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppPage);
 FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageMall;
 FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageTask;

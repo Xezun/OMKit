@@ -26,7 +26,7 @@
 
 
 @interface OMAppExport () <OMAppNavigationExportDelegate>
-@property (nonatomic, weak) JSContext *context;
+//@property (nonatomic, weak) JSContext *context;
 @end
 
 

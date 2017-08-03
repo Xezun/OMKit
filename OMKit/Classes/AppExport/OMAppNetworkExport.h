@@ -10,7 +10,7 @@
 @import JavaScriptCore;
 
 /// AppTheme 枚举
-typedef NSString *OMAppNetworkType NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppNetworkType);
+typedef NSString *OMAppNetworkType NS_STRING_ENUM NS_SWIFT_NAME(AppNetworkType);
 FOUNDATION_EXPORT OMAppNetworkType const _Nonnull OMAppNetworkTypeNone;
 FOUNDATION_EXPORT OMAppNetworkType const _Nonnull OMAppNetworkTypeWiFi NS_SWIFT_NAME(WiFi);
 FOUNDATION_EXPORT OMAppNetworkType const _Nonnull OMAppNetworkType2G;

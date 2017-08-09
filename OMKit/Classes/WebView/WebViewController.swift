@@ -67,7 +67,7 @@ open class WebViewController: UIViewController {
     /// - Parameters:
     ///   - event: 事件名称
     ///   - parameters: 跟随事件的参数
-    open func didRecevie(_ webViewEvent: WebViewEvent, parameters: [String: Any]?) -> Void {
+    open func didRecevie(_ webViewEvent: WebViewEvent, parameters: [String: Any?]?) -> Void {
         switch webViewEvent {
         case WebViewEvent.pop:
             guard let navigationController = self.navigationController else {
@@ -92,7 +92,8 @@ open class WebViewController: UIViewController {
             guard let navigationController = self.navigationController else {
                 return
             }
-            let index = min(0, Int(forceCast: parameters?["index"]))
+            guard let value = parameters?["index"] else { return }
+            let index = min(0, Int(forceCast: value))
             let viewControllers = navigationController.viewControllers
             
             var find: Int = -1
@@ -209,7 +210,7 @@ extension WebViewController: UIWebViewDelegate {
         guard scheme == eventScheme else { return true }
         
         let event: WebViewEvent = WebViewEvent(url: url) ?? .undefined
-        let parameters: [String: Any]? = url.keyedQueryValues
+        let parameters: [String: Any?]? = url.queryKeyedValues
 
         DispatchQueue.main.async {
             self.didRecevie(event, parameters: parameters)
@@ -234,7 +235,7 @@ extension WebViewController: UIWebViewDelegate {
 
 extension WebViewController {
     
-    fileprivate func configureNavigationBar(with parmaters: [String: Any]) {
+    fileprivate func configureNavigationBar(with parmaters: [String: Any?]) {
         // 标题
         if let title = parmaters["title"] as? String {
             customNavigationBar.title = title

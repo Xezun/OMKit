@@ -99,7 +99,7 @@ NS_SWIFT_NAME(AppExportDelegate)
 - (void)appExport:(OMAppExport *)appExport updateNavigationBarVisibility:(BOOL)isHidden;
 - (void)appExport:(OMAppExport *)appExport updateNavigationBarBackgroundColor:(UIColor *)backgroundColor;
 
-- (void)appExport:(OMAppExport *)appExport analyticsTrack:(NSString *)event parameters:(NSDictionary<NSString *, id> *)parameters;
+- (void)appExport:(OMAppExport *)appExport analyticsTrack:(NSString *)event parameters:(nullable NSDictionary<NSString *, id> *)parameters;
 
 @end
 

@@ -26,7 +26,7 @@
 
 
 @interface OMAppExport () <OMAppNavigationExportDelegate>
-//@property (nonatomic, weak) JSContext *context;
+
 @end
 
 
@@ -78,6 +78,16 @@
 
 - (void)setTheme:(NSString *)theme {
     [self setCurrentTheme:theme];
+}
+
+- (id<OMAppAnalyticsExport>)analytics {
+    return self;
+}
+
+- (void)track:(NSString *)event parameters:(NSDictionary<NSString *,id> *)parameters {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [_delegate appExport:self analyticsTrack:event parameters:parameters];
+    });
 }
 
 - (void)login:(JSValue *)completion {
@@ -200,68 +210,6 @@
 
 
 
-
-
-
-
-
-
-
-OMAppPage _Nonnull const OMAppPageMall          = @"mall";
-OMAppPage _Nonnull const OMAppPageTask          = @"task";
-OMAppPage _Nonnull const OMAppPageNewsList      = @"newsList";
-OMAppPage _Nonnull const OMAppPageNewsDetail    = @"newsDetail";
-OMAppPage _Nonnull const OMAppPageVideoList     = @"videoList";
-OMAppPage _Nonnull const OMAppPageVideoDetail   = @"videoDetail";
-
-@implementation OMAppPageExport
-
-- (OMAppPage)mall {
-    return OMAppPageMall;
-}
-
-- (OMAppPage)task {
-    return OMAppPageTask;
-}
-
-- (OMAppPage)newsList {
-    return OMAppPageNewsList;
-}
-
-- (OMAppPage)newsDetail {
-    return OMAppPageNewsDetail;
-}
-
-- (OMAppPage)videoList {
-    return OMAppPageVideoList;
-}
-
-- (OMAppPage)videoDetail {
-    return OMAppPageVideoDetail;
-}
-
-@end
-
-
-
-
-OMAppTheme const _Nonnull OMAppThemeDay = @"day";
-OMAppTheme const _Nonnull OMAppThemeNight = @"night";
-
-@implementation OMAppThemeExport
-
-- (NSString *)night {
-    return OMAppThemeNight;
-}
-
-- (NSString *)day {
-    return OMAppThemeDay;
-}
-
-@end
-
-
-
 @implementation OMAppHTTPRequest
 
 - (NSString *)description {
@@ -269,3 +217,9 @@ OMAppTheme const _Nonnull OMAppThemeNight = @"night";
 }
 
 @end
+
+
+
+
+
+

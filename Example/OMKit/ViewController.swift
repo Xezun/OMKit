@@ -26,6 +26,7 @@ class ViewController: UIViewController {
 //        view.image = #imageLiteral(resourceName: "avatarTeam")
         view.frame = CGRect(x: 100, y: 100, width: 50, height: 50)
         self.view.addSubview(view)
+        
     }
 
     override func didReceiveMemoryWarning() {

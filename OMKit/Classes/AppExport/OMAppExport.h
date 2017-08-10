@@ -8,30 +8,18 @@
 
 #import <UIKit/UIKit.h>
 #import <JavaScriptCore/JavaScriptCore.h>
+#import <OMKit/OMAppAnalyticsExport.h>
+#import <OMKit/OMAppENUM.h>
 
 @class OMAppNavigationExport, OMAppUserExport, OMAppNetworkExport;
 @protocol OMAppExportDelegate;
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// AppPage 枚举 NS_EXTENSIBLE_STRING_ENUM
-typedef NSString *OMAppPage NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppPage);
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageMall;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageTask;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageNewsDetail;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageNewsList;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageVideoList;
-FOUNDATION_EXPORT OMAppPage _Nonnull const OMAppPageVideoDetail;
-
-/// AppTheme 枚举
-typedef NSString *OMAppTheme NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppTheme);
-FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeDay;
-FOUNDATION_EXPORT OMAppTheme const _Nonnull OMAppThemeNight;
-
-
 /** 定义了 OMApp 对 JavaScript 的接口。 */
 NS_SWIFT_NAME(AppExportProtocol)
 @protocol OMAppExport <NSObject, JSExport>
+
 // 4.0
 - (void)ready:(nullable JSValue *)completion;
 // 4.1
@@ -39,26 +27,28 @@ NS_SWIFT_NAME(AppExportProtocol)
 // 4.2
 JSExportAs(open, - (void)open:(nonnull NSString *)page parameters:(nullable NSDictionary<NSString *, id> *)parameters);
 // 4.3
-@property (nonatomic, strong, nonnull, readonly) OMAppNavigationExport *navigation;
+@property (nonatomic, nonnull, readonly) OMAppNavigationExport *navigation;
 // 4.4
-@property (nonatomic, strong, nonnull) NSString *currentTheme;
-@property (nonatomic, strong, nonnull) NSString *theme __deprecated;
+@property (nonatomic, nonnull) NSString *currentTheme;
+@property (nonatomic, nonnull) NSString *theme __deprecated;
 // 4.5
-// TODO: 4.5
+@property (nonatomic, readonly, nonnull) id<OMAppAnalyticsExport> analytics;
 // 4.6
-@property (nonatomic, strong, nonnull, readonly) OMAppUserExport *currentUser;
+@property (nonatomic, nonnull, readonly) OMAppUserExport *currentUser;
 // 4.7
 JSExportAs(http, - (void)http:(nonnull NSDictionary<NSString *, id> *)request completion:(nullable JSValue *)completion);
 // 4.8
 JSExportAs(alert, - (void)alert:(nonnull NSDictionary<NSString *, id> *)message completion:(nullable JSValue *)completion);
 // 4.9
-@property (nonatomic, strong, nonnull, readonly) OMAppNetworkExport *network;
+@property (nonatomic, nonnull, readonly) OMAppNetworkExport *network;
+
 - (void)present:(nonnull NSString *)url;
+
 @end
 
 
 NS_SWIFT_NAME(AppExport)
-@interface OMAppExport : NSObject <OMAppExport>
+@interface OMAppExport : NSObject <OMAppExport, OMAppAnalyticsExport>
 
 - (instancetype)init;
 - (instancetype)initWithNavigation:(OMAppNavigationExport *)navigation
@@ -109,43 +99,9 @@ NS_SWIFT_NAME(AppExportDelegate)
 - (void)appExport:(OMAppExport *)appExport updateNavigationBarVisibility:(BOOL)isHidden;
 - (void)appExport:(OMAppExport *)appExport updateNavigationBarBackgroundColor:(UIColor *)backgroundColor;
 
-//- (void)appExport:(OMAppExport *)appExport didCatchAnException:(NSString *)expection;
+- (void)appExport:(OMAppExport *)appExport analyticsTrack:(NSString *)event parameters:(NSDictionary<NSString *, id> *)parameters;
 
 @end
-
-
-
-
-
-
-
-
-NS_SWIFT_NAME(AppPageExportProtocol)
-@protocol OMAppPageExport <NSObject, JSExport>
-@property (nonatomic, readonly, nonnull) OMAppPage mall;
-@property (nonatomic, readonly, nonnull) OMAppPage task;
-@property (nonatomic, readonly, nonnull) OMAppPage newsList;
-@property (nonatomic, readonly, nonnull) OMAppPage newsDetail;
-@property (nonatomic, readonly, nonnull) OMAppPage videoList;
-@property (nonatomic, readonly, nonnull) OMAppPage videoDetail;
-@end
-
-
-NS_SWIFT_NAME(AppPageExport)
-@interface OMAppPageExport : NSObject <OMAppPageExport>
-@end
-
-
-NS_SWIFT_NAME(AppThemeExportProtocol)
-@protocol OMAppThemeExport <NSObject, JSExport>
-@property (nonatomic, readonly, nonnull) OMAppTheme day;
-@property (nonatomic, readonly, nonnull) OMAppTheme night;
-@end
-
-NS_SWIFT_NAME(AppThemeExport)
-@interface OMAppThemeExport : NSObject <OMAppThemeExport>
-@end
-
 
 
 

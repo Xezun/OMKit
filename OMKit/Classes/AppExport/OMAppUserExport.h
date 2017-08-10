@@ -7,23 +7,9 @@
 //
 
 #import <Foundation/Foundation.h>
+#import <OMKit/OMAppAnalyticsExport.h>
 @import JavaScriptCore;
 
-
-typedef NSString *OMAppUserType NS_EXTENSIBLE_STRING_ENUM NS_SWIFT_NAME(AppUserType);
-
-FOUNDATION_EXPORT OMAppUserType const _Nonnull OMAppUserTypeVisitor;
-FOUNDATION_EXPORT OMAppUserType const _Nonnull OMAppUserTypeGoogle;
-FOUNDATION_EXPORT OMAppUserType const _Nonnull OMAppUserTypeFacebook;
-FOUNDATION_EXPORT OMAppUserType const _Nonnull OMAppUserTypeTwitter;
-
-NS_SWIFT_NAME(AppUserTypeExportProtocol)
-@protocol OMAppUserTypeExport <NSObject, JSExport>
-@property (nonatomic, readonly, nonnull) OMAppUserType visitor;
-@property (nonatomic, readonly, nonnull) OMAppUserType google;
-@property (nonatomic, readonly, nonnull) OMAppUserType facebook;
-@property (nonatomic, readonly, nonnull) OMAppUserType twitter;
-@end
 
 NS_SWIFT_NAME(AppUserExportProtocol)
 @protocol OMAppUserExport <NSObject, JSExport>
@@ -35,9 +21,10 @@ NS_SWIFT_NAME(AppUserExportProtocol)
 @property (nonatomic, readonly) NSInteger coin;
 @end
 
-NS_SWIFT_NAME(AppUserTypeExport)
-@interface OMAppUserTypeExport : NSObject <OMAppUserTypeExport>
-@end
+
+
+
+
 
 NS_SWIFT_NAME(AppUserExport)
 @interface OMAppUserExport : NSObject <OMAppUserExport>

@@ -7,11 +7,8 @@
 //
 
 #import "OMAppUserExport.h"
+#import <OMKit/OMAppENUM.h>
 
-OMAppUserType const _Nonnull OMAppUserTypeVisitor   = @"visitor";
-OMAppUserType const _Nonnull OMAppUserTypeGoogle    = @"facebook";
-OMAppUserType const _Nonnull OMAppUserTypeFacebook  = @"google";
-OMAppUserType const _Nonnull OMAppUserTypeTwitter   = @"twitter";
 
 @implementation OMAppUserExport
 
@@ -36,22 +33,4 @@ OMAppUserType const _Nonnull OMAppUserTypeTwitter   = @"twitter";
 @end
 
 
-@implementation OMAppUserTypeExport
 
-- (NSString *)visitor {
-    return OMAppUserTypeVisitor;
-}
-
-- (NSString *)facebook {
-    return OMAppUserTypeFacebook;
-}
-
-- (NSString *)google {
-    return OMAppUserTypeGoogle;
-}
-
-- (NSString *)twitter {
-    return OMAppUserTypeTwitter;
-}
-
-@end

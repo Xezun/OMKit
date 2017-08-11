@@ -16,7 +16,7 @@ public protocol MenuBarDelegate: class {
     func numberOfItems(in menuBar: MenuBar) -> Int
     func menuBar(_ menuBar: MenuBar, viewForItemAt index: Int, reusingView: MenuBarItemView?) -> MenuBarItemView
     func menuBar(_ menuBar: MenuBar, widthForItemAt index: Int) -> CGFloat
-
+    
     func menuBar(_ menuBar: MenuBar, didSelectItemAt index: Int) -> Void
     
 }
@@ -117,6 +117,7 @@ open class MenuBar: UIView {
     
     weak var selectedItemView: MenuBarItemView? {
         didSet {
+            oldValue?.isSelected = false
             selectedItemView?.isSelected = true
             updateIndicator()
         }
@@ -148,6 +149,7 @@ open class MenuBar: UIView {
                 scrollView.addSubview(itemView)
                 itemViews.append(itemView)
             }
+            itemView.isSelected = false
         }
         
         if let selectedIndex = selectedIndex {
@@ -193,7 +195,7 @@ open class MenuBar: UIView {
         let contentHeight: CGFloat = kBounds.height
         
         var widths: [CGFloat] = []
-    
+        
         for index in 0 ..< itemViews.count {
             let width = delegate!.menuBar(self, widthForItemAt: index)
             widths.append(width)
@@ -235,7 +237,7 @@ open class MenuBar: UIView {
             scrollView.contentOffset = CGPoint(x: scrollView.contentSize.width - scrollView.bounds.width, y: 0)
         }
     }
-
+    
 }
 
 extension MenuBar: MenuBarItemViewDelegate {

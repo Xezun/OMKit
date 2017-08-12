@@ -277,6 +277,8 @@ extension MenuBar: MenuBarItemViewDelegate {
     
     func menuBarItemViewWasTapped(_ menuBarItemView: MenuBarItemView) {
         selectedItemView = menuBarItemView
+        guard let index = self.itemViews.index(of: menuBarItemView) else { return }
+        delegate?.menuBar(self, didSelectItemAt: index)
     }
     
 }

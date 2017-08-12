@@ -13,23 +13,51 @@ import SDWebImage
 
 public protocol MenuBarDelegate: class {
     
+    /// MenuBar 中 item 的个数。
+    ///
+    /// - Parameter menuBar: The MenuBar who call this method.
+    /// - Returns: The count of the menu bar item.
     func numberOfItems(in menuBar: MenuBar) -> Int
+    
+    /// 获取 MenuBar 的 item 对应的 view 。
+    ///
+    /// - Parameters:
+    ///   - menuBar: The MenuBar who call this method.
+    ///   - index: The index of the item.
+    ///   - reusingView: The reusing view, may be nil.
+    /// - Returns: The item view for the item.
     func menuBar(_ menuBar: MenuBar, viewForItemAt index: Int, reusingView: MenuBarItemView?) -> MenuBarItemView
+    
+    /// 获取 item 的宽度。
+    ///
+    /// - Parameters:
+    ///   - menuBar: The MenuBar who call this method.
+    ///   - index: The index of the item.
+    /// - Returns: The width of the item.
     func menuBar(_ menuBar: MenuBar, widthForItemAt index: Int) -> CGFloat
     
+    /// 当用户点击到指定的 item 时，此方法会被调用。
+    /// - 设置 selectedIndex 不会触发此方法。
+    ///
+    /// - Parameters:
+    ///   - menuBar: The MenuBar who call this method.
+    ///   - index: The index of the item.
+    /// - Returns: The width of the item.
     func menuBar(_ menuBar: MenuBar, didSelectItemAt index: Int) -> Void
     
 }
 
 open class MenuBar: UIView {
     
+    /// 设置代理会自动刷新 MenuBar 。
     open weak var delegate: MenuBarDelegate? {
         didSet {
             reloadData()
         }
     }
     
-    let scrollView: UIScrollView = UIScrollView()
+    /// MenuBar 用于横向滚动的 UIScrollView 。
+    public let scrollView: UIScrollView = UIScrollView()
     let indicatorImageView: UIImageView = UIImageView()
     
     override public init(frame: CGRect) {
@@ -51,10 +79,12 @@ open class MenuBar: UIView {
         scrollView.showsVerticalScrollIndicator = false
         addSubview(scrollView)
         
+        indicatorImageView.contentMode = .scaleAspectFit
         indicatorImageView.backgroundColor = UIColor.black
         scrollView.addSubview(indicatorImageView)
     }
     
+    /// 指示器颜色。
     open var indicatorColor: UIColor? {
         get {
             return indicatorImageView.backgroundColor
@@ -64,6 +94,7 @@ open class MenuBar: UIView {
         }
     }
     
+    /// 指示器图片，图片会在指示器中保持宽高比进行缩放。
     open var indicatorImage: UIImage? {
         get {
             return indicatorImageView.image
@@ -73,6 +104,8 @@ open class MenuBar: UIView {
         }
     }
     
+    
+    /// 设置或获取当前选中的 item 的次序。设置该属性不会触发代理事件。
     open var selectedIndex: Int? {
         get {
             guard let selectedItemView = self.selectedItemView else { return nil }
@@ -123,7 +156,7 @@ open class MenuBar: UIView {
         }
     }
     
-    // 更新
+    // 更新 MenuBar 中的视图。
     open func reloadData() -> Void {
         guard let count = self.delegate?.numberOfItems(in: self), count > 0 else {
             let count = itemViews.count

@@ -42,8 +42,11 @@ public class WebImageManager {
     /// - Parameter imageURL: 图片 URL
     /// - Returns: 该地址对应的图片已缓存，则返回 UIImage 对象
     public static func cachedImage(for imageURL: URL) -> UIImage? {
-        return SDWebImageManager.shared().imageCache?.imageFromMemoryCache(forKey: SDWebImageManager.shared().cacheKey(for: imageURL))
+        let key = SDWebImageManager.shared().cacheKey(for: imageURL)
+        return SDWebImageManager.shared().imageCache?.imageFromCache(forKey: key)
     }
+    
+    
     
     /// 下载图片。该方法首先从缓存获取图片，如果获取失败再从网络下载。
     ///

@@ -13,6 +13,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		95F6C65679460AF71010A13D /* Pods_OMKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DA0E8A9E5BD024AA3A64F2E /* Pods_OMKit_Example.framework */; };
+		DD02FAB01F57E0AF00F1C5CF /* OMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD02FAAF1F57E0AF00F1C5CF /* OMAppDelegate.m */; };
+		DD02FAB41F583B0300F1C5CF /* HTML.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DD02FAB31F583B0300F1C5CF /* HTML.bundle */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -42,6 +44,10 @@
 		95EE2DC50270EB68BE9A3680 /* LICENSE */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = LICENSE; path = ../LICENSE; sourceTree = "<group>"; };
 		B581044CDFD01A92F6C9B5D0 /* Pods-OMKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OMKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		BD4597E0CC5F0BB9D78EC460 /* OMKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = OMKit.podspec; path = ../OMKit.podspec; sourceTree = "<group>"; };
+		DD02FAAD1F57E0AF00F1C5CF /* OMKit_Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OMKit_Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		DD02FAAE1F57E0AF00F1C5CF /* OMAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMAppDelegate.h; sourceTree = "<group>"; };
+		DD02FAAF1F57E0AF00F1C5CF /* OMAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMAppDelegate.m; sourceTree = "<group>"; };
+		DD02FAB31F583B0300F1C5CF /* HTML.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HTML.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,10 +95,14 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				DD02FAB31F583B0300F1C5CF /* HTML.bundle */,
+				DD02FAAE1F57E0AF00F1C5CF /* OMAppDelegate.h */,
+				DD02FAAF1F57E0AF00F1C5CF /* OMAppDelegate.m */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
 				607FACD31AFB9204008FA782 /* Supporting Files */,
+				DD02FAAD1F57E0AF00F1C5CF /* OMKit_Example-Bridging-Header.h */,
 			);
 			name = "Example for OMKit";
 			path = OMKit;
@@ -160,7 +170,9 @@
 				TargetAttributes = {
 					607FACCF1AFB9204008FA782 = {
 						CreatedOnToolsVersion = 6.3.1;
-						LastSwiftMigration = 0820;
+						DevelopmentTeam = X3B83EXWME;
+						LastSwiftMigration = 0830;
+						ProvisioningStyle = Manual;
 					};
 				};
 			};
@@ -187,6 +199,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD02FAB41F583B0300F1C5CF /* HTML.bundle in Resources */,
 				607FACDB1AFB9204008FA782 /* Main.storyboard in Resources */,
 				607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */,
 				607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */,
@@ -248,6 +261,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DD02FAB01F57E0AF00F1C5CF /* OMAppDelegate.m in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);
@@ -367,11 +381,17 @@
 			baseConfigurationReference = 032363A06D5FFC9BA9B46D9D /* Pods-OMKit_Example.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				DEVELOPMENT_TEAM = X3B83EXWME;
 				INFOPLIST_FILE = OMKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onemena.omkit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "4d97c1ce-5950-47b3-9136-79ee88e0396f";
+				PROVISIONING_PROFILE_SPECIFIER = "Wildcard Development";
+				SWIFT_OBJC_BRIDGING_HEADER = "OMKit/OMKit_Example-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -381,11 +401,17 @@
 			baseConfigurationReference = B581044CDFD01A92F6C9B5D0 /* Pods-OMKit_Example.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				DEVELOPMENT_TEAM = X3B83EXWME;
 				INFOPLIST_FILE = OMKit/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				MODULE_NAME = ExampleApp;
-				PRODUCT_BUNDLE_IDENTIFIER = "org.cocoapods.demo.$(PRODUCT_NAME:rfc1034identifier)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.onemena.omkit;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "8b356526-5bbb-4e1b-9c7c-dd5fcf672aa8";
+				PROVISIONING_PROFILE_SPECIFIER = "Wildcard Distribution";
+				SWIFT_OBJC_BRIDGING_HEADER = "OMKit/OMKit_Example-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

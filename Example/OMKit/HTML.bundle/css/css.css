@@ -1,0 +1,47 @@
+@font-face {
+    font-family: 'OM-Arabic-Title-Bold';
+    src: url('../font/OM-Arabic-Title-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'OM-Arabic-Number-Title-Bold';
+    src: url('../font/OM-Arabic-Number-Title-Bold.ttf');
+}
+
+
+@font-face {
+    font-family: 'OM-Arabic-Title-Regular';
+    src: url('../font/OM-Arabic-Title-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'OM-Arabic-Number-Title-Regular';
+    src: url('../font/OM-Arabic-Number-Title-Regular.ttf');
+}
+
+
+
+@font-face {
+    font-family: 'OM-Arabic-Text-Bold';
+    src: url('../font/OM-Arabic-Text-Bold.ttf');
+}
+
+@font-face {
+    font-family: 'OM-Arabic-Number-Text-Bold';
+    src: url('../font/OM-Arabic-Number-Text-Bold.ttf');
+}
+
+
+
+@font-face {
+    font-family: 'OM-Arabic-Text-Regular';
+    src: url('../font/OM-Arabic-Text-Regular.ttf');
+}
+
+@font-face {
+    font-family: 'OM-Arabic-Number-Text-Regular';
+    src: url('../font/OM-Arabic-Number-Text-Regular.ttf');
+}
+
+
+

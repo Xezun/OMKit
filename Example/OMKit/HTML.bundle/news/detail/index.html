@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Onemena</title>
+    <meta name="viewport" content="width=device-width, user-scalable=yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+
+    <!-- <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /> -->
+    <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport"/>
+    <link rel="stylesheet" href="css/css.css">
+    <link rel="stylesheet" href="../../css/css.css">
+    <script src="../../js/OMApp.js"></script>
+    <script src="../../js/jquery-3.1.1.min.js"></script>
+    <script src="../../js/fastclick.js"></script>
+    <script src="js/OMHTML.js"></script>
+    <script src="js/js.js"></script>
+</head>
+<body>
+
+<div class="nav z97">
+    <div class="bar">
+        <a href="javascript:void(0);" class="back">
+            <img src="image/icon_nav_back@2x.png" srcset="image/icon_nav_back@2x.png 2x, image/icon_nav_back@3x.png 3x">
+        </a>
+        <a href="javascript:void(0);" class="close">
+            <img src="image/icon_nav_close@2x.png" srcset="image/icon_nav_close@2x.png 2x, image/icon_nav_close@3x.png 3x">
+        </a>
+        <a href="javascript:void(0);" class="info">
+            <img src="image/icon_nav_info@2x.png" srcset="image/icon_nav_info@2x.png 2x, image/icon_nav_info@3x.png 3x">
+        </a>
+    </div>
+</div>
+
+<div class="main">
+    <!-- 标题、作者、发布时间等信息 -->
+    <div class="header">
+        <div class="title"><span></span><span></span></div>
+        <div class="infoBar">
+            <div class="left"><a href="javascript:void(0);" class="follow"></a></div>
+            <div class="right">
+                <div class="writer">
+                    <div class="avatar"></div>
+                    <div class="name"></div>
+                </div>
+                <div class="date"></div>
+            </div>
+        </div>
+    </div>
+    <!-- 文章正文 -->
+    <div class="body">
+        <div class="content">
+            <p class="empty" style="width: 80%"></p>
+            <p class="empty" style="width: 50%"></p>
+            <p class="empty" style="width: 40%"></p>
+            <p class="empty" style="width: 60%"></p>
+            <br>
+            <p class="empty" style="width: 60%"></p>
+            <p class="empty" style="width: 70%"></p>
+            <p class="empty" style="width: 90%"></p>
+            <p class="empty" style="width: 30%"></p>
+            <p>
+                <img src="image/avatar_news.png" srcset="image/avatar_news@2x.png 2x, image/avatar_news@3x.png 3x">
+            </p>
+            <p class="empty" style="width: 70%"></p>
+            <p class="empty" style="width: 30%"></p>
+        </div>
+        <div class="link"><a href="javascript:void(0);">للقراءة من المصدر </a></div>
+    </div>
+    <!-- 相关新闻、评论、功能按钮-->
+    <div class="footer">
+        <div class="actions">
+            <a class="dislike" href="javascript:void(0)">
+                <span class="icon"></span>
+                <span class="text">0</span>
+            </a>
+            <a class="like" href="javascript:void(0)">
+                <span class="icon"></span>
+                <span class="text">0</span>
+            </a>
+            <a class="report" href="javascript:void(0)">
+                <span class="icon"></span>
+                <span class="text">إبلاغ</span>
+            </a>
+        </div>
+        <div class="share">
+            <div class="title">
+                <div class="line"></div>
+                <div class="text">شارك الخبر مع أصدقائك</div>
+            </div>
+            <div class="list">
+                <div class="platforms">
+                    <a class="facebook" href="javascript:void(0)"></a>
+                    <a class="twitter" href="javascript:void(0)"></a>
+                    <a class="sms" href="javascript:void(0)"></a>
+                    <a class="whatsapp" href="javascript:void(0)"></a>
+                    <a class="google" href="javascript:void(0)"></a>
+                    <a class="email" href="javascript:void(0)"></a>
+                </div>
+            </div>
+        </div>
+        <div class="divider"></div>
+
+        <div class="more">
+            <div class="title">
+                <span class="indicator"></span><span class="text">إقرأ أيضاً</span>
+            </div>
+            <div class="list">
+                <div class="item">
+                    <img class="avatar" src="image/avatar_news.png" srcset="image/avatar_news@2x.png 2x, image/avatar_news@3x.png 3x" alt="news avatar">
+                    <div class="title">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <div class="writer info">
+                            <img class="avatar icon" src="image/avatar_writer@2x.png" srcset="image/avatar_writer@2x.png 2x, image/avatar_writer@3x.png 3x" alt="writer avatar">
+                            <span class="name text"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <img class="avatar" src="image/avatar_news.png" srcset="image/avatar_news@2x.png 2x, image/avatar_news@3x.png 3x" alt="news avatar">
+                    <div class="title">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <div class="writer info">
+                            <img class="avatar icon" src="image/avatar_writer@2x.png" srcset="image/avatar_writer@2x.png 2x, image/avatar_writer@3x.png 3x" alt="writer avatar">
+                            <span class="name text"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <img class="avatar" src="image/avatar_news.png" srcset="image/avatar_news@2x.png 2x, image/avatar_news@3x.png 3x" alt="news avatar">
+                    <div class="title">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <div class="writer info">
+                            <img class="avatar icon" src="image/avatar_writer@2x.png" srcset="image/avatar_writer@2x.png 2x, image/avatar_writer@3x.png 3x" alt="writer avatar">
+                            <span class="name text"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="item">
+                    <img class="avatar" src="image/avatar_news.png" srcset="image/avatar_news@2x.png 2x, image/avatar_news@3x.png 3x" alt="news avatar">
+                    <div class="title">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <div class="writer info">
+                            <img class="avatar icon" src="image/avatar_writer@2x.png" srcset="image/avatar_writer@2x.png 2x, image/avatar_writer@3x.png 3x" alt="writer avatar">
+                            <span class="name text"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hots comments">
+            <div class="title">
+                <img src="image/icon_fire@2x.png" srcset="image/icon_fire@2x.png 2x, image/icon_fire@3x.png 3x" alt="" class="icon">
+                <span class="text">تعليقات ساخنة</span>
+            </div>
+            <div class="list">
+
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="normal comments">
+            <div class="title">
+                <img src="image/icon_message@2x.png" srcset="image/icon_message@2x.png 2x, image/icon_message@3x.png 3x" alt="" class="icon">
+                <span class="text">أحدث التعليقات</span>
+            </div>
+            <div class="list">
+
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                        <a href="javascript:void(0);" class="showAll">查看全文</a>
+                    </div>
+
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+
+
+
+            </div>
+        </div>
+    </div>
+    <div class="loading">
+        <div class="empty">
+            <img src="image/icon_list_empty@2x.png" srcset="image/icon_list_empty@2x.png 2x, image/icon_list_empty@3x.png 3x" alt="" class="icon">
+            <span class="text">كن أول من يعلق على المقال</span>
+        </div>
+        <img src="image/img_loading@2x.gif" srcset="image/img_loading@2x.gif 2x, image/img_loading@3x.gif 3x" alt="" class="icon">
+        <span class="text">يتم التحميل</span>
+    </div>
+</div>
+
+<!-- 评论叠楼　-->
+<div class="floor z98">
+    <div class="header">
+        <div class="bar">
+            <a href="javascript:void(0);" class="close">
+                <img src="image/icon_close@2x.png" srcset="image/icon_close@2x.png 2x, image/icon_close@3x.png 3x">
+            </a>
+            <span class="text">لا يوجد المزيد من الردود</span>
+        </div>
+    </div>
+    <div class="body comments">
+        <div class="title">
+            <div class="host">
+                <div class="item">
+                    <div class="infoBar">
+                        <div class="writer">
+                            <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                            <a class="name"></a>
+                        </div>
+                        <div class="like">
+                            <span class="icon"></span>
+                            <span class="text">0</span>
+                        </div>
+                    </div>
+                    <div class="content">
+                        <span class="empty"></span>
+                        <span class="empty"></span>
+                    </div>
+                    <div class="replyTo">
+                        <div class="user">
+                            <span>الرد </span>
+                            <span class="name">علاء الريحاني</span>
+                            <span>:</span>
+                        </div>
+                        <div class="content">يا اخي حدثوا الاخبار الحمد لله تم تحرير بعشيقة وقيادة البشمركة في الإقليم أكد ذلك </div>
+                    </div>
+                    <div class="toolBar">
+                        <span class="date"></span>
+                        <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="list">
+            <div class="item">
+                <div class="infoBar">
+                    <div class="writer">
+                        <img src="image/avatar_replier@2x.png" srcset="image/avatar_replier@2x.png 2x, image/avatar_replier@3x.png 3x" alt="" class="avatar">
+                        <a class="name"></a>
+                    </div>
+                    <div class="like">
+                        <span class="icon"></span>
+                        <span class="text">0</span>
+                    </div>
+                </div>
+                <div class="content">
+                    <span class="empty"></span>
+                    <span class="empty"></span>
+                </div>
+                <div class="replyTo">
+                    <div class="user">
+                        <span>الرد </span>
+                        <span class="name">علاء الريحاني</span>
+                        <span>:</span>
+                    </div>
+                    <div class="content">يا اخي حدثوا الاخبار الحمد لله تم تحرير بعشيقة وقيادة البشمركة في الإقليم أكد ذلك </div>
+                </div>
+                <div class="toolBar">
+                    <span class="date"></span>
+                    <a href="javascript:void(0);" class="reply"><span class="number"></span> رد </a>
+                </div>
+            </div>
+        </div>
+        <div class="loading">
+            <div class="empty">
+                <img src="image/icon_list_empty@2x.png" srcset="image/icon_list_empty@2x.png 2x, image/icon_list_empty@3x.png 3x" alt="" class="icon">
+                <span class="text">كن أول من يعلق على المقال</span>
+            </div>
+            <img src="image/img_loading@2x.gif" srcset="image/img_loading@2x.gif 2x, image/img_loading@3x.gif 3x" alt="" class="icon">
+            <span class="text">يتم التحميل</span>
+        </div>
+    </div>
+</div>
+
+<!-- 输入按钮 -->
+<div class="toolBar z99">
+
+    <a href="javascript:void(0);" class="input">
+        <img src="image/icon_pen@2x.png" srcset="image/icon_pen@2x.png 2x, image/icon_pen@3x.png 3x" alt="" class="icon">
+        <span class="text">شارك برأيك…</span>
+    </a>
+    <a href="javascript:void(0);" class="comment">
+        <span class="text">2</span>
+    </a>
+    <a href="javascript:void(0);" class="collect"></a>
+    <a href="javascript:void(0);" class="share"></a>
+
+    <div class="textInput z99">
+        <form action="javascript:void(0);">
+            <div class="input">
+                <label for="input">
+                    <textarea name="input" id="input" rows="3" autocorrect="off" autocapitalize="off" maxlength="500" placeholder=""></textarea>
+                </label>
+            </div>
+            <div class="submit">
+                <input type="button" value="نشر" name="submit" disabled>
+                <span class="numberOfWords">0</span>
+            </div>
+        </form>
+    </div>
+
+</div>
+
+
+<div class="textInputMask z99"></div>
+
+</body>
+</html>

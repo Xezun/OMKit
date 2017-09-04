@@ -1,18 +1,14 @@
 //
-//  OMApp.h
+//  OMAppExport.h
 //  OMKit
 //
-//  Created by mlibai on 2017/8/31.
+//  Created by mlibai on 2017/9/4.
 //  Copyright © 2017年 CocoaPods. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
-@import JavaScriptCore;
-@import WebKit;
 
-NS_ASSUME_NONNULL_BEGIN
-
-@protocol OMAppExport <NSObject, JSExport>
+@protocol OMAppDelegateExport <NSObject, JSExport>
 
 //ready: (callback: () => void) => void;
 - (void)ready:(nonnull JSValue *)completion;
@@ -78,77 +74,3 @@ JSExportAs(wasClicked, - (void)document:(NSString *)document element:(NSString *
 
 
 @end
-
-
-@protocol OMAppDelegate <NSObject>
-
-
-@end
-
-
-
-
-
-
-
-
-@class OMAppHTTPRequest, OMAppHTTPResponse;
-
-@interface OMApp: NSObject <WKScriptMessageHandler>
-
-@property (nonatomic, weak, nullable, readonly) WKWebView *webView;
-@property (nonatomic, weak, nullable) id<OMAppDelegate> delegate;
-@property (nonatomic, weak, nullable) UIViewController *viewController;
-
-+ (OMApp *)handleMessageForWebView:(WKWebView *)webView viewController:(UIViewController *)viewController;
-- (void)removeFromWebView;
-
-
-
-- (void)ready:(void (^)())completion;
-- (void)setCurrentTheme:(nonnull NSString *)theme;
-- (void)login:(nonnull JSValue *)completion;
-- (void)open:(nonnull NSString *)page parameters:(nullable NSDictionary *)parameters;
-- (void)present:(nonnull NSString *)url animated:(BOOL)animated completion:(nullable JSValue *)completion;
-
-- (void)push:(NSString *)url animated:(BOOL)animated;
-- (void)pop:(BOOL)animated;
-- (void)popTo:(NSInteger)index animated:(BOOL)animated;
-- (void)setNavigationBarHidden:(BOOL)hidden;
-- (void)setNavigationBarTitle:(NSString *)title;
-- (void)setNavigationBarTitleColor:(NSString *)titleColor;
-- (void)setNavigationBarBackgroundColor:(NSString *)backgrondColor;
-- (void)track:(NSString *)event parameters:(nullable NSDictionary *)parameters;
-
-
-- (void)http:(OMAppHTTPRequest *)request completion:(void (^)(OMAppHTTPResponse *response))completion;
-- (void)document:(NSString *)document list:(NSString *)list numberOfRows:(void (^)(NSInteger count))completion;
-- (void)document:(NSString *)document list:(NSString *)list dataForRowAtIndex:(NSInteger)index completion:(void (^)(id data))completion;
-- (void)cachedResourceForURL:(NSString *)url downloadIfNotExists:(BOOL)download completion:(nullable JSValue *)completion;
-- (void)document:(NSString *)document list:(NSString *)list didSelectRowAtIndex:(NSInteger)index completion:(void (^)())completion;
-- (void)document:(NSString *)document element:(NSString *)element wasClickedWithData:(id)data completion:(void (^)(BOOL isSelected))completion;
-
-@end
-
-
-@interface OMAppHTTPRequest : NSObject
-
-@property (nonatomic, copy, readonly) NSString *method;
-@property (nonatomic, copy, readonly) NSDictionary<NSString *, id> *data;
-@property (nonatomic, copy, readonly) NSString *url;
-@property (nonatomic, copy, readonly) NSDictionary<NSString *, NSString *> *headers;
-
-@end
-
-@interface OMAppHTTPResponse : NSObject
-
-@property (nonatomic, readonly) NSInteger code;
-@property (nonatomic, readonly) NSString *message;
-@property (nonatomic, readonly) id data;
-@property (nonatomic, readonly) NSString *contentType;
-
-@end
-
-
-NS_ASSUME_NONNULL_END
-

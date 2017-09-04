@@ -4,9 +4,12 @@ $(function() {
     FastClick.attach(document.body);
 });
 
-window.onerror = function () { setTimeout(function(){ alert(arguments); }); }
 
 $(document).ready(function () {
+    
+    $(document.body).on("touchstart", function () {
+    
+    });
                   
     // 配置开发环境的基本参数。
     omApp.config({
@@ -39,10 +42,10 @@ $(document).ready(function () {
     });
     
     omApp.ready(function () {
-        // omApp.navigation.bar.isHidden = true;
-        // omHTML.more.list.reloadData();
-        // omHTML.hots.list.reloadData();
-        // omHTML.comments.list.reloadData();
+         omApp.navigation.bar.isHidden = true;
+         omHTML.more.list.reloadData();
+         omHTML.hots.list.reloadData();
+         omHTML.comments.list.reloadData();
     });
     
     
@@ -61,7 +64,7 @@ $(document).ready(function () {
     var commentsCount = Math.random() * 10;
     var floorCount = 0;
     
-    omApp.delegate.numberOfRows = function (documentName, listName, callback) {
+    omApp.delegate.numberOfRowsInList = function (documentName, listName, callback) {
         
         switch (listName) {
             case "More List":

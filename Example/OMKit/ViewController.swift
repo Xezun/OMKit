@@ -9,7 +9,7 @@
 import UIKit
 import WebKit
 
-
+import OMKit
 
 
 
@@ -17,7 +17,7 @@ import WebKit
 class ViewController: UIViewController {
     
     deinit {
-        omApp?.removeFromWebView()
+        messageHandler?.removeFromWebView()
         print("ViewController deinit")
     }
     
@@ -29,18 +29,18 @@ class ViewController: UIViewController {
         return view as! WKWebView
     }
     
-    weak var omApp: OMApp?
+    weak var messageHandler: WebViewMessageHandler?
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        self.omApp = OMApp.handleMessage(for: webView, viewController: self)
         
         if #available(iOS 9.0, *) {
             webView.configuration.applicationNameForUserAgent = "Onemena/1.0.0"
         } else {
             // Fallback on earlier versions
         }
+        
+        self.messageHandler = NewsDetailMessageHandler(for: webView, viewController: self);
         
         let url = Bundle.main.url(forResource: "HTML", withExtension: "bundle")!
         if #available(iOS 9.0, *) {

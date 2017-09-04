@@ -579,10 +579,8 @@ omHTML.ready(function () {
                 "-webkit-animation": "backgroundShow 0.3s",
                 "-webkit-animation-fill-mode": "both"
             }).animate({
-                "padding-top": "70px"
-            }, '300', function () {
-                
-            });
+                paddingTop: "70px"
+            }, 300);
             $(_OMSEL.toolBar).animate({
                 paddingLeft: "16px"
             });
@@ -590,23 +588,27 @@ omHTML.ready(function () {
         
         function _hideFloor() {
             $(_OMSEL.floor).css({
-                // "padding-top": "70px",
                 "-webkit-animation": "backgroundHide 0.3s",
                 "-webkit-animation-fill-mode": "both"
-            }).animate({
-                "padding-top": $(document).height() + "px"
-            }, '300', function () {
-                $(this).css("display", "none");
             });
+            // 先 stop 再动画，消除延迟问题。
+            $(_OMSEL.floor).stop().animate({
+                paddingTop: $(document).height() + "px"
+            }, 300, function () {
+                $(this).css({
+                    "display": "none"
+                });
+            });
+            
             $(_OMSEL.toolBar).animate({
                 paddingLeft: "170px"
-            });
+            }, 300);
         }
         
         var _floorLoading = new  _OMListLoading(_OMSEL.floorLoadingIcon, _OMSEL.floorLoadingText, _OMSEL.floorLoadingEmpty);
         _floorLoading.setMessageForState("上拉或点击以加载更多回复", _OMListLoadingState.idle);
         _floorLoading.setMessageForState("正在加载更多回复", _OMListLoadingState.loading);
-        _floorLoading.setMessageForState("暂无更多回复，点击重新加载", _OMListLoadingState.noMoreData);
+        _floorLoading.setMessageForState("已加载所有回复", _OMListLoadingState.noMoreData);
         
         var _floorHost = _createCommentRowModel("body>.floor .comments .title .host .item");
         
@@ -631,7 +633,7 @@ omHTML.ready(function () {
         var _loading = new _OMListLoading(_OMSEL.loadingIcon, _OMSEL.loadingText, _OMSEL.loadingEmpty);
         _loading.setMessageForState("上拉或点击以加载更多评论", _OMListLoadingState.idle);
         _loading.setMessageForState("正在加载更多评论", _OMListLoadingState.loading);
-        _loading.setMessageForState("暂无更多评论，点击重新加载", _OMListLoadingState.noMoreData);
+        _loading.setMessageForState("已加载全部评论", _OMListLoadingState.noMoreData);
         return { get: function () { return _loading; } }
     });
 });
@@ -663,6 +665,7 @@ omHTML.ready(function () {
             $(_OMSEL.textInputMask).one("touchstart", function () {
                 $(_OMSEL.textInputTextArea).blur();
                 _hideTextInput();
+                return false;
             });
         }
         
@@ -728,20 +731,20 @@ omHTML.ready(function () {
     // 关注按钮
     $(_OMSEL.follow).click(function () {
         var _this = $(this);
-        omApp.service.event.wasClicked(kHTMLName, "Follow Button", _this.hasClass("selected"), function (isSelected) {
+        omApp.service.event.elementWasClicked(kHTMLName, "Follow Button", _this.hasClass("selected"), function (isSelected) {
             _this.toggleClass("selected", isSelected);
         });
     });
     
     // 查看原文
     $(_OMSEL.link).click(function () {
-        omApp.service.event.wasClicked(kHTMLName, "Content Link");
+        omApp.service.event.elementWasClicked(kHTMLName, "Content Link");
     });
     
     // 点赞
     $(_OMSEL.actionsLike).click(function () {
         var _this = $(this);
-        omApp.service.event.wasClicked(kHTMLName, "Action Like", _this.hasClass("selected"), function (isSelected) {
+        omApp.service.event.elementWasClicked(kHTMLName, "Action Like", _this.hasClass("selected"), function (isSelected) {
             _this.toggleClass("selected", isSelected);
             _showPlusMinusAnimationOnElement(_this, isSelected, _this.css("border-color"));
             if (isSelected) {
@@ -760,7 +763,7 @@ omHTML.ready(function () {
     // 点踩
     $(_OMSEL.actionsDislike).click(function () {
         var _this = $(this);
-        omApp.service.event.wasClicked(window.omHTML.name, "Action Dislike", _this.hasClass("selected"), function (isSelected) {
+        omApp.service.event.elementWasClicked(window.omHTML.name, "Action Dislike", _this.hasClass("selected"), function (isSelected) {
             _this.toggleClass("selected", isSelected);
             _showPlusMinusAnimationOnElement(_this, isSelected, _this.css("border-color"));
             if (isSelected) {
@@ -777,12 +780,12 @@ omHTML.ready(function () {
     
     // 举报
     $(_OMSEL.actionsReport).click(function () {
-        omApp.service.event.wasClicked(window.omHTML.name, "Action Report");
+        omApp.service.event.elementWasClicked(window.omHTML.name, "Action Report");
     });
     
     // 分享
     $(_OMSEL.sharePlatformItem).click(function () {
-        omApp.service.event.wasClicked(window.omHTML.name, "Share Button", $(this).attr("class"));
+        omApp.service.event.elementWasClicked(window.omHTML.name, "Share Button", $(this).attr("class"));
     });
     
     // 相关新闻被点击
@@ -864,7 +867,7 @@ omHTML.ready(function () {
     
     function _commentLikeAction(likeButton, eventName) {
         var row = likeButton.parents(".item");
-        omApp.service.event.wasClicked(kHTMLName, eventName, row.index());
+        omApp.service.event.elementWasClicked(kHTMLName, eventName, row.index());
         var isSelected = !likeButton.hasClass("selected");
         likeButton.toggleClass("selected", isSelected);
         _showPlusMinusAnimationOnElement(likeButton, isSelected, likeButton.css("color"));
@@ -924,14 +927,14 @@ omHTML.ready(function () {
     
     // 收藏按钮点击
     $(_OMSEL.toolBarCollect).on("click", function () {
-        omApp.service.event.wasClicked(kHTMLName, "Tool Bar Collect");
+        omApp.service.event.elementWasClicked(kHTMLName, "Tool Bar Collect");
         $(this).toggleClass("selected");
         return false;
     });
     
     // 分享按钮点击
     $(_OMSEL.toolBarShare).on("click", function () {
-        omApp.service.event.wasClicked(kHTMLName, "Tool Bar Share");
+        omApp.service.event.elementWasClicked(kHTMLName, "Tool Bar Share");
         return false
     });
     
@@ -968,7 +971,7 @@ omHTML.ready(function () {
         $(_OMSEL.textInputSubmit).attr("disabled", true);
         $(_OMSEL.textInputNumberOfWords).text(0);
         window.omHTML.textInput.hide();
-        omApp.service.event.wasClicked(kHTMLName, "Comment Submit", {"content": comment, "submit": _submit});
+        omApp.service.event.elementWasClicked(kHTMLName, "Comment Submit", {"content": comment, "submit": _submit});
         return false;
     });
     
@@ -982,7 +985,7 @@ omHTML.ready(function () {
     });
     
     $(_OMSEL.navInfo).on("click", function () {
-        omApp.service.event.wasClicked(kHTMLName, "Navigation Bar Info");
+        omApp.service.event.elementWasClicked(kHTMLName, "Navigation Bar Info");
     });
     
     function _commentsLoadMoreIfNeeded() {
@@ -990,7 +993,7 @@ omHTML.ready(function () {
             case _OMListLoadingState.idle:
             case _OMListLoadingState.noMoreData:
                 window.omHTML.loading.state = _OMListLoadingState.loading;
-                omApp.service.event.wasClicked(kHTMLName, "Comments Load More", null, function () {
+                omApp.service.event.elementWasClicked(kHTMLName, "Comments Load More", null, function () {
                     window.omHTML.comments.list.reloadData();
                 });
                 break;
@@ -1023,9 +1026,9 @@ omHTML.ready(function () {
     function _floorLoadMoreIfNeeded() {
         switch (window.omHTML.floor.loading.state) {
             case _OMListLoadingState.idle:
-            case _OMListLoadingState.noMoreData:
+            //case _OMListLoadingState.noMoreData:
                 window.omHTML.floor.loading.state = _OMListLoadingState.loading;
-                omApp.service.event.wasClicked(kHTMLName, "Floor Load More", null, function () {
+                omApp.service.event.elementWasClicked(kHTMLName, "Floor Load More", null, function () {
                     window.omHTML.floor.list.reloadData();
                 });
                 break;
@@ -1250,7 +1253,7 @@ function _OMList(
             $(_listElementSelector).empty();
         }
         
-        omApp.service.data.numberOfRows(_htmlName, _listName, function (count) {
+        omApp.service.data.numberOfRowsInList(_htmlName, _listName, function (count) {
             var oldCount = _allRows.length;
             var index = 0;
             if (oldCount <= count) {

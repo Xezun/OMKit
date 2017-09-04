@@ -80,10 +80,10 @@ module OMApp {
         titleColor: string;
         backgroundColor: string;
 
-        _setIsHidden(isHidden: boolean, needs?: boolean): void;
-        _setTitle(title: string, needs?: boolean): void;
-        _setTitleColor(titleColor: string, needs?: boolean): void;
-        _setBackgroundColor(backgroundColor: string, needs?: boolean): void;
+        setHidden(isHidden: boolean, animated?: boolean): void;
+        setTitle(title: string): void;
+        setTitleColor(titleColor: string): void;
+        setBackgroundColor(backgroundColor: string): void;
     }
 
     interface Navigation {
@@ -129,12 +129,12 @@ module OMApp {
     interface ServiceData {
         numberOfRows(documentName: string, listName: string, callback: (count: number) => void): void;
         dataForRowAtIndex(documentName: string, listName: string, index: number, callback: (data: any) => void): void;
-        cachedResourceForURL(url: string, downloadIfNotExists?: boolean, callback?: (sourcePath: string) => void): void;
+        cachedResourceForURL(url: string, resourceType?: OMApp.ResourceType, downloadIfNotExists?: boolean, callback?: (sourcePath: string) => void): void;
     }
 
     interface ServiceEvent {
         didSelectRowAtIndex(documentName: string, listName: string, index: number, completion?: () => void): void;
-        wasClicked(documentName: string, elementName: string, data?: any, callback?: (isSelected: boolean) => void): void;
+        elementWasClicked(documentName: string, elementName: string, data?: any, callback?: (isSelected: boolean) => void): void;
     }
 
     interface ServiceAnalytics {
@@ -203,11 +203,11 @@ module OMApp {
 
     interface MethodServiceEvent {
         didSelectRowAtIndex: Method;
-        wasClicked: Method;
+        elementWasClicked: Method;
     }
 
     interface MethodServiceData {
-        numberOfRows: Method;
+        numberOfRowsInList: Method;
         dataForRowAtIndex: Method;
         cachedResourceForURL: Method;
     }
@@ -216,6 +216,9 @@ module OMApp {
         track: Method;
     }
 
+    interface ResourceType {
+        image: ResourceType
+    }
 
 
 }
@@ -305,12 +308,12 @@ module  OMApp {
 
         http: (request: HTTPRequest, callback: (response: HTTPResponse) => void) => void;
 
-        numberOfRows: (documentName: string, listName: string, callback: (count: number) => void) => void;
+        numberOfRowsInList: (documentName: string, listName: string, callback: (count: number) => void) => void;
         dataForRowAtIndex: (documentName: string, listName: string, index: number, callback: (data: any) => void) => void;
-        cachedResourceForURL: (url: string, automaticallyDownload: boolean, callback: (filePath: string) => void) => void;
+        cachedResourceForURL: (url: string, resourceType: OMApp.ResourceType, automaticallyDownload: boolean, callback?: (filePath: string) => void) => void;
 
         didSelectRowAtIndex: (documentName: string, listName: string, index: number, completion?: () => void) => void;
-        wasClicked: (documentName: string, elementName: string, data: any, callback: (isSelected: boolean) => void) => void;
+        elementWasClicked: (documentName: string, elementName: string, data: any, callback: (isSelected: boolean) => void) => void;
 
     }
 }

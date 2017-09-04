@@ -13,8 +13,8 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		95F6C65679460AF71010A13D /* Pods_OMKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DA0E8A9E5BD024AA3A64F2E /* Pods_OMKit_Example.framework */; };
-		DD02FAB01F57E0AF00F1C5CF /* OMAppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = DD02FAAF1F57E0AF00F1C5CF /* OMAppDelegate.m */; };
 		DD02FAB41F583B0300F1C5CF /* HTML.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DD02FAB31F583B0300F1C5CF /* HTML.bundle */; };
+		DD1310771F5D276B00C883F4 /* NewsDetailMessageHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD1310761F5D276B00C883F4 /* NewsDetailMessageHandler.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -45,9 +45,9 @@
 		B581044CDFD01A92F6C9B5D0 /* Pods-OMKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OMKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		BD4597E0CC5F0BB9D78EC460 /* OMKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = OMKit.podspec; path = ../OMKit.podspec; sourceTree = "<group>"; };
 		DD02FAAD1F57E0AF00F1C5CF /* OMKit_Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OMKit_Example-Bridging-Header.h"; sourceTree = "<group>"; };
-		DD02FAAE1F57E0AF00F1C5CF /* OMAppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMAppDelegate.h; sourceTree = "<group>"; };
-		DD02FAAF1F57E0AF00F1C5CF /* OMAppDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OMAppDelegate.m; sourceTree = "<group>"; };
 		DD02FAB31F583B0300F1C5CF /* HTML.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HTML.bundle; sourceTree = "<group>"; };
+		DD1310761F5D276B00C883F4 /* NewsDetailMessageHandler.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NewsDetailMessageHandler.swift; sourceTree = "<group>"; };
+		DDCA62741F5CF53300A54C83 /* OMAppExport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OMAppExport.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -95,9 +95,9 @@
 			children = (
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
 				607FACD71AFB9204008FA782 /* ViewController.swift */,
+				DD1310761F5D276B00C883F4 /* NewsDetailMessageHandler.swift */,
 				DD02FAB31F583B0300F1C5CF /* HTML.bundle */,
-				DD02FAAE1F57E0AF00F1C5CF /* OMAppDelegate.h */,
-				DD02FAAF1F57E0AF00F1C5CF /* OMAppDelegate.m */,
+				DDCA62741F5CF53300A54C83 /* OMAppExport.h */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -215,9 +215,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/OMKit/OMKit.framework",
+				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
+				"${BUILT_PRODUCTS_DIR}/XZKit/XZKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/OMKit.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SDWebImage.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XZKit.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -245,13 +252,16 @@
 			files = (
 			);
 			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-OMKit_Example-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -261,7 +271,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				DD02FAB01F57E0AF00F1C5CF /* OMAppDelegate.m in Sources */,
+				DD1310771F5D276B00C883F4 /* NewsDetailMessageHandler.swift in Sources */,
 				607FACD81AFB9204008FA782 /* ViewController.swift in Sources */,
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
 			);

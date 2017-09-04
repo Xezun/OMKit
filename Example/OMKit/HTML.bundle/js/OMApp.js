@@ -503,7 +503,12 @@ OMApp.current.defineProperties(function () {
     
     // 判断对象是否有 setter 方法，如果有则执行 setter 方法，否则属性直接赋值。
     function _setKeyValue(object, key, value, keyPath) {
-        var setter = "set" + key.substring(0,1).toUpperCase() + key.substring(1);
+        var setter = null;
+        if ( /^is[A-Z]/.test(key) ) { // is 开头的的属性
+            setter = key.replace(/^is/, "set");
+        } else { // 其它属性
+            setter = "set" + key.substring(0,1).toUpperCase() + key.substring(1);
+        }
         if ( object.hasOwnProperty(setter) ) {
             object[setter](value);
         } else {
@@ -877,10 +882,10 @@ OMApp.current.defineProperty('navigation', function () {
                 }
             }
     
-            function _setIsHidden(newValue, doPerform) {
+            function _setHidden(newValue, animated, doPerform) {
                 _isHidden = newValue;
                 if (doPerform) {
-                    OMApp.current.perform(OMApp.Method.navigation.bar.setHidden, [newValue]);
+                    OMApp.current.perform(OMApp.Method.navigation.bar.setHidden, [newValue, animated]);
                 }
             }
     
@@ -913,13 +918,13 @@ OMApp.current.defineProperty('navigation', function () {
                 isHidden: {
                     get: function() { return _isHidden; },
                     set: function(newValue) {
-                        _setIsHidden(newValue, true);
+                        _setHidden(newValue, true, true);
                     }
                 },
                 setTitle:           { get: function () { return _setTitle; } },
                 setTitleColor:      { get: function () { return _setTitleColor; } },
                 setBackgroundColor: { get: function () { return _setBackgroundColor; } },
-                setIsHidden:        { get: function () { return _setIsHidden; } }
+                setHidden:        { get: function () { return _setHidden; } }
             });
         });
         
@@ -1063,18 +1068,33 @@ OMApp.current.defineProperty('alert', function () {
 
 OMApp.registerMethod({
     data: {
-        numberOfRows: "numberOfRows",
+        numberOfRowsInList: "numberOfRowsInList",
         dataForRowAtIndex: "dataForRowAtIndex",
         cachedResourceForURL: "cachedResourceForURL"
     },
     event: {
         didSelectRowAtIndex: "didSelectRowAtIndex",
-        wasClicked: "wasClicked"
+        elementWasClicked: "elementWasClicked"
     },
     analytics: {
         track: "track"
     }
 }, "service");
+
+OMApp.defineProperty("ResourceType", function () {
+    
+    var _ResourceType = new (function () {
+        Object.defineProperties(this, {
+            image: { get: function () { return "image"; } }
+        })
+    })();
+    
+    return {
+        get: function () {
+            return _ResourceType;
+        }
+    }
+});
 
 
 OMApp.current.defineProperty('service', function () {
@@ -1086,8 +1106,8 @@ OMApp.current.defineProperty('service', function () {
             // 获取 list 的行数。
             // - list: string
             // - callback: (number)=>void
-            function _numberOfRows(documentName, listName, callback) {
-                var method = OMApp.Method.service.data.numberOfRows;
+            function _numberOfRowsInList(documentName, listName, callback) {
+                var method = OMApp.Method.service.data.numberOfRowsInList;
                 OMApp.current.perform(method, [documentName, listName], callback);
             }
         
@@ -1101,23 +1121,36 @@ OMApp.current.defineProperty('service', function () {
             }
         
             // 获取缓存。
-            function _cachedResourceForURL(url, arg1, arg2) {
+            function _cachedResourceForURL(url, arg1, arg2, arg3) {
                 var method = OMApp.Method.service.data.cachedResourceForURL;
-                var callback = null;
-                var automatic = true;
-                if ( typeof arg1 === 'boolean' ) {
-                    automatic = arg1;
-                    callback = arg2;
-                } else if (typeof arg1 === 'function') {
-                    callback = arg1;
+                var type = arg1;
+                var callback = arg2;
+                var automatic = arg3;
+                if ( typeof arg1 === 'string' ) {
+                    if (typeof arg2 === 'function' ) {
+                        automatic = true;
+                        callback = arg2;
+                    }
+                } else {
+                    type = OMApp.ResourceType.image;
+                    if (typeof arg1 === 'boolean') {
+                        automatic = arg1;
+                        callback = arg2;
+                    } else if (typeof arg1 === 'function') {
+                        automatic = true;
+                        callback = arg1;
+                    } else {
+                        automatic = true;
+                        callback = null;
+                    }
                 }
-                OMApp.current.perform(method, [url, automatic], callback);
+                OMApp.current.perform(method, [url, type, automatic], callback);
             }
         
             Object.defineProperties(this, {
-                numberOfRows: {
+                numberOfRowsInList: {
                     get: function () {
-                        return _numberOfRows;
+                        return _numberOfRowsInList;
                     }
                 },
                 dataForRowAtIndex: {
@@ -1143,8 +1176,8 @@ OMApp.current.defineProperty('service', function () {
             }
         
             // 处理事件
-            function _wasClicked(documentName, elementName, data, callback) {
-                var method = OMApp.Method.service.event.wasClicked;
+            function _elementWasClicked(documentName, elementName, data, callback) {
+                var method = OMApp.Method.service.event.elementWasClicked;
                 OMApp.current.perform(method, [documentName, elementName, data], callback);
             }
         
@@ -1154,9 +1187,9 @@ OMApp.current.defineProperty('service', function () {
                         return _didSelectRowAtIndex;
                     }
                 },
-                wasClicked: {
+                elementWasClicked: {
                     get: function () {
-                        return _wasClicked;
+                        return _elementWasClicked;
                     }
                 }
             });
@@ -1423,7 +1456,7 @@ function _OMAppDelegate() {
         _ajax(request, callback)
     };
     
-    this.numberOfRows = function () {
+    this.numberOfRowsInList = function () {
         console.log(arguments);
     };
     
@@ -1439,7 +1472,7 @@ function _OMAppDelegate() {
         console.log(arguments);
     };
     
-    this.wasClicked = function () {
+    this.elementWasClicked = function () {
         console.log(arguments);
     };
     

@@ -4,7 +4,7 @@ platform :ios, '8.0'
 
 target 'OMKit_Example' do
     
-    # pod 'OMKit', :path => '../'
+    pod 'OMKit', :path => '../'
   
     # 将 OMKit 依赖的 XZKit 指定为本地的
     # pod 'XZKit'#, :path => '../../../XZKit'

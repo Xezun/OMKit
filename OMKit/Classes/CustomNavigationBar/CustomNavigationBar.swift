@@ -205,7 +205,7 @@ open class CustomNavigationBar: XZKit.NavigationBar {
 extension UIViewController {
     
     /// 自定义的导航条。与 navigationBar  属性相同，但是在控制器生命周期内，必须首先调用此属性。
-    public var customNavigationBar: CustomNavigationBar! {
+    @objc open var customNavigationBar: CustomNavigationBar! {
         if let vc = (self as? NavigationBarCustomizable) {
             if vc.isNavigationBarLoaded {
                 return vc.navigationBar as? CustomNavigationBar
@@ -227,14 +227,14 @@ extension UIViewController {
     ///
     /// - Parameter animated: 当该值为布尔值时，表示是否动画。其它值表示一定执行动画。
     /// - Returns: 弹出的控制器
-    public func navigationControllerPopViewController(animated: Any?) -> UIViewController? {
+    @objc open func navigationControllerPopViewController(animated: Any?) -> UIViewController? {
         if let animated = animated as? Bool {
             return navigationController?.popViewController(animated: animated)
         }
         return navigationController?.popViewController(animated: true)
     }
     
-    public func navigationControllerPopToRootViewController(animated: Any?) -> [UIViewController]? {
+    @objc open func navigationControllerPopToRootViewController(animated: Any?) -> [UIViewController]? {
         if let animated = animated as? Bool {
             return navigationController?.popToRootViewController(animated: animated)
         }
@@ -242,7 +242,7 @@ extension UIViewController {
     }
     
     
-    public func dismiss(animated: Any?) {
+    @objc open func dismiss(animated: Any?) {
         dismiss(animated: (animated as? Bool) ?? true, completion: nil)
     }
     

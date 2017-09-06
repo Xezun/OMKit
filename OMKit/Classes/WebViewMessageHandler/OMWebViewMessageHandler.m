@@ -8,6 +8,7 @@
 
 #import "OMWebViewMessageHandler.h"
 @import ObjectiveC;
+@import SDWebImage;
 
 #import <XZKit/XZKit-Swift.h>
 
@@ -63,22 +64,22 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"%s", __func__);
 }
 
-- (instancetype)initWithWebView:(id)webView viewController:(UIViewController *)viewController {
+- (instancetype)initWithWebView:(WKWebView *)webView viewController:(UIViewController *)viewController {
     self = [super init];
     if (self != nil) {
         _viewController = viewController;
         _webView = webView;
+        
+        [_webView.configuration.userContentController addScriptMessageHandler:self name:@"omApp"];
+        NSString *js = @"OMApp.current.delegate = function(message){ window.webkit.messageHandlers.omApp.postMessage(message); }";
+        WKUserScript *script = [[WKUserScript alloc] initWithSource:js injectionTime:(WKUserScriptInjectionTimeAtDocumentEnd) forMainFrameOnly:false];
+        [_webView.configuration.userContentController addUserScript:script];
     }
     return self;
 }
 
-+ (instancetype)messageHandlerForWebView:(WKWebView *)webView viewController:(UIViewController *)viewController {
-    OMWebViewMessageHandler *omApp = [[self alloc] initWithWebView:webView viewController:viewController];
-    [webView.configuration.userContentController addScriptMessageHandler:omApp name:@"omApp"];
-    NSString *js = @"OMApp.current.delegate = function(message){ window.webkit.messageHandlers.omApp.postMessage(message); }";
-    WKUserScript *script = [[WKUserScript alloc] initWithSource:js injectionTime:(WKUserScriptInjectionTimeAtDocumentEnd) forMainFrameOnly:false];
-    [webView.configuration.userContentController addUserScript:script];
-    return omApp;
++ (instancetype)messageHandlerWithWebView:(WKWebView *)webView viewController:(UIViewController *)viewController {
+    return [[self alloc] initWithWebView:webView viewController:viewController];
 }
 
 - (void)removeFromWebView {
@@ -247,13 +248,18 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     if ([method isEqualToString:@"cachedResourceForURL"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString, kArgumentsTypeString, kArgumentsTypeNumber], 3);
         NSAssert(callbackID != nil, @"The `callbackID` for `cachedResourceForURL` method does not exist.");
-        [self cachedResourceForURL:arguments[0] resoureType:arguments[1] downloadIfNotExists:[arguments[1] boolValue] completion:^(NSString * _Nonnull resourcePath) {
-            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %@)", callbackID, resourcePath];
+        NSURL *url = [NSURL URLWithString:arguments[0]];
+        if (url == nil) {
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', '%@')", callbackID, arguments[0]];
+            [webView evaluateJavaScript:js completionHandler:nil];
+            return;
+        }
+        [self cachedResourceForURL:url resoureType:arguments[1] downloadIfNotExists:[arguments[1] boolValue] completion:^(NSString * _Nonnull resourcePath) {
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', '%@')", callbackID, resourcePath];
             [webView evaluateJavaScript:js completionHandler:nil];
         }];
         return;
     }
-    
     
     // event service
     
@@ -368,8 +374,27 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"[OMWebViewMessageHandler] Message `dataForRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, index);
 }
 
-- (void)cachedResourceForURL:(NSString *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString * _Nonnull))completion {
-    NSLog(@"[OMWebViewMessageHandler] Message `cachedResourceForURL(%@, %@, %d, callback)` is not handled.", url, resoureType, download);
+- (void)cachedResourceForURL:(NSURL *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString * _Nonnull))completion {
+    if ([resoureType isEqualToString:@"image"]) {
+        [self cachedImageForURL:url completion:completion];
+    } else {
+        NSLog(@"[OMWebViewMessageHandler] Message `cachedResourceForURL(%@, %@, %d, callback)` is not handled.", url, resoureType, download);
+    }
+}
+
+- (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString * _Nonnull))completion {
+    SDWebImageManager *manager = [SDWebImageManager sharedManager];
+    [manager diskImageExistsForURL:url completion:^(BOOL isInCache) {
+        if (isInCache) {
+            NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
+            completion(imagePath);
+        } else {
+            [manager loadImageWithURL:url options:(SDWebImageAllowInvalidSSLCertificates) progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
+                NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
+                completion(imagePath);
+            }];
+        }
+    }];
 }
 
 

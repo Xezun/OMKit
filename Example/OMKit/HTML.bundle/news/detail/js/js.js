@@ -140,7 +140,7 @@ $(document).ready(function () {
         }
     };
     
-    omApp.delegate.cachedResourceForURL = function (url, automaticallyDownload, callback) {
+    omApp.delegate.cachedResourceForURL = function (url, resourceType, automaticallyDownload, callback) {
         callback(url);
     };
     
@@ -159,7 +159,7 @@ $(document).ready(function () {
         
     };
     
-    omApp.delegate.wasClicked = function (documentName, elementName, parameters, callback) {
+    omApp.delegate.elementWasClicked = function (documentName, elementName, parameters, callback) {
         console.log(documentName + " 中的元素 " + elementName + " 被点击了：" + JSON.stringify(parameters));
         
         switch (elementName) {

@@ -200,7 +200,7 @@ omHTML.ready(function () {
                     if (!url) { image.remove(); return; }
                     image.attr('src', _OMURL.newsAvatar.src);
                     image.attr('srcset', _OMURL.newsAvatar.srcset);
-                    omApp.service.data.cachedResourceForURL(url, function (sourcePath) {
+                    omApp.services.data.cachedResourceForURL(url, function (sourcePath) {
                         if (!sourcePath) { return; }
                         image.attr("src", sourcePath);
                         image.removeAttr('srcset');
@@ -248,7 +248,7 @@ omHTML.ready(function () {
                         return $(_OMSEL.writer.avatar).css('background-image');
                     },
                     set: function (newValue) {
-                        omApp.service.data.cachedResourceForURL(newValue, function (filePath) {
+                        omApp.services.data.cachedResourceForURL(newValue, function (filePath) {
                             $(_OMSEL.writer.avatar).css('background-image', filePath);
                         });
                     }
@@ -437,7 +437,7 @@ omHTML.ready(function () {
                                     return $(_selector).find(_OMSEL.moreListItem_find_WriterAvatar).attr("src");
                                 },
                                 set: function (newValue) {
-                                    omApp.service.data.cachedResourceForURL(newValue, function (sourcePath) {
+                                    omApp.services.data.cachedResourceForURL(newValue, function (sourcePath) {
                                         $(_selector).find(_OMSEL.moreListItem_find_WriterAvatar)
                                             .attr("src", sourcePath)
                                             .removeAttr("srcset");
@@ -468,7 +468,7 @@ omHTML.ready(function () {
                                 return $(_selector).find(_OMSEL.moreListItem_find_Avatar).attr('src');
                             },
                             set: function (newValue) {
-                                omApp.service.data.cachedResourceForURL(newValue, function (sourcePath) {
+                                omApp.services.data.cachedResourceForURL(newValue, function (sourcePath) {
                                     $(_selector).find(_OMSEL.moreListItem_find_Avatar)
                                         .attr('src', sourcePath)
                                         .removeAttr('srcset');
@@ -731,20 +731,20 @@ omHTML.ready(function () {
     // 关注按钮
     $(_OMSEL.follow).click(function () {
         var _this = $(this);
-        omApp.service.event.elementWasClicked(kHTMLName, "Follow Button", _this.hasClass("selected"), function (isSelected) {
+        omApp.services.event.elementWasClicked(kHTMLName, "Follow Button", _this.hasClass("selected"), function (isSelected) {
             _this.toggleClass("selected", isSelected);
         });
     });
     
     // 查看原文
     $(_OMSEL.link).click(function () {
-        omApp.service.event.elementWasClicked(kHTMLName, "Content Link");
+        omApp.services.event.elementWasClicked(kHTMLName, "Content Link");
     });
     
     // 点赞
     $(_OMSEL.actionsLike).click(function () {
         var _this = $(this);
-        omApp.service.event.elementWasClicked(kHTMLName, "Action Like", _this.hasClass("selected"), function (isSelected) {
+        omApp.services.event.elementWasClicked(kHTMLName, "Action Like", _this.hasClass("selected"), function (isSelected) {
             _this.toggleClass("selected", isSelected);
             _showPlusMinusAnimationOnElement(_this, isSelected, _this.css("border-color"));
             if (isSelected) {
@@ -763,7 +763,7 @@ omHTML.ready(function () {
     // 点踩
     $(_OMSEL.actionsDislike).click(function () {
         var _this = $(this);
-        omApp.service.event.elementWasClicked(window.omHTML.name, "Action Dislike", _this.hasClass("selected"), function (isSelected) {
+        omApp.services.event.elementWasClicked(window.omHTML.name, "Action Dislike", _this.hasClass("selected"), function (isSelected) {
             _this.toggleClass("selected", isSelected);
             _showPlusMinusAnimationOnElement(_this, isSelected, _this.css("border-color"));
             if (isSelected) {
@@ -780,17 +780,17 @@ omHTML.ready(function () {
     
     // 举报
     $(_OMSEL.actionsReport).click(function () {
-        omApp.service.event.elementWasClicked(window.omHTML.name, "Action Report");
+        omApp.services.event.elementWasClicked(window.omHTML.name, "Action Report");
     });
     
     // 分享
     $(_OMSEL.sharePlatformItem).click(function () {
-        omApp.service.event.elementWasClicked(window.omHTML.name, "Share Button", $(this).attr("class"));
+        omApp.services.event.elementWasClicked(window.omHTML.name, "Share Button", $(this).attr("class"));
     });
     
     // 相关新闻被点击
     $(_OMSEL.more).on("click", ".list .item", function () {
-        omApp.service.event.didSelectRowAtIndex(kHTMLName, window.omHTML.more.list.name, $(this).index());
+        omApp.services.event.didSelectRowAtIndex(kHTMLName, window.omHTML.more.list.name, $(this).index());
         return false;
     });
     
@@ -807,7 +807,7 @@ omHTML.ready(function () {
         window.omHTML.floor.list.identifier = "hots_" + index;
         window.omHTML.floor.loading.state = _OMListLoadingState.loading;
         
-        omApp.service.event.didSelectRowAtIndex(kHTMLName, window.omHTML.hots.list.name, index, function () {
+        omApp.services.event.didSelectRowAtIndex(kHTMLName, window.omHTML.hots.list.name, index, function () {
             window.omHTML.floor.list.reloadData();
         });
         return false;
@@ -835,7 +835,7 @@ omHTML.ready(function () {
         window.omHTML.floor.list.identifier = "comments_" + index;
         window.omHTML.floor.loading.state = _OMListLoadingState.loading;
         
-        omApp.service.event.didSelectRowAtIndex(kHTMLName, window.omHTML.comments.list.name, index, function () {
+        omApp.services.event.didSelectRowAtIndex(kHTMLName, window.omHTML.comments.list.name, index, function () {
             window.omHTML.floor.list.reloadData();
         });
         return false;
@@ -867,7 +867,7 @@ omHTML.ready(function () {
     
     function _commentLikeAction(likeButton, eventName) {
         var row = likeButton.parents(".item");
-        omApp.service.event.elementWasClicked(kHTMLName, eventName, row.index());
+        omApp.services.event.elementWasClicked(kHTMLName, eventName, row.index());
         var isSelected = !likeButton.hasClass("selected");
         likeButton.toggleClass("selected", isSelected);
         _showPlusMinusAnimationOnElement(likeButton, isSelected, likeButton.css("color"));
@@ -927,14 +927,14 @@ omHTML.ready(function () {
     
     // 收藏按钮点击
     $(_OMSEL.toolBarCollect).on("click", function () {
-        omApp.service.event.elementWasClicked(kHTMLName, "Tool Bar Collect");
+        omApp.services.event.elementWasClicked(kHTMLName, "Tool Bar Collect");
         $(this).toggleClass("selected");
         return false;
     });
     
     // 分享按钮点击
     $(_OMSEL.toolBarShare).on("click", function () {
-        omApp.service.event.elementWasClicked(kHTMLName, "Tool Bar Share");
+        omApp.services.event.elementWasClicked(kHTMLName, "Tool Bar Share");
         return false
     });
     
@@ -971,7 +971,7 @@ omHTML.ready(function () {
         $(_OMSEL.textInputSubmit).attr("disabled", true);
         $(_OMSEL.textInputNumberOfWords).text(0);
         window.omHTML.textInput.hide();
-        omApp.service.event.elementWasClicked(kHTMLName, "Comment Submit", {"content": comment, "submit": _submit});
+        omApp.services.event.elementWasClicked(kHTMLName, "Comment Submit", {"content": comment, "submit": _submit});
         return false;
     });
     
@@ -985,7 +985,7 @@ omHTML.ready(function () {
     });
     
     $(_OMSEL.navInfo).on("click", function () {
-        omApp.service.event.elementWasClicked(kHTMLName, "Navigation Bar Info");
+        omApp.services.event.elementWasClicked(kHTMLName, "Navigation Bar Info");
     });
     
     function _commentsLoadMoreIfNeeded() {
@@ -993,7 +993,7 @@ omHTML.ready(function () {
             case _OMListLoadingState.idle:
             case _OMListLoadingState.noMoreData:
                 window.omHTML.loading.state = _OMListLoadingState.loading;
-                omApp.service.event.elementWasClicked(kHTMLName, "Comments Load More", null, function () {
+                omApp.services.event.elementWasClicked(kHTMLName, "Comments Load More", null, function () {
                     window.omHTML.comments.list.reloadData();
                 });
                 break;
@@ -1028,7 +1028,7 @@ omHTML.ready(function () {
             case _OMListLoadingState.idle:
             //case _OMListLoadingState.noMoreData:
                 window.omHTML.floor.loading.state = _OMListLoadingState.loading;
-                omApp.service.event.elementWasClicked(kHTMLName, "Floor Load More", null, function () {
+                omApp.services.event.elementWasClicked(kHTMLName, "Floor Load More", null, function () {
                     window.omHTML.floor.list.reloadData();
                 });
                 break;
@@ -1242,7 +1242,7 @@ function _OMList(
     var _allRows     = [];
     
     function _loadDataForRowAtIndex(row, index) {
-        omApp.service.data.dataForRowAtIndex(_htmlName, _listName, index, function (data) {
+        omApp.services.data.dataForRowAtIndex(_htmlName, _listName, index, function (data) {
             _didLoadDataForRowAtIndex(data, row, index);
         });
     }
@@ -1253,7 +1253,7 @@ function _OMList(
             $(_listElementSelector).empty();
         }
         
-        omApp.service.data.numberOfRowsInList(_htmlName, _listName, function (count) {
+        omApp.services.data.numberOfRowsInList(_htmlName, _listName, function (count) {
             var oldCount = _allRows.length;
             var index = 0;
             if (oldCount <= count) {
@@ -1336,7 +1336,7 @@ function _createCommentRowModel(_selector) {
                     return $(_selector).find(_OMSEL.commentsListItem_find_WriterAvatar).text();
                 },
                 set: function (newValue) {
-                    omApp.service.data.cachedResourceForURL(newValue, function (filePath) {
+                    omApp.services.data.cachedResourceForURL(newValue, function (filePath) {
                         $(_selector).find(_OMSEL.commentsListItem_find_WriterAvatar)
                             .attr('src', filePath)
                             .removeAttr('srcset');

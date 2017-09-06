@@ -947,25 +947,33 @@ OMApp.current.defineProperty('navigation', function () {
  ********************************************************/
 
 OMApp.registerMethod("present");
+OMApp.registerMethod("dismiss");
 
-OMApp.current.defineProperty("present", function () {
+OMApp.current.defineProperties(function () {
     
     function _present(url, arg1, arg2) {
-        var animated = true;
-        var completion = null;
-        if ( typeof arg1 === 'boolean' ) {
-            animated = arg1;
-            completion = arg2;
-        } else if (typeof arg1 === 'function') {
+        var animated = arg1;
+        var completion = arg2;
+        if (typeof arg1 === 'function') {
+            animated = true;
             completion = arg1;
         }
         OMApp.current.perform(OMApp.Method.present, [url, animated], completion);
     }
     
-    return {
-        get: function () {
-            return _present;
+    function _dismiss(arg1, arg2) {
+        var animated = arg1;
+        var completion = arg2;
+        if (typeof arg1 === 'function') {
+            animated = true;
+            completion = arg1;
         }
+        OMApp.current.perform(OMApp.Method.dismiss, [animated], completion);
+    }
+    
+    return {
+        present: { get: function () { return _present; } },
+        dismiss: { get: function () { return _dismiss; } }
     }
 
 });
@@ -1062,7 +1070,7 @@ OMApp.current.defineProperty('alert', function () {
 
 /********************************************************
  *                                                      *
- *                OMApp.current.service                 *
+ *               OMApp.current.services                 *
  *                                                      *
  ********************************************************/
 
@@ -1079,7 +1087,7 @@ OMApp.registerMethod({
     analytics: {
         track: "track"
     }
-}, "service");
+}, "services");
 
 OMApp.defineProperty("ResourceType", function () {
     
@@ -1097,9 +1105,9 @@ OMApp.defineProperty("ResourceType", function () {
 });
 
 
-OMApp.current.defineProperty('service', function () {
+OMApp.current.defineProperty('services', function () {
     
-    var _service = new (function () {
+    var _services = new (function () {
     
         var _data = new (function () {
         
@@ -1107,7 +1115,7 @@ OMApp.current.defineProperty('service', function () {
             // - list: string
             // - callback: (number)=>void
             function _numberOfRowsInList(documentName, listName, callback) {
-                var method = OMApp.Method.service.data.numberOfRowsInList;
+                var method = OMApp.Method.services.data.numberOfRowsInList;
                 OMApp.current.perform(method, [documentName, listName], callback);
             }
         
@@ -1116,13 +1124,13 @@ OMApp.current.defineProperty('service', function () {
             // - index: number
             // - callback: (data)=>void
             function _dataForRowAtIndex(documentName, listName, index, callback) {
-                var method = OMApp.Method.service.data.dataForRowAtIndex;
+                var method = OMApp.Method.services.data.dataForRowAtIndex;
                 OMApp.current.perform(method, [documentName, listName, index], callback);
             }
         
             // 获取缓存。
             function _cachedResourceForURL(url, arg1, arg2, arg3) {
-                var method = OMApp.Method.service.data.cachedResourceForURL;
+                var method = OMApp.Method.services.data.cachedResourceForURL;
                 var type = arg1;
                 var callback = arg2;
                 var automatic = arg3;
@@ -1171,13 +1179,13 @@ OMApp.current.defineProperty('service', function () {
         
             // List 点击事件。
             function _didSelectRowAtIndex(documentName, listName, index, callback) {
-                var method = OMApp.Method.service.event.didSelectRowAtIndex;
+                var method = OMApp.Method.services.event.didSelectRowAtIndex;
                 OMApp.current.perform(method, [documentName, listName, index], callback);
             }
         
             // 处理事件
             function _elementWasClicked(documentName, elementName, data, callback) {
-                var method = OMApp.Method.service.event.elementWasClicked;
+                var method = OMApp.Method.services.event.elementWasClicked;
                 OMApp.current.perform(method, [documentName, elementName, data], callback);
             }
         
@@ -1198,7 +1206,7 @@ OMApp.current.defineProperty('service', function () {
         
         var _analytics = new (function () {
             function _track(event, parameters) {
-                return OMApp.current.perform(OMApp.Method.service.analytics.track, [event, parameters]);
+                return OMApp.current.perform(OMApp.Method.services.analytics.track, [event, parameters]);
             }
             Object.defineProperties(this, {
                 track: {
@@ -1230,7 +1238,7 @@ OMApp.current.defineProperty('service', function () {
 
     return {
         get: function () {
-            return _service;
+            return _services;
         }
     };
     
@@ -1308,6 +1316,7 @@ function _OMAppDelegate() {
     
     this.ready = function (callback) {
         callback();
+        console.log("[OMApp] 方法调用 `ready`.");
     };
     
     this.setCurrentTheme = function (newValue) {
@@ -1320,7 +1329,6 @@ function _OMAppDelegate() {
     
     this.open = function (page, parameters) {
         console.log("Open Page: "+ page +", parameters: "+ JSON.stringify(parameters));
-        // window.open(page + "[" + parameters + "]");
     };
     
     this.present = function (url, animated, completion) {
@@ -1453,27 +1461,35 @@ function _OMAppDelegate() {
     });
     
     this.http = function (request, callback) {
-        _ajax(request, callback)
+        _ajax(request, callback);
+        console.log("[OMApp] Method http: " + JSON.stringify(request));
     };
     
-    this.numberOfRowsInList = function () {
-        console.log(arguments);
+    this.numberOfRowsInList = function (documentName, listName, callback) {
+        console.log("[OMApp] numberOfRowsInList: " + documentName + " " + listName);
+        setTimeout(function() {
+            callback(4);
+        });
     };
     
-    this.dataForRowAtIndex = function () {
-        console.log(arguments);
+    this.dataForRowAtIndex = function (documentName, listName, index, callback) {
+        console.log("[OMApp] dataForRowAtIndex: " + documentName + ", " + listName + ", " + index + ".");
     };
     
-    this.cachedResourceForURL = function () {
-        console.log(arguments);
+    this.cachedResourceForURL = function (url, resourceType, automatic, callback) {
+        console.log("[OMApp] cachedResourceForURL: " + url + ", " + resourceType + ", " + automatic + ".");
+        if (callback) { callback(url); }
     };
     
-    this.didSelectRowAtIndex = function () {
-        console.log(arguments);
+    this.didSelectRowAtIndex = function (documentName, listName, index, callback) {
+        console.log("[OMApp] dataForRowAtIndex: " + documentName + ", " + listName + ", " + index + ".");
     };
     
-    this.elementWasClicked = function () {
-        console.log(arguments);
+    this.elementWasClicked = function (documentName, elementName, data, callback) {
+        console.log("[OMApp] dataForRowAtIndex: " + documentName + ", " + elementName + ", " + data + ".");
+        if (typeof data === 'boolean' && typeof callback === 'function') {
+            callback(!data);
+        };
     };
     
 

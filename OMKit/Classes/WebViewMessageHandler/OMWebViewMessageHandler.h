@@ -5,6 +5,9 @@
 //  Created by mlibai on 2017/8/31.
 //  Copyright © 2017年 CocoaPods. All rights reserved.
 //
+//  OMWebViewMessageHandler 是与 OMApp.js 交互框架配套使用的基础类，用于转发 omApp 的消息。
+//  开发者应该使用子类，分发具体的事件。
+
 
 #import <Foundation/Foundation.h>
 @import JavaScriptCore;
@@ -192,7 +195,7 @@ NS_SWIFT_NAME(WebViewMessageHandler)
  @param data 数据。
  @param completion 请在执行完毕点击事件后，执行此回调，告知元素是否应该被选中。
  */
-- (void)document:(NSString *)document elementWasClicked:(NSString *)element data:(id)data completion:(void (^)(BOOL isSelected))completion;
+- (void)document:(NSString *)document element:(NSString *)element wasClicked:(id)data completion:(void (^)(BOOL isSelected))completion;
 
 @end
 

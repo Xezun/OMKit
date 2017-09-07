@@ -1286,6 +1286,7 @@ body>.toolBar a.share {
 
 /* 在 toolbar 上时的样式 */
 body>.toolBar .textInput {
+    display: none;
     position: relative;
     top: -32px;
     right: 0;
@@ -1351,6 +1352,7 @@ body>.toolBar .textInput .submit .numberOfWords {
 
 /* 输入表单正在输入时的样式 */
 body>.toolBar .textInput.inputting {
+    display: block;
     position: static;
     bottom: 0;
     left: 0;

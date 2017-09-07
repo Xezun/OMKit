@@ -29,6 +29,11 @@ class ViewController: UIViewController {
     }
     
     weak var messageHandler: WebViewMessageHandler?
+    lazy var newsDetailHTML: NewsDetailHTML = self.createOmHTML()
+        
+    func createOmHTML() -> NewsDetailHTML {
+        return NewsDetailHTML(webView: webView)
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -60,6 +65,21 @@ class ViewController: UIViewController {
 
 extension ViewController: NewsDetailMessageHandlerDelegate {
     
+    func ready(_ completion: () -> Void) {
+        completion()
+        
+        newsDetailHTML.setTitle("Title")
+        newsDetailHTML.setDate("2011-12-11")
+        newsDetailHTML.setWriterName("Super Man")
+        newsDetailHTML.setWriterAvatar("")
+        newsDetailHTML.setContent("Content")
+        newsDetailHTML.setNumberOfLikes(100)
+        newsDetailHTML.setNumberOfDislikes(10)
+        newsDetailHTML.setUserLikeDislikeState(-1)
+        newsDetailHTML.setNumberOfComments(99)
+        newsDetailHTML.setSharePathHidden("facebook")
+    }
+    
     func numberOfRowsInList(_ list: NewsDetailList) -> Int {
         return 4
     }
@@ -70,6 +90,50 @@ extension ViewController: NewsDetailMessageHandlerDelegate {
     
     func list(_ list: NewsDetailList, didSelectRowAt index: Int) {
         
+    }
+    
+    func followButtonWasClicked(_ isSelected: Bool, completion: (Bool) -> Void) {
+        completion(!isSelected);
+    }
+    
+    func conentLinkWasClicked() {
+        
+    }
+    
+    func likeButtonWasClicked(_ isSelected: Bool, completion: (Bool) -> Void) {
+        completion(!isSelected)
+    }
+    
+    func dislikeButtonWasClicked(_ isSelected: Bool, completion: (Bool) -> Void) {
+        completion(!isSelected)
+    }
+    
+    func sharePathWasClicked(_ sharePath: String) {
+        
+    }
+    
+    func navigationBarInfoButtonWasClicked() {
+        
+    }
+    
+    func toolBarShareButtonClicked() {
+        
+    }
+    
+    func toolBarCollectButtonClicked(_ isSelected: Bool, completion: (Bool) -> Void) {
+        completion(!isSelected)
+    }
+    
+    func loadComments() {
+        newsDetailHTML.reloadList(.comments)
+    }
+    
+    func loadReplies() {
+        newsDetailHTML.reloadList(.floor)
+    }
+    
+    func commentsList(_ commentsList: NewsDetailList, likeButtonAt index: Int, wasClicked isSelected: Bool, completion: (Bool) -> Void) {
+        completion(!isSelected)
     }
     
 }

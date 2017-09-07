@@ -177,7 +177,12 @@ $(document).ready(function () {
             
             default:
                 if (!!callback) {
-                    callback(!parameters);
+                    if (typeof parameters === 'boolean') {
+                        callback(!parameters);
+                    } else if (typeof parameters["isSelected"] === 'boolean') {
+                        callback(!parameters["isSelected"])
+                    }
+                    
                 }
         }
         

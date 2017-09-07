@@ -19,7 +19,9 @@ static ArgumentsType const kArgumentsTypeNumber = @"number"; // 数字或布尔�
 static ArgumentsType const kArgumentsTypeDictionary = @"dictionary"; // 字典
 static ArgumentsType const kArgumentsTypeObject = @"object"; // 任意类型
 
-
+static NSString *NSStringFromBOOL(BOOL aBool) {
+    return (aBool ? @"true" : @"false");
+}
 
 /**
  检查 OMApp 消息方法的参数。
@@ -277,11 +279,11 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     
     if ([method isEqualToString:@"elementWasClicked"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString, kArgumentsTypeString, kArgumentsTypeObject], 2);
-        [self document:arguments[0] elementWasClicked:arguments[1] data:(arguments.count > 2 ? arguments[2] : nil) completion:^(BOOL isSelected) {
+        [self document:arguments[0] element:arguments[1] wasClicked:(arguments.count > 2 ? arguments[2] : nil) completion:^(BOOL isSelected) {
             if (callbackID == nil) {
                 return;
             }
-            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %d)", callbackID, isSelected];
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %@)", callbackID, NSStringFromBOOL(isSelected)];
             [webView evaluateJavaScript:js completionHandler:nil];
         }];
         return;
@@ -402,7 +404,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"[OMWebViewMessageHandler] Message `didSelectRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, index);
 }
 
-- (void)document:(NSString *)document elementWasClicked:(NSString *)element data:(id)data completion:(void (^)(BOOL))completion {
+- (void)document:(NSString *)document element:(NSString *)element wasClicked:(id)data completion:(void (^)(BOOL))completion {
     NSLog(@"[OMWebViewMessageHandler] Message `elementWasClicked(%@, %@, %@, callback)` is not handled.", document, element, data);
 }
 

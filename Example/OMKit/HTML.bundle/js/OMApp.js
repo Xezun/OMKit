@@ -153,48 +153,39 @@ OMApp.defineProperties(function() {
     // - 如果 JSON 序列化成功，返回 URL 编码后的 JSON 串；NaN JSON序列化后是 null 。
     // - 默认返回空字符串。
     function _URLQueryStringFromObject(anObject) {
+        // 1. 数组直接 JSON
         if (Array.isArray(anObject)) {
             return encodeURIComponent(JSON.stringify(anObject));
         }
-        var queryString = "";
         switch (typeof anObject) {
             case 'string':
-                queryString = encodeURIComponent(anObject);
-                break;
+                return encodeURIComponent(anObject);
             case 'object':
-                if (anObject === null) {
-                    queryString = "null";
-                } else {
-                    for (var key in anObject) {
-                        if (!anObject.hasOwnProperty(key)) { continue; }
-                        if (!!queryString) {
-                            queryString +=  ("&" + encodeURIComponent(key));
-                        } else {
-                            queryString = encodeURIComponent(key);
+                if (!anObject) {
+                    return "null";
+                }
+                var queryString = null;
+                for (var key in anObject) {
+                    if (!anObject.hasOwnProperty(key)) { continue; }
+                    if (!!queryString) {
+                        queryString +=  ("&" + encodeURIComponent(key));
+                    } else {
+                        queryString = encodeURIComponent(key);
+                    }
+                    var value = anObject[key];
+                    if (!!value) {
+                        if (typeof value !== 'string') {
+                            value = JSON.stringify(value);
                         }
-                        var value = anObject[key];
-                        if (!!value) {
-                            if (typeof value !== 'string') {
-                                value = JSON.stringify(value);
-                            }
-                            queryString += ("=" + encodeURIComponent(value));
-                        }
+                        queryString += ("=" + encodeURIComponent(value));
                     }
                 }
-                break;
+                return queryString;
             case 'undefined':
-                queryString = 'null';
-                break;
+                return 'null';
             default:
-                var json = JSON.stringify(anObject);
-                if (!!json) { queryString = encodeURIComponent(json); }
-                break;
+                return JSON.stringify(anObject);
         }
-        return queryString;
-    }
-    
-    function _deprecate(oldMethod, newMethod) {
-        console.log("[OMApp] " + oldMethod + " 已废弃，请使用 " + newMethod + " 代替！");
     }
     
     // 在 OMApp 中注册一个方法。
@@ -312,11 +303,6 @@ OMApp.defineProperties(function() {
         URLQueryStringFromObject: {
             get: function () {
                 return _URLQueryStringFromObject;
-            }
-        },
-        deprecate: {
-            get: function () {
-                return _deprecate;
             }
         },
         registerMethod: {
@@ -470,9 +456,8 @@ OMApp.current.defineProperties(function () {
             set: function (newValue) {
                 if (_delegate !== newValue) {
                     _delegate = newValue;
-                    if (OMApp.current.isReady) {
-                        setTimeout()
-                    }
+                    // 如果重新设置了代理是否需要重新发送 ready 事件？
+                    // 不。代理需要在 ready 事件前设置。如果使用者在 ready 之后或不确定的时机设置，则需要开发者自己去判断当前状态。
                 }
             }
         },
@@ -669,6 +654,10 @@ OMApp.current.defineProperties(function () {
     var _currentTheme = OMApp.Theme.day;
     
     function _setCurrentTheme(newValue, needs) {
+        if (typeof newValue !== 'string') {
+            console.log("[OMApp] The currentTheme must be a OMApp.Theme value.");
+            return;
+        }
         _currentTheme = newValue;
         if (needs) {
             OMApp.current.perform(OMApp.Method.setCurrentTheme, [newValue], null);
@@ -704,6 +693,10 @@ OMApp.registerMethod("login");
 OMApp.current.defineProperty("login", function () {
     // 1.1 HTML 调用原生的登录。
     function _login(callback) {
+        if (!callback) {
+            console.log("[OMApp] Method `login` called without a callback is not allowed.");
+            return;
+        }
         return this.perform(OMApp.Method.login, null, callback);
     }
     
@@ -801,6 +794,10 @@ OMApp.defineProperty('Page', function () {
 OMApp.current.defineProperty('open', function () {
     OMApp.registerMethod('open');
     function _open(page, parameters) {
+        if (typeof page !== 'string') {
+            console.log("[OMApp] Method `open`'s page parameter must be a OMApp.Page value.");
+            return;
+        }
         var _arguments = [page];
         if (parameters) { _arguments.push(parameters); }
         return this.perform(OMApp.Method.open, _arguments);
@@ -835,6 +832,10 @@ OMApp.current.defineProperty('navigation', function () {
         
         // 3.1 进入下级页面。
         function _push(url, animated) {
+            if (typeof url !== 'string') {
+                console.log("[OMApp] Method `push` can not be called without a url parameter.");
+                return;
+            }
             // 不是以 http、https 开头的，被视作为相对路径。
             if (/^(http|https|file):\/\//i.test(url)) {
                 url = window.location.protocol + "//" + window.location.host + url;
@@ -855,6 +856,10 @@ OMApp.current.defineProperty('navigation', function () {
         
         // 3.3 移除栈内索引大于 index 的所有页面，即将 index 页面所显示的内容展示出来。
         function _popTo(index, animated) {
+            if (typeof index !== 'number') {
+                console.log("[OMApp] Method `popTo` can not be called without a index parameter.");
+                return;
+            }
             if (typeof animated !== 'boolean') {
                 animated = true;
             }
@@ -869,6 +874,10 @@ OMApp.current.defineProperty('navigation', function () {
             var _isHidden		 = false;
             
             function _setTitle(newValue, doPerform) {
+                if (typeof newValue !== 'string') {
+                    console.log("[OMApp] The navigation.bar.title must be a string value.");
+                    return;
+                }
                 _title = newValue;
                 if (doPerform) {
                     OMApp.current.perform(OMApp.Method.navigation.bar.setTitle, [newValue]);
@@ -876,6 +885,10 @@ OMApp.current.defineProperty('navigation', function () {
             }
     
             function _setTitleColor(newValue, doPerform) {
+                if (typeof newValue !== 'string') {
+                    console.log("[OMApp] The navigation.bar.titleColor must be a string value.");
+                    return;
+                }
                 _titleColor = newValue;
                 if (doPerform) {
                     OMApp.current.perform(OMApp.Method.navigation.bar.setTitleColor, [newValue]);
@@ -883,6 +896,10 @@ OMApp.current.defineProperty('navigation', function () {
             }
     
             function _setHidden(newValue, animated, doPerform) {
+                if (typeof newValue !== 'boolean') {
+                    console.log("[OMApp] The navigation.bar.isHidden must be a boolean value.");
+                    return;
+                }
                 _isHidden = newValue;
                 if (doPerform) {
                     OMApp.current.perform(OMApp.Method.navigation.bar.setHidden, [newValue, animated]);
@@ -890,6 +907,10 @@ OMApp.current.defineProperty('navigation', function () {
             }
     
             function _setBackgroundColor(newValue, doPerform) {
+                if (typeof newValue !== 'string') {
+                    console.log("[OMApp] The navigation.bar.backgroundColor must be a string value.");
+                    return;
+                }
                 _backgroundColor = newValue;
                 if (doPerform) {
                     OMApp.current.perform(OMApp.Method.navigation.bar.setBackgroundColor, [newValue]);
@@ -924,7 +945,7 @@ OMApp.current.defineProperty('navigation', function () {
                 setTitle:           { get: function () { return _setTitle; } },
                 setTitleColor:      { get: function () { return _setTitleColor; } },
                 setBackgroundColor: { get: function () { return _setBackgroundColor; } },
-                setHidden:        { get: function () { return _setHidden; } }
+                setHidden:          { get: function () { return _setHidden; } }
             });
         });
         
@@ -952,11 +973,18 @@ OMApp.registerMethod("dismiss");
 OMApp.current.defineProperties(function () {
     
     function _present(url, arg1, arg2) {
+        if (typeof url !== 'string') {
+            console.log("[OMApp] Method `present` first parameter must be a string value.");
+            return;
+        }
         var animated = arg1;
         var completion = arg2;
         if (typeof arg1 === 'function') {
             animated = true;
             completion = arg1;
+        }
+        if (typeof animated !== 'boolean') {
+            animated = true;
         }
         OMApp.current.perform(OMApp.Method.present, [url, animated], completion);
     }
@@ -968,6 +996,7 @@ OMApp.current.defineProperties(function () {
             animated = true;
             completion = arg1;
         }
+        if (typeof animated !== 'boolean') { animated = true; }
         OMApp.current.perform(OMApp.Method.dismiss, [animated], completion);
     }
     
@@ -995,7 +1024,7 @@ OMApp.defineProperty('NetworkingType', function () {
         WWan2G: 		{ get: function() { return "2G";			} },
         WWan3G: 		{ get: function() { return "3G";			} },
         WWan4G: 		{ get: function() { return "4G";			} },
-        other: 		    { get: function() { return "other";		} }
+        other: 		    { get: function() { return "other";		    } }
     });
     return {
         get: function () {
@@ -1014,6 +1043,10 @@ OMApp.current.defineProperty("networking", function () {
         
         // HTTP 请求
         function _http(request, callback) {
+            if (!request || typeof request !== 'object') {
+                console.log("[OMApp] Method `http` first parameter must be an request object.");
+                return;
+            }
             return OMApp.current.perform(OMApp.Method.networking.http, [request], callback);
         }
         
@@ -1059,6 +1092,10 @@ OMApp.registerMethod("alert");
 
 OMApp.current.defineProperty('alert', function () {
     function _alert(message, callback) {
+        if (!message || typeof message !== 'object') {
+            console.log("[OMApp] Method `alert` first parameter must be an message object.");
+            return;
+        }
         return OMApp.current.perform(OMApp.Method.alert, [message], callback);
     }
     return {
@@ -1115,6 +1152,10 @@ OMApp.current.defineProperty('services', function () {
             // - list: string
             // - callback: (number)=>void
             function _numberOfRowsInList(documentName, listName, callback) {
+                if (typeof documentName !== 'string' || typeof listName !== 'string') {
+                    console.log("[OMApp] Method `numberOfRowsInList` first/second parameter must be a string value.");
+                    return;
+                }
                 var method = OMApp.Method.services.data.numberOfRowsInList;
                 OMApp.current.perform(method, [documentName, listName], callback);
             }
@@ -1124,12 +1165,20 @@ OMApp.current.defineProperty('services', function () {
             // - index: number
             // - callback: (data)=>void
             function _dataForRowAtIndex(documentName, listName, index, callback) {
+                if (typeof documentName !== 'string' || typeof listName !== 'string' || typeof index !== 'number') {
+                    console.log("[OMApp] Method `dataForRowAtIndex` first/second/third parameter must be a string/string/number value.");
+                    return;
+                }
                 var method = OMApp.Method.services.data.dataForRowAtIndex;
                 OMApp.current.perform(method, [documentName, listName, index], callback);
             }
         
             // 获取缓存。
             function _cachedResourceForURL(url, arg1, arg2, arg3) {
+                if (typeof url !== 'string') {
+                    console.log("[OMApp] Method `cachedResourceForURL` url parameter must be a string value.");
+                    return;
+                }
                 var method = OMApp.Method.services.data.cachedResourceForURL;
                 var type = arg1;
                 var callback = arg2;
@@ -1152,6 +1201,7 @@ OMApp.current.defineProperty('services', function () {
                         callback = null;
                     }
                 }
+                if (typeof automatic !== 'boolean') { automatic = true; }
                 OMApp.current.perform(method, [url, type, automatic], callback);
             }
         
@@ -1179,12 +1229,20 @@ OMApp.current.defineProperty('services', function () {
         
             // List 点击事件。
             function _didSelectRowAtIndex(documentName, listName, index, callback) {
+                if (typeof documentName !== 'string' || typeof listName !== 'string' || typeof index !== 'number') {
+                    console.log("[OMApp] Method `didSelectRowAtIndex` first/second/third parameter must be a string/string/number value.");
+                    return;
+                }
                 var method = OMApp.Method.services.event.didSelectRowAtIndex;
                 OMApp.current.perform(method, [documentName, listName, index], callback);
             }
         
             // 处理事件
             function _elementWasClicked(documentName, elementName, data, callback) {
+                if (typeof documentName !== 'string' || typeof elementName !== 'string') {
+                    console.log("[OMApp] Method `elementWasClicked` first/second parameter must be a string value.");
+                    return;
+                }
                 var method = OMApp.Method.services.event.elementWasClicked;
                 OMApp.current.perform(method, [documentName, elementName, data], callback);
             }
@@ -1206,6 +1264,10 @@ OMApp.current.defineProperty('services', function () {
         
         var _analytics = new (function () {
             function _track(event, parameters) {
+                if (typeof event !== 'string') {
+                    console.log("[OMApp] Method `track` first parameter must be a string value.");
+                    return;
+                }
                 return OMApp.current.perform(OMApp.Method.services.analytics.track, [event, parameters]);
             }
             Object.defineProperties(this, {
@@ -1315,61 +1377,58 @@ OMApp.current.defineProperty('services', function () {
 function _OMAppDelegate() {
     
     this.ready = function (callback) {
+        console.log("[OMApp] omApp.ready is called by default handler.");
         callback();
-        console.log("[OMApp] 方法调用 `ready`.");
     };
     
     this.setCurrentTheme = function (newValue) {
-        console.log("设置 App 主题：" + newValue);
+        console.log("[OMApp] omApp.setCurrentTheme = " + newValue + ".");
     };
     
     this.login = function (callback) {
+        console.log("[OMApp] omApp.login is called with a confirm handler.");
         callback(confirm('点击按钮确定登陆！ \n[确定] -> 登录成功 \n[取消] -> 登录失败'));
     };
     
     this.open = function (page, parameters) {
-        console.log("Open Page: "+ page +", parameters: "+ JSON.stringify(parameters));
+        console.log("[OMApp] omApp.open is called with {page: "+ page +", parameters: "+ JSON.stringify(parameters) + "}.");
     };
     
     this.present = function (url, animated, completion) {
-        console.log("[omApp] present: "+ url + ", animated: "+ animated);
+        console.log("[OMApp] omApp.present is called with {url: "+ url + ", animated: "+ animated +"} and default handler.");
         setTimeout(completion);
     };
     
     this.push = function (url, animated) {
-        console.log("Navigation Push: "+ url +", animated: "+ animated);
-        // window.location.href = url;
+        console.log("[OMApp] omApp.navigation.push is called with {url: "+ url +", animated: "+ animated +"}.");
     };
     
     this.pop = function (animated) {
-        console.log("Navigation Pop animated: "+ animated);
-        // window.history.back();
+        console.log("[OMApp] omApp.navigation.pop is called with {animated: "+ animated + "}.");
     };
     
     this.popTo = function (index, animated) {
-        console.log("Navigation Pop To: "+ index +", animated: "+ animated);
-        var i = index - window.history.length + 1;
-        window.history.go(i);
+        console.log("[OMApp] omApp.navigation.popTo is called with {index: "+ index +", animated: "+ animated +"}.");
     };
     
     this.setNavigationBarHidden = function (newValue) {
-        console.log("Set Navigation Bar Hidden: "+ newValue);
+        console.log("[OMApp] omApp.navigation.bar.isHidden = " + newValue + ".");
     };
     
     this.setNavigationBarTitle = function (newValue) {
-        console.log("Set Navigation Bar Title: "+ newValue);
+        console.log("[OMApp] omApp.navigation.bar.title = " + newValue + ".");
     };
     
     this.setNavigationBarTitleColor = function (newValue) {
-        console.log("Set Navigation Bar Title Color: "+ newValue);
+        console.log("[OMApp] omApp.navigation.bar.titleColor = " + newValue + ".");
     };
     
     this.setNavigationBarBackgroundColor = function (newValue) {
-        console.log("Set Navigation Bar Background Color: "+ newValue);
+        console.log("[OMApp] omApp.navigation.bar.backgroundColor = " + newValue + ".");
     };
     
     this.track = function (event, parameters) {
-        console.log("Analytics track "+ event + " with " + JSON.stringify(parameters));
+        console.log("[OMApp] omApp.analytics.track is called with {event: "+ event + ", parameters: " + JSON.stringify(parameters) + "}.");
     };
     
     var _ajaxSettings = {};
@@ -1460,38 +1519,46 @@ function _OMAppDelegate() {
         }
     });
     
+    this.alert = function (message, callback) {
+        console.log("[OMApp] omApp.alert is called with {message: "+ JSON.stringify(message) +" } and default handler(-1).");
+        callback(-1);
+    };
+    
     this.http = function (request, callback) {
         _ajax(request, callback);
-        console.log("[OMApp] Method http: " + JSON.stringify(request));
+        console.log("[OMApp] omApp.http is call with default handler (ajax).");
     };
     
     this.numberOfRowsInList = function (documentName, listName, callback) {
-        console.log("[OMApp] numberOfRowsInList: " + documentName + " " + listName);
+        console.log("[OMApp] omApp.services.data.numberOfRowsInList is called with {document: " + documentName + ", list: " + listName + "} and default handler(4).");
         setTimeout(function() {
             callback(4);
-        });
+        }, Math.random() * 10000);
     };
     
     this.dataForRowAtIndex = function (documentName, listName, index, callback) {
-        console.log("[OMApp] dataForRowAtIndex: " + documentName + ", " + listName + ", " + index + ".");
+        console.log("[OMApp] omApp.services.data.dataForRowAtIndex: " + documentName + ", " + listName + ", " + index + ".");
+        setTimeout(function () {
+            callback({});
+        }, Math.random() * 10000);
     };
     
     this.cachedResourceForURL = function (url, resourceType, automatic, callback) {
-        console.log("[OMApp] cachedResourceForURL: " + url + ", " + resourceType + ", " + automatic + ".");
+        console.log("[OMApp] omApp.services.data.cachedResourceForURL is called with {url: " + url + ", resourceType: " + resourceType + ", download:" + automatic + "}.");
         if (callback) { callback(url); }
     };
     
     this.didSelectRowAtIndex = function (documentName, listName, index, callback) {
-        console.log("[OMApp] dataForRowAtIndex: " + documentName + ", " + listName + ", " + index + ".");
+        console.log("[OMApp] omApp.services.event.didSelectRowAtIndex is called with {document: " + documentName + ", list: " + listName + ", index: " + index + "}.");
+        if (callback) { callback(); }
     };
     
     this.elementWasClicked = function (documentName, elementName, data, callback) {
-        console.log("[OMApp] dataForRowAtIndex: " + documentName + ", " + elementName + ", " + data + ".");
+        console.log("[OMApp] omApp.services.event.dataForRowAtIndex is called with {document: " + documentName + ", element: " + elementName + ", data: " + data + "}.");
         if (typeof data === 'boolean' && typeof callback === 'function') {
             callback(!data);
-        };
+        }
     };
-    
 
 }
 

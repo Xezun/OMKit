@@ -72,9 +72,9 @@ var _OMSEL = {
     floorHost: "body>div.floor .comments>.title>.host",
     
     floorLoading: "body>div.floor .comments>.loading",
-    floorLoadingIcon: "body>div.floor .comments>.loading>.icon",
-    floorLoadingText: "body>div.floor .comments>.loading>.text",
-    floorLoadingEmpty: "body>div.floor .comments>.loading>.empty",
+    floorLoadingIcon: "body>div.floor>.comments>.loading>.icon",
+    floorLoadingText: "body>div.floor>.comments>.loading>.text",
+    floorLoadingEmpty: "body>div.floor>.comments>.loading>.empty",
     
     toolBar: "body>.toolBar",
     toolBarInput: "body>.toolBar a.input",
@@ -394,11 +394,15 @@ omHTML.ready(function () {
                         $(_OMSEL.shareTitle).text(newValue);
                     }
                 },
-                hide: function () {
-                    return _hide;
+                hide: {
+                	get: function () {
+	                    return _hide;
+	                }
                 },
-                show: function () {
-                    return _show;
+                show: {
+                	get: function () {
+	                    return _show;
+	                }
                 }
             })
         });
@@ -681,7 +685,6 @@ omHTML.ready(function () {
                         $(_OMSEL.textInputTextArea).attr("placeholder", newValue);
                     }
                 }
-                
             })
         });
     
@@ -710,16 +713,18 @@ omHTML.ready(function () {
         index: -1
     }; // 输入类型。Comment/Reply
     
+    var _submitAction = null;
     var kPlaceholderComment = "شارك برأيك…";  // 给文章添加评论
     var kPlaceholderReply   = "شارك برأيك…";  // 回复评论默认
     var kPlaceholderReplyTo = function (name) {  // 对 评论 进行回复
         return  "رد " + name;
     };
     
-    function _showTextInput(submitType, index, placeholder) {
+    function _showTextInput(submitType, index, placeholder, action) {
         window.omHTML.textInput.placeholder = placeholder;
         _submit.type = submitType;
         _submit.index = index;
+        _submitAction = action;
         window.omHTML.textInput.show();
     }
     
@@ -817,7 +822,14 @@ omHTML.ready(function () {
     $(_OMSEL.hots).on("click", ".list>.item>.toolBar>.reply", function () {
         var row = $(this).parents(".item");
         var index = row.index();
-        _showTextInput(kSubmitTypeHotCommentsList, index, kPlaceholderReplyTo(row.find(_OMSEL.commentsListItem_find_WriterName).text()));
+        _showTextInput(
+            kSubmitTypeHotCommentsList,
+            index,
+            kPlaceholderReplyTo(row.find(_OMSEL.commentsListItem_find_WriterName).text()),
+            function () {
+                row.find(".content").click();
+            }
+        );
         return false;
     });
 
@@ -838,6 +850,7 @@ omHTML.ready(function () {
         omApp.services.event.didSelectRowAtIndex(kHTMLName, window.omHTML.comments.list.name, index, function () {
             window.omHTML.floor.list.reloadData();
         });
+        
         return false;
     });
     
@@ -845,14 +858,16 @@ omHTML.ready(function () {
     $(_OMSEL.comments).on("click", ".list>.item>.toolBar>.reply", function () {
         var row = $(this).parents(".item");
         var index = row.index();
-        _showTextInput(kSubmitTypeCommentsList, index, kPlaceholderReplyTo(row.find(_OMSEL.commentsListItem_find_WriterName).text()));
+        _showTextInput(kSubmitTypeCommentsList, index, kPlaceholderReplyTo(row.find(_OMSEL.commentsListItem_find_WriterName).text()), function () {
+            row.find(".content").click();
+        });
         return false;
     });
     
     // 叠楼楼主点击，回复楼主
     $(_OMSEL.floor).on("click", ".title .item>.content, .title .item>.toolBar>.reply", function () {
         var item = $(this).parents(".item");
-        _showTextInput(kSubmitTypeFloorCommentsList, -1, kPlaceholderReplyTo(item.find(_OMSEL.commentsListItem_find_WriterName).text()));
+        _showTextInput(kSubmitTypeFloorCommentsList, -1, kPlaceholderReplyTo(item.find(_OMSEL.commentsListItem_find_WriterName).text()), null);
         return false;
     });
     
@@ -860,20 +875,23 @@ omHTML.ready(function () {
     $(_OMSEL.floor).on("click", ".comments .list .item>.content, .comments .list .item>.toolBar>.reply", function () {
         var row = $(this).parents(".item");
         var index = row.index();
-        _showTextInput(kSubmitTypeFloorCommentsList, index, kPlaceholderReplyTo(row.find(_OMSEL.commentsListItem_find_WriterName).text()));
+        _showTextInput(kSubmitTypeFloorCommentsList, index, kPlaceholderReplyTo(row.find(_OMSEL.commentsListItem_find_WriterName).text()), null);
         return false;
     });
     
-    
     function _commentLikeAction(likeButton, eventName) {
         var row = likeButton.parents(".item");
-        omApp.services.event.elementWasClicked(kHTMLName, eventName, row.index());
-        var isSelected = !likeButton.hasClass("selected");
-        likeButton.toggleClass("selected", isSelected);
-        _showPlusMinusAnimationOnElement(likeButton, isSelected, likeButton.css("color"));
-    
-        var number = likeButton.find(".text");
-        number.text(parseInt(number.text()) + (isSelected ? +1 : -1));
+        var isSelected = likeButton.hasClass("selected");
+        omApp.services.event.elementWasClicked(kHTMLName, eventName, {
+            index: row.index(),
+            isSelected: isSelected
+        }, function (isSelected2) {
+            if (isSelected2 === isSelected) { return; }
+            likeButton.toggleClass("selected", isSelected2);
+            _showPlusMinusAnimationOnElement(likeButton, isSelected2, likeButton.css("color"));
+            var number = likeButton.find(".text");
+            number.text(Math.max(0, parseInt(number.text()) + (isSelected2 ? +1 : -1)));
+        });
         return false;
     }
     
@@ -899,13 +917,13 @@ omHTML.ready(function () {
     
     // 评论列表的空视图点击
     $(_OMSEL.loadingEmpty).on("click", function () {
-        _showTextInput(kSubmitTypeNews, -1, "评论文章");
+        _showTextInput(kSubmitTypeNews, -1, kPlaceholderComment, null);
         return false;
     });
     
     // 叠楼空视图点击
     $(_OMSEL.floorLoadingEmpty).on("click", function () {
-        _showTextInput(kSubmitTypeFloorCommentsList, -1, kPlaceholderReplyTo(omHTML.floor.host.writer.name));
+        _showTextInput(kSubmitTypeFloorCommentsList, -1, kPlaceholderReplyTo(omHTML.floor.host.writer.name), null);
         return false;
     });
     
@@ -917,18 +935,33 @@ omHTML.ready(function () {
     
     // 评论按钮点击，输入框
     $(_OMSEL.toolBarInput + ", " + _OMSEL.toolBarComment).click(function () {
-        var type = kSubmitTypeNews, placeholder = kPlaceholderComment;
+        var type = kSubmitTypeNews, placeholder = kPlaceholderComment, action = null;
         if (!$(_OMSEL.floor).is(":hidden")) {
             type = kSubmitTypeFloorCommentsList;
             placeholder = kPlaceholderReply;
+            action = function () {
+                $(_OMSEL.floorComments).animate({scrollTop: 0});
+            }
+        } else {
+            action = function () {
+                var mainDiv     = $("div.main");
+                var totalHeight = mainDiv[0].scrollHeight;
+                var divHeight   = mainDiv.height();
+                var top         = $(_OMSEL.comments).offset().top; // 距离顶部
+                mainDiv.animate({
+                    scrollTop: Math.min( mainDiv.scrollTop() + top - 76, totalHeight - divHeight)
+                });
+            };
         }
-        _showTextInput(type, -1, placeholder);
+        _showTextInput(type, -1, placeholder, action);
+        return false;
     });
     
     // 收藏按钮点击
     $(_OMSEL.toolBarCollect).on("click", function () {
-        omApp.services.event.elementWasClicked(kHTMLName, "Tool Bar Collect");
-        $(this).toggleClass("selected");
+        omApp.services.event.elementWasClicked(kHTMLName, "Tool Bar Collect", $(this).hasClass('selected'), function (isSelected) {
+            $(_OMSEL.toolBarCollect).toggleClass("selected", isSelected);
+        });
         return false;
     });
     
@@ -940,12 +973,6 @@ omHTML.ready(function () {
     
     // 输入框。
     $("body>.toolBar .textInput textarea").focus(function () {
-        var type = kSubmitTypeNews, placeholder = kPlaceholderComment;
-        if (!$(_OMSEL.floor).is(":hidden")) {
-            type = kSubmitTypeFloorCommentsList;
-            placeholder = kPlaceholderReply;
-        }
-        _showTextInput(type, -1, placeholder);
         setTimeout(function () {
             $("body>.toolBar .textInput")[0].scrollIntoView(true);
         }, 300);
@@ -971,7 +998,9 @@ omHTML.ready(function () {
         $(_OMSEL.textInputSubmit).attr("disabled", true);
         $(_OMSEL.textInputNumberOfWords).text(0);
         window.omHTML.textInput.hide();
-        omApp.services.event.elementWasClicked(kHTMLName, "Comment Submit", {"content": comment, "submit": _submit});
+        omApp.services.event.elementWasClicked(kHTMLName, "Comment Submit", {"content": comment, "submit": _submit}, function () {
+            if (typeof _submitAction === 'function' ) { _submitAction(); }
+        });
         return false;
     });
     
@@ -991,9 +1020,8 @@ omHTML.ready(function () {
     function _commentsLoadMoreIfNeeded() {
         switch (window.omHTML.loading.state) {
             case _OMListLoadingState.idle:
-            case _OMListLoadingState.noMoreData:
                 window.omHTML.loading.state = _OMListLoadingState.loading;
-                omApp.services.event.elementWasClicked(kHTMLName, "Comments Load More", null, function () {
+                omApp.services.event.elementWasClicked(kHTMLName, "Comments Load More", _OMListLoadingState.loading, function () {
                     window.omHTML.comments.list.reloadData();
                 });
                 break;
@@ -1026,9 +1054,8 @@ omHTML.ready(function () {
     function _floorLoadMoreIfNeeded() {
         switch (window.omHTML.floor.loading.state) {
             case _OMListLoadingState.idle:
-            //case _OMListLoadingState.noMoreData:
                 window.omHTML.floor.loading.state = _OMListLoadingState.loading;
-                omApp.services.event.elementWasClicked(kHTMLName, "Floor Load More", null, function () {
+                omApp.services.event.elementWasClicked(kHTMLName, "Floor Load More", window.omHTML.floor.loading.state, function () {
                     window.omHTML.floor.list.reloadData();
                 });
                 break;

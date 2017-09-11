@@ -167,14 +167,14 @@ NS_SWIFT_NAME(WebViewMessageHandler)
 - (void)document:(NSString *)document list:(NSString *)list dataForRowAtIndex:(NSInteger)index completion:(void (^)(NSDictionary<NSString *, id> *data))completion;
 
 /**
- HTML 获取指定资源的缓存。
+ HTML 获取指定资源的缓存。s
 
  @param url 资源的 URL 。
  @param resoureType 资源类型。
  @param download 如果资源不在缓存中，是否自动下载。
  @param completion 请在此回调中，返回缓存文件的路径。
  */
-- (void)cachedResourceForURL:(NSURL *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString *resourcePath))completion;
+- (void)cachedResourceForURL:(NSURL *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString * _Nullable resourcePath))completion;
 - (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString *imagePath))completion;
 
 /**

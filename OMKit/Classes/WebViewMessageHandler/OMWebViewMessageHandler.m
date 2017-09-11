@@ -33,7 +33,7 @@ static NSString *NSStringFromBOOL(BOOL aBool) {
  */
 inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArray<ArgumentsType> *types, NSInteger numberOfRequiredArguments) {
     if (arguments.count < numberOfRequiredArguments) {
-        NSString *reson = [NSString stringWithFormat:@"The method expect to have `%ld` arguments, but passed %ld`.", types.count, arguments.count];
+        NSString *reson = [NSString stringWithFormat:@"The method expect to have `%ld` arguments, but passed %ld`.", (long)types.count, (long)arguments.count];
         @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reson userInfo:nil];
     }
     for (NSInteger index = 0; index < arguments.count; index++) {
@@ -41,14 +41,14 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
             if ([arguments[index] isKindOfClass:[NSString class]]) {
                 continue;
             }
-            NSString *reson = [NSString stringWithFormat:@"The argument for method `%@` at `%ld` expect to a string value", method, index];
+            NSString *reson = [NSString stringWithFormat:@"The argument for method `%@` at `%ld` expect to a string value", method, (long)index];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reson userInfo:nil];
         }
         if ([types[index] isEqualToString:kArgumentsTypeNumber]) {
             if ([arguments[index] isKindOfClass:[NSNumber class]]) {
                 continue;
             }
-            NSString *reson = [NSString stringWithFormat:@"The argument for method `%@` at `%ld` expect to a number/bool value", method, index];
+            NSString *reson = [NSString stringWithFormat:@"The argument for method `%@` at `%ld` expect to a number/bool value", method, (long)index];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reson userInfo:nil];
         }
         if ([types[index] isEqualToString:kArgumentsTypeObject]) {
@@ -143,7 +143,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     
     if ([method isEqualToString:@"present"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString, kArgumentsTypeNumber], 2);
-        [self present:arguments[0] animated:arguments[1] completion:^{
+        [self present:arguments[0] animated:[arguments[1] boolValue] completion:^{
             if ([callbackID isKindOfClass:[NSString class]]) {
                 NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@')", callbackID];
                 [webView evaluateJavaScript:js completionHandler:nil];
@@ -229,7 +229,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString, kArgumentsTypeString], 2);
         NSAssert(callbackID != nil, @"The `callbackID` for `numberOfRows` method does not exist.");
         [self document:arguments[0] numberOfRowsInList:arguments[1] completion:^(NSInteger count) {
-            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %ld)", callbackID, count];
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %ld)", callbackID, (long)count];
             [webView evaluateJavaScript:js completionHandler:nil];
         }];
         return;
@@ -256,8 +256,8 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
             [webView evaluateJavaScript:js completionHandler:nil];
             return;
         }
-        [self cachedResourceForURL:url resoureType:arguments[1] downloadIfNotExists:[arguments[1] boolValue] completion:^(NSString * _Nonnull resourcePath) {
-            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', '%@')", callbackID, resourcePath];
+        [self cachedResourceForURL:url resoureType:arguments[1] downloadIfNotExists:[arguments[1] boolValue] completion:^(NSString * resourcePath) {
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', '%@')", callbackID, resourcePath != nil ? resourcePath : @""];
             [webView evaluateJavaScript:js completionHandler:nil];
         }];
         return;
@@ -373,10 +373,10 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 - (void)document:(NSString *)document list:(NSString *)list dataForRowAtIndex:(NSInteger)index completion:(void (^)(NSDictionary<NSString *,id> * _Nonnull))completion {
-    NSLog(@"[OMWebViewMessageHandler] Message `dataForRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, index);
+    NSLog(@"[OMWebViewMessageHandler] Message `dataForRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, (long)index);
 }
 
-- (void)cachedResourceForURL:(NSURL *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString * _Nonnull))completion {
+- (void)cachedResourceForURL:(NSURL *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString * _Nullable))completion {
     if ([resoureType isEqualToString:@"image"]) {
         [self cachedImageForURL:url completion:completion];
     } else {
@@ -384,16 +384,32 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     }
 }
 
-- (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString * _Nonnull))completion {
+- (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString * _Nullable))completion {
+    [self OMKit_downloadImageWithURL:url retryIfFailed:true completion:completion];
+}
+
+- (void)OMKit_manager:(SDWebImageManager *)manager pathForCachedImageWithURL:(NSURL *)url WithCompletion:(void (^)(NSString * _Nullable))completion {
+    NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
+    if (imagePath != nil && ![imagePath hasPrefix:@"file://"]) {
+        imagePath = [NSString stringWithFormat:@"file://%@", imagePath];
+    }
+    completion(imagePath);
+}
+
+- (void)OMKit_downloadImageWithURL:(NSURL *)url retryIfFailed:(BOOL)retryIfFailed completion:(void (^)(NSString * _Nullable))completion {
     SDWebImageManager *manager = [SDWebImageManager sharedManager];
     [manager diskImageExistsForURL:url completion:^(BOOL isInCache) {
         if (isInCache) {
-            NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
-            completion(imagePath);
+            [self OMKit_manager:manager pathForCachedImageWithURL:url WithCompletion:completion];
         } else {
             [manager loadImageWithURL:url options:(SDWebImageAllowInvalidSSLCertificates) progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-                NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
-                completion(imagePath);
+                if (error != nil && error.code != noErr && retryIfFailed) {
+                    // 如果下载发生错误，则重试一次。
+                    [self OMKit_downloadImageWithURL:url retryIfFailed:false completion:completion];
+                } else {
+                    // 如果没有错误，直接加载图片。
+                    [self OMKit_manager:manager pathForCachedImageWithURL:url WithCompletion:completion];
+                }
             }];
         }
     }];
@@ -401,7 +417,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 
 
 - (void)document:(NSString *)document list:(NSString *)list didSelectRowAtIndex:(NSInteger)index completion:(void (^)())completion {
-    NSLog(@"[OMWebViewMessageHandler] Message `didSelectRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, index);
+    NSLog(@"[OMWebViewMessageHandler] Message `didSelectRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, (long)index);
 }
 
 - (void)document:(NSString *)document element:(NSString *)element wasClicked:(id)data completion:(void (^)(BOOL))completion {
@@ -451,7 +467,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 - (NSString *)description {
-    return [NSString stringWithFormat:@"OMWebViewHTTPResponse: {\n\tcode: %ld, \n\tmessage: %@, \n\tdata: %@, \n\tcontentType: %@\n}", self.code, self.message, NSStringFromClass([self.data class]), self.contentType];
+    return [NSString stringWithFormat:@"OMWebViewHTTPResponse: {\n\tcode: %ld, \n\tmessage: %@, \n\tdata: %@, \n\tcontentType: %@\n}", (long)self.code, self.message, NSStringFromClass([self.data class]), self.contentType];
 }
 
 

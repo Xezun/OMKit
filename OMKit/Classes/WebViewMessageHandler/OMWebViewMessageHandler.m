@@ -7,9 +7,8 @@
 //
 
 #import "OMWebViewMessageHandler.h"
-@import ObjectiveC;
-@import SDWebImage;
-
+#import <objc/runtime.h>
+#import <SDWebImage/SDWebImageManager.h>
 #import <XZKit/XZKit-Swift.h>
 
 
@@ -76,6 +75,8 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
         NSString *js = @"OMApp.current.delegate = function(message){ window.webkit.messageHandlers.omApp.postMessage(message); }";
         WKUserScript *script = [[WKUserScript alloc] initWithSource:js injectionTime:(WKUserScriptInjectionTimeAtDocumentEnd) forMainFrameOnly:false];
         [_webView.configuration.userContentController addUserScript:script];
+        
+        
     }
     return self;
 }
@@ -104,7 +105,9 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSString *callbackID = messageBody[@"callbackID"];
     NSAssert(callbackID == nil || [callbackID isKindOfClass:[NSString class]], @"The `callbackID of the message must be a string.`");
     
-    [self performMethod:method withArguments:parameters callbackID:callbackID];
+    dispatch_async(dispatch_get_main_queue(), ^{
+        [self performMethod:method withArguments:parameters callbackID:callbackID];
+    });
 }
 
 
@@ -385,30 +388,26 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 - (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString * _Nullable))completion {
-    [self OMKit_downloadImageWithURL:url retryIfFailed:true completion:completion];
+    [self OMKit_downloadImageWithURL:url completion:completion];
 }
 
-- (void)OMKit_manager:(SDWebImageManager *)manager pathForCachedImageWithURL:(NSURL *)url WithCompletion:(void (^)(NSString * _Nullable))completion {
-    NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
-    if (imagePath != nil && ![imagePath hasPrefix:@"file://"]) {
-        imagePath = [NSString stringWithFormat:@"file://%@", imagePath];
-    }
-    completion(imagePath);
-}
-
-- (void)OMKit_downloadImageWithURL:(NSURL *)url retryIfFailed:(BOOL)retryIfFailed completion:(void (^)(NSString * _Nullable))completion {
-    SDWebImageManager *manager = [SDWebImageManager sharedManager];
-    [manager diskImageExistsForURL:url completion:^(BOOL isInCache) {
+- (void)OMKit_downloadImageWithURL:(NSURL *)url completion:(void (^)(NSString * _Nullable))completion {
+    [[SDWebImageManager sharedManager] diskImageExistsForURL:url completion:^(BOOL isInCache) {
+        SDWebImageManager *manager = [SDWebImageManager sharedManager];
         if (isInCache) {
-            [self OMKit_manager:manager pathForCachedImageWithURL:url WithCompletion:completion];
+            // 必须在图片存在磁盘缓存时执行 block，否则可能造成 WKWebView 加载不存在的本地图片时卡顿。
+            NSString *imagePath = [manager.imageCache defaultCachePathForKey:[manager cacheKeyForURL:url]];
+            if (imagePath != nil && ![imagePath hasPrefix:@"file://"]) {
+                imagePath = [NSString stringWithFormat:@"file://%@", imagePath];
+            }
+            completion(imagePath);
         } else {
             [manager loadImageWithURL:url options:(SDWebImageAllowInvalidSSLCertificates) progress:nil completed:^(UIImage * _Nullable image, NSData * _Nullable data, NSError * _Nullable error, SDImageCacheType cacheType, BOOL finished, NSURL * _Nullable imageURL) {
-                if (error != nil && error.code != noErr && retryIfFailed) {
-                    // 如果下载发生错误，则重试一次。
-                    [self OMKit_downloadImageWithURL:url retryIfFailed:false completion:completion];
+                if (error == nil || error.code == noErr) {
+                    // 只有在没有发生错误时才能这么处理，否则可能造成循环。
+                    [self OMKit_downloadImageWithURL:url completion:completion];
                 } else {
-                    // 如果没有错误，直接加载图片。
-                    [self OMKit_manager:manager pathForCachedImageWithURL:url WithCompletion:completion];
+                    completion(nil);
                 }
             }];
         }

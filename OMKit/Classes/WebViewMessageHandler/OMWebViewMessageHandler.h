@@ -35,6 +35,7 @@ NS_SWIFT_NAME(WebViewMessageHandler)
 - (instancetype)init NS_UNAVAILABLE;
 - (instancetype)initWithWebView:(WKWebView *)webView viewController:(UIViewController *)viewController NS_DESIGNATED_INITIALIZER;
 
+
 /**
  把当前的 handler 从 WebView 中移除，在视图销毁前，请调用此方法。
  */
@@ -175,7 +176,15 @@ NS_SWIFT_NAME(WebViewMessageHandler)
  @param completion 请在此回调中，返回缓存文件的路径。
  */
 - (void)cachedResourceForURL:(NSURL *)url resoureType:(NSString *)resoureType downloadIfNotExists:(BOOL)download completion:(void (^)(NSString * _Nullable resourcePath))completion;
-- (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString *imagePath))completion;
+
+/**
+ 基于 SDWebImageView 提供了默认的图片缓存处理。
+ - NOTE: WKWebView 不能访问非同目录下的文件，需要将 HTML 文件拷贝到 SDWebImageView 默认缓存相同的目录下。
+
+ @param url 图片 URL
+ @param completion 回调
+ */
+- (void)cachedImageForURL:(NSURL *)url completion:(void (^)(NSString * _Nullable imagePath))completion;
 
 /**
  HTML 列表的行被选中时，此方法会触发。

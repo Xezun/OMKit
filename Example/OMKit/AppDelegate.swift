@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import OMKit
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {

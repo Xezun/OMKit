@@ -14,69 +14,48 @@
 @import WebKit;
 
 
-
-
 NS_ASSUME_NONNULL_BEGIN
 
-@class OMWebViewHTTPRequest, OMWebViewHTTPResponse;
+@class OMWebViewHTTPRequest, OMWebViewHTTPResponse, OMWebViewUserInfo, OMWebViewNavigationBarInfo;
 
-
-
-/** 用户类型枚举 */
-typedef NSString *OMWebViewInfoUserType NS_SWIFT_NAME(WebViewInfoUserType);
+/**
+ 用户类型枚举。
+ 对应 js 环境中的 OMApp.UserType 。
+ */
+typedef NSString *OMWebViewInfoUserType NS_STRING_ENUM NS_SWIFT_NAME(WebViewInfoUserType);
 FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeVisitor;
 FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeGoogle;
 FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeFacebook;
 FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeTwitter;
 FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeWhatsapp;
 
-/** 主题枚举 */
-typedef NSString *OMWebViewInfoTheme NS_SWIFT_NAME(WebViewInfoTheme);
+/**
+ 主题枚举。
+ 对应 js 环境中的 OMApp.Theme 。
+ */
+typedef NSString *OMWebViewInfoTheme NS_STRING_ENUM NS_SWIFT_NAME(WebViewInfoTheme);
 FOUNDATION_EXPORT OMWebViewInfoTheme const OMWebViewInfoThemeDay;
 FOUNDATION_EXPORT OMWebViewInfoTheme const OMWebViewInfoThemeNight;
 
 
-NS_SWIFT_NAME(WebViewUserInfo)
-@interface OMWebViewUserInfo : NSObject
-
-@property (nonatomic, copy) NSString *id;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) OMWebViewInfoUserType type;
-@property (nonatomic) NSInteger coin;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithID:(NSString *)id name:(NSString *)name type:(OMWebViewInfoUserType)type coin:(NSInteger)coin NS_DESIGNATED_INITIALIZER;
-
-@end
-
-NS_SWIFT_NAME(WebViewNavigationBarInfo)
-@interface OMWebViewNavigationBarInfo : NSObject
-
-@property (nonatomic, setter=setHidden:) BOOL isHidden;
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) UIColor *titleColor;
-@property (nonatomic, strong) UIColor *backgroundColor;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithTitle:(NSString *)title titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor isHidden:(BOOL)isHidden NS_DESIGNATED_INITIALIZER;
-
-@end
-
-
-NS_SWIFT_NAME(WebViewMessageHandler)
-@interface OMWebViewManager: NSObject <WKScriptMessageHandler>
+/**
+ OMWebViewManager 是 HTML 与 App 交互过程中，负责实现 App 功能的类。
+ */
+NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMessageHandler>
 
 @property (nonatomic, weak, nullable, readonly) WKWebView *webView;
 
+/** WebView 是否准备好接收事件。如果此值为 false，对 OMWebViewManager 属性的修改，会在 ready 时同步到 WebView 的 JS 环境中。*/
 @property (nonatomic, readonly) BOOL isReady;
 
+/** 直接修改 currentUser 属性，会同步复制到 JS 环境中的对象。*/
 @property (nonatomic, strong, readonly) OMWebViewUserInfo *currentUser;
+
+/** 直接修改 navigationBar 属性，会同步复制到 JS 环境中的对象。*/
 @property (nonatomic, strong, readonly) OMWebViewNavigationBarInfo *navigationBar;
+
+/** 直接修改 currentTheme 属性，会同步复制到 JS 环境中的对象。*/
 @property (nonatomic, copy) OMWebViewInfoTheme currentTheme;
-
-
-+ (instancetype)messageHandlerWithWebView:(WKWebView *)webView;
-+ (instancetype)messageHandlerWithWebView:(WKWebView *)webView currentUser:(OMWebViewUserInfo *)currentUser navigationBar:(OMWebViewNavigationBarInfo *)navigationBar currentTheme:(OMWebViewInfoTheme)currentTheme;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -93,6 +72,7 @@ NS_SWIFT_NAME(WebViewMessageHandler)
  */
 - (instancetype)initWithWebView:(WKWebView *)webView currentUser:(OMWebViewUserInfo *)currentUser navigationBar:(OMWebViewNavigationBarInfo *)navigationBar currentTheme:(OMWebViewInfoTheme)currentTheme NS_DESIGNATED_INITIALIZER;
 
+- (instancetype)initWithWebView:(WKWebView *)webView;
 
 /**
  把当前的 handler 从 WebView 中移除，在视图销毁前，请调用此方法。
@@ -105,40 +85,11 @@ NS_SWIFT_NAME(WebViewMessageHandler)
 
 
 
-
-
-
-
-NS_SWIFT_NAME(WebViewHTTPRequest)
-@interface OMWebViewHTTPRequest : NSObject
-
-@property (nonatomic, copy, readonly, nonnull) NSString *method;
-@property (nonatomic, copy, readonly, nonnull) NSString *url;
-@property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, id> *data;
-@property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, NSString *> *headers;
-
-- (instancetype)initWithMethod:(NSString *)method url:(NSString *)url data:(NSDictionary<NSString *, id> *)data headers:(NSDictionary<NSString *, NSString *> *)headers;
-
-@end
-
-NS_SWIFT_NAME(WebViewHTTPResponse)
-@interface OMWebViewHTTPResponse : NSObject
-
-@property (nonatomic, readonly) NSInteger code;
-@property (nonatomic, readonly, nonnull) NSString *message;
-@property (nonatomic, readonly, nullable) id data;
-@property (nonatomic, readonly, nonnull) NSString *contentType;
-
-- (instancetype)initWithCode:(NSInteger)code message:(NSString *)message data:(id)data contentType:(NSString *)contentType;
-
-@end
-
-
-
+NS_SWIFT_NAME(WebViewMessage)
 @protocol OMWebViewMessage <NSObject>
 
 /**
- 请在此方法中初始化 JavaScript 中的 omApp 对象。
+ 请在此方法中初始化 JavaScript 中的 omApp 对象。当此方法执行时，
  
  @param webView 发送此消息的 webView
  @param completion 请在初始化完成后执行此闭包。
@@ -322,8 +273,57 @@ NS_SWIFT_NAME(WebViewHTTPResponse)
 
 @end
 
-
 @interface OMWebViewManager (OMWebViewMessage) <OMWebViewMessage>
+@end
+
+
+NS_SWIFT_NAME(WebViewHTTPRequest)
+@interface OMWebViewHTTPRequest : NSObject
+
+@property (nonatomic, copy, readonly, nonnull) NSString *method;
+@property (nonatomic, copy, readonly, nonnull) NSString *url;
+@property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, id> *data;
+@property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, NSString *> *headers;
+
+- (instancetype)initWithMethod:(NSString *)method url:(NSString *)url data:(NSDictionary<NSString *, id> *)data headers:(NSDictionary<NSString *, NSString *> *)headers;
+
+@end
+
+NS_SWIFT_NAME(WebViewHTTPResponse)
+@interface OMWebViewHTTPResponse : NSObject
+
+@property (nonatomic, readonly) NSInteger code;
+@property (nonatomic, readonly, nonnull) NSString *message;
+@property (nonatomic, readonly, nullable) id data;
+@property (nonatomic, readonly, nonnull) NSString *contentType;
+
+- (instancetype)initWithCode:(NSInteger)code message:(NSString *)message data:(id)data contentType:(NSString *)contentType;
+
+@end
+
+NS_SWIFT_NAME(WebViewUserInfo)
+@interface OMWebViewUserInfo : NSObject
+
+@property (nonatomic, copy) NSString *id;
+@property (nonatomic, copy) NSString *name;
+@property (nonatomic, copy) OMWebViewInfoUserType type;
+@property (nonatomic) NSInteger coin;
+
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithID:(NSString *)id name:(NSString *)name type:(OMWebViewInfoUserType)type coin:(NSInteger)coin NS_DESIGNATED_INITIALIZER;
+
+@end
+
+NS_SWIFT_NAME(WebViewNavigationBarInfo)
+@interface OMWebViewNavigationBarInfo : NSObject
+
+@property (nonatomic, setter=setHidden:) BOOL isHidden;
+@property (nonatomic, strong) NSString *title;
+@property (nonatomic, strong) UIColor *titleColor;
+@property (nonatomic, strong) UIColor *backgroundColor;
+
+- (instancetype)init NS_UNAVAILABLE;
+- (instancetype)initWithTitle:(NSString *)title titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor isHidden:(BOOL)isHidden NS_DESIGNATED_INITIALIZER;
 
 @end
 

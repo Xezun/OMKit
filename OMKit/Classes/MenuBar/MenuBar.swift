@@ -158,12 +158,15 @@ open class MenuBar: UIView {
     
     // 更新 MenuBar 中的视图。
     open func reloadData() -> Void {
-        guard let count = self.delegate?.numberOfItems(in: self), count > 0 else {
-            let count = itemViews.count
-            for index in (0 ..< count).reversed() {
+        func removeItemViews(_ reversedIndexes: [Int]) {
+            for index in reversedIndexes {
                 itemViews[index].removeFromSuperview()
                 itemViews.removeLast()
             }
+        }
+        guard let count = self.delegate?.numberOfItems(in: self), count > 0 else {
+            let count = itemViews.count
+            removeItemViews((0 ..< count).reversed())
             indicatorImageView.frame = .zero
             return
         }
@@ -171,7 +174,7 @@ open class MenuBar: UIView {
         let selectedIndex = self.selectedIndex
         
         if count < itemViews.count {
-            itemViews.removeSubrange(count ..< itemViews.count)
+            removeItemViews((count ..< itemViews.count).reversed())
         }
         
         for index in 0 ..< count {

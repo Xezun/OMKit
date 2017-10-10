@@ -308,7 +308,7 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
     if (![_currentTheme isEqualToString:currentTheme]) {
         _currentTheme = [currentTheme copy];
         if ([self isReady]) {
-            NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@);", currentTheme];
+            NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@, false);", currentTheme];
             [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
         }
     }

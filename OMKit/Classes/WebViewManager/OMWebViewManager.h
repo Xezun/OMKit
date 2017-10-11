@@ -79,7 +79,10 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  */
 - (void)removeFromWebView;
 
-
+/**
+ 当 webView ready 时，OMWebViewManager 进行的初始化工作。子类重新应该调用父类方法。
+ */
+- (void)webViewWasReady NS_REQUIRES_SUPER;
 
 @end
 
@@ -89,7 +92,7 @@ NS_SWIFT_NAME(WebViewMessage)
 @protocol OMWebViewMessage <NSObject>
 
 /**
- 请在此方法中初始化 JavaScript 中的 omApp 对象。当此方法执行时，
+ 请在此方法中初始化 JavaScript 中的 omApp 对象。
  
  @param webView 发送此消息的 webView
  @param completion 请在初始化完成后执行此闭包。

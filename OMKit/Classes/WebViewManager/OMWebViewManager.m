@@ -114,9 +114,7 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
     
     if ([method isEqualToString:@"ready"]) {
         NSAssert(callbackID != nil, @"The callbackID for ready method is not exists.");
-        _isReady = true;
-        [_currentUser readyForWebView:_webView];
-        [_navigationBar readyForWebView:_webView];
+        [self webViewWasReady];
         [self webView:webView ready:^{
             NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@')", callbackID];
             [webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
@@ -303,6 +301,13 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
 #endif
 }
 
+- (void)webViewWasReady {
+    _isReady = true;
+    [_currentUser readyForWebView:_webView];
+    [_navigationBar readyForWebView:_webView];
+    NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@, false);", _currentTheme];
+    [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
+}
 
 - (void)setCurrentTheme:(OMWebViewInfoTheme)currentTheme {
     if (![_currentTheme isEqualToString:currentTheme]) {
@@ -313,6 +318,7 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
         }
     }
 }
+
 
 @end
 
@@ -698,7 +704,7 @@ inline static NSString *JavaScriptCodeForNSString(NSString *aString) {
 }
 
 inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor) {
-    return [NSString stringWithFormat:@"#%06X", [aColor rgbaValue]];
+    return [NSString stringWithFormat:@"'#%06X'", [aColor rgbaValue]];
 }
 
 inline static NSString *JavaScriptCodeForBOOL(BOOL aBool) {
@@ -714,6 +720,4 @@ OMWebViewInfoUserType const OMWebViewInfoUserTypeWhatsapp   = @"whatsapp";
 
 OMWebViewInfoTheme const OMWebViewInfoThemeDay              = @"day";
 OMWebViewInfoTheme const OMWebViewInfoThemeNight            = @"night";
-
-
 

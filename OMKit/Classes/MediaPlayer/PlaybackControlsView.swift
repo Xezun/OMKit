@@ -230,7 +230,7 @@ public final class MediaPlayerPlaybackControlsView: XZKit.MediaPlayerPlaybackCon
         self.isZoomed = isZoomed
     }
     
-    func tapGestureAction(_ tap: UITapGestureRecognizer) -> Void {
+    @objc func tapGestureAction(_ tap: UITapGestureRecognizer) -> Void {
         switch status {
         case .playing:
             self.bar.isHidden        = !self.bar.isHidden
@@ -257,13 +257,13 @@ public final class MediaPlayerPlaybackControlsView: XZKit.MediaPlayerPlaybackCon
         }
     }
     
-    func progressViewDidChangeValue(_ view: MediaPlayerPlaybackProgressSlider) -> Void {
+    @objc func progressViewDidChangeValue(_ view: MediaPlayerPlaybackProgressSlider) -> Void {
         guard let mediaPlayer = self.mediaPlayer else { return }
         let time = mediaPlayer.duration * TimeInterval(view.progress)
         mediaPlayer.seek(to: time, completionHandler: nil)
     }
     
-    func zoomButtonAction(_ button: UIButton) {
+    @objc func zoomButtonAction(_ button: UIButton) {
         guard let mediaPlayer = self.mediaPlayer else { return }
         
         if self.bar.zoomButton.isSelected {
@@ -292,7 +292,7 @@ public final class MediaPlayerPlaybackControlsView: XZKit.MediaPlayerPlaybackCon
         delegate?.playbackControlsViewDidClickOnZoomButton(self)
     }
     
-    func playButtonAction(_ button: UIButton) {
+    @objc func playButtonAction(_ button: UIButton) {
         if self.playButton.isSelected {
             self.mediaPlayer?.pause()
             self.playButton.isSelected = false
@@ -302,7 +302,7 @@ public final class MediaPlayerPlaybackControlsView: XZKit.MediaPlayerPlaybackCon
         }
     }
     
-    func backButtonAction(_ button: UIButton) {
+    @objc func backButtonAction(_ button: UIButton) {
         self.zoomButtonAction(self.bar.zoomButton)
     }
     

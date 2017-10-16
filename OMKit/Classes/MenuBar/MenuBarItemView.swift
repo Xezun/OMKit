@@ -28,7 +28,7 @@ open class MenuBarItemView: XZKit.TitledImageView {
     
     weak var delegate: MenuBarItemViewDelegate?
     
-    func tapAction(_ tap: UITapGestureRecognizer) {
+    @objc func tapAction(_ tap: UITapGestureRecognizer) {
         delegate?.menuBarItemViewWasTapped(self)
     }
     

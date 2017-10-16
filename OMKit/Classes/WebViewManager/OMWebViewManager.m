@@ -11,45 +11,28 @@
 #import <SDWebImage/SDWebImageManager.h>
 #import <XZKit/XZKit-Swift.h>
 
+#import "OMWebViewUserInfo.h"
+#import "OMWebViewNavigationBarInfo.h"
+#import "OMWebViewHTTPRequest.h"
+#import "OMWebViewHTTPResponse.h"
+
 #if DEBUG
 /**
- Debug 环境下，创建一个 WKWebView 执行 JS 代码的方法 ·evaluateJavaScript· 的第二个参数的回调。
- Release 环境下为 nil 。
+ Debug 环境下，该宏创建一个 WKWebView 执行 JS 代码的方法 ·evaluateJavaScript· 的第二个参数的回调。
+ Release 环境下，该宏创建一个 nil 。
  */
-#define JS_COMPLETION_HANDLER(aJavaScriptString) \
-    ^(id _Nullable result, NSError * _Nullable error) { \
-        if (error != nil) { \
-            NSLog(@"[JavaScript Error] {\n\tCode: `%@`, \n\tError: %@\n}", aJavaScriptString, error); \
-        } \
-    }
-
+#define JS_COMPLETION_HANDLER(aJavaScriptString)  (^(id _Nullable result, NSError * _Nullable error) { if (error != nil) { NSLog(@"[JavaScript Error] {\n\tCode: `%@`, \n\tError: %@\n}", aJavaScriptString, error); } })
 #else
 #define JS_COMPLETION_HANDLER(...) nil
 #endif
+
 
 typedef NSString * ArgumentsType;
 static ArgumentsType const kArgumentsTypeString         = @"string";        // 字符串
 static ArgumentsType const kArgumentsTypeNumber         = @"number";        // 数字或布尔值
 static ArgumentsType const kArgumentsTypeDictionary     = @"dictionary";    // 字典
 static ArgumentsType const kArgumentsTypeObject         = @"object";        // 任意类型
-
-inline static NSString *JavaScriptCodeForBOOL(BOOL aBool);
 inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArray<ArgumentsType> *types, NSInteger numberOfRequiredArguments);
-inline static NSString *JavaScriptCodeForNSString(NSString *aString);
-inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
-
-
-@interface OMWebViewUserInfo ()
-- (void)readyForWebView:(WKWebView *)webView;
-@end
-
-@interface OMWebViewNavigationBarInfo ()
-- (void)readyForWebView:(WKWebView *)webView;
-- (void)setHidden:(BOOL)isHidden needsSync:(BOOL)needsSync;
-- (void)setTitle:(NSString *)title needsSync:(BOOL)needsSync;
-- (void)setTitleColor:(UIColor *)titleColor needsSync:(BOOL)needsSync;
-- (void)setBackgroundColor:(UIColor *)backgroundColor  needsSync:(BOOL)needsSync;
-@end
 
 
 @implementation OMWebViewManager
@@ -291,7 +274,7 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
             if (callbackID == nil) {
                 return;
             }
-            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %@)", callbackID, JavaScriptCodeForBOOL(isSelected)];
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %@)", callbackID, OMJavaScriptCodeForBOOL(isSelected)];
             [webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
         }];
         return;
@@ -303,8 +286,8 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
 
 - (void)webViewWasReady {
     _isReady = true;
-    [_currentUser readyForWebView:_webView];
-    [_navigationBar readyForWebView:_webView];
+    [_currentUser webViewWasReady:_webView];
+    [_navigationBar webViewWasReady:_webView];
     NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@, false);", _currentTheme];
     [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
 }
@@ -345,22 +328,22 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
 }
 
 - (void)webView:(WKWebView *)webView present:(NSString *)url animated:(BOOL)animated completion:(void (^)())completion {
-    NSLog(@"[OMWebViewManager] Message `present(%@, %@, callback)` is not handled.", url, JavaScriptCodeForBOOL(animated));
+    NSLog(@"[OMWebViewManager] Message `present(%@, %@, callback)` is not handled.", url, OMJavaScriptCodeForBOOL(animated));
 }
 
 #pragma mark - OMAppNavigation
 
 
 - (void)webView:(WKWebView *)webView push:(NSString *)url animated:(BOOL)animated {
-    NSLog(@"[OMWebViewManager] Message `push(%@, %@)` is not handled.", url, JavaScriptCodeForBOOL(animated));
+    NSLog(@"[OMWebViewManager] Message `push(%@, %@)` is not handled.", url, OMJavaScriptCodeForBOOL(animated));
 }
 
 - (void)webView:(WKWebView *)webView pop:(BOOL)animated {
-    NSLog(@"[OMWebViewManager] Message `pop(%@)` is not handled.", JavaScriptCodeForBOOL(animated));
+    NSLog(@"[OMWebViewManager] Message `pop(%@)` is not handled.", OMJavaScriptCodeForBOOL(animated));
 }
 
 - (void)webView:(WKWebView *)webView popTo:(NSInteger)index animated:(BOOL)animated {
-    NSLog(@"[OMWebViewManager] Message `popTo(%ld, %@)` is not handled.", (long)index, JavaScriptCodeForBOOL(animated));
+    NSLog(@"[OMWebViewManager] Message `popTo(%ld, %@)` is not handled.", (long)index, OMJavaScriptCodeForBOOL(animated));
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarTitle:(NSString *)title {
@@ -368,7 +351,7 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarHidden:(BOOL)hidden animated:(BOOL)animated {
-    NSLog(@"[OMWebViewManager] Message `setNavigationBarHidden(%@, %@)` is not handled.", JavaScriptCodeForBOOL(hidden), JavaScriptCodeForBOOL(animated));
+    NSLog(@"[OMWebViewManager] Message `setNavigationBarHidden(%@, %@)` is not handled.", OMJavaScriptCodeForBOOL(hidden), OMJavaScriptCodeForBOOL(animated));
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarTitleColor:(UIColor *)titleColor {
@@ -449,46 +432,6 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
 @end
 
 
-@implementation OMWebViewHTTPRequest
-
-- (instancetype)initWithMethod:(NSString *)method url:(NSString *)url data:(NSDictionary<NSString *,id> *)data headers:(NSDictionary<NSString *,NSString *> *)headers {
-    self = [super init];
-    if (self != nil) {
-        _method = method;
-        _url = url;
-        _data = data;
-        _headers = headers;
-    }
-    return self;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"OMWebViewHTTPRequest: {\n\tmethod: %@, \n\turl: %@, \n\tdata: %@, \n\theaders: %@\n}", self.method, self.url, self.data, self.headers];
-}
-
-@end
-
-
-
-@implementation OMWebViewHTTPResponse
-
-- (instancetype)initWithCode:(NSInteger)code message:(NSString *)message data:(id)data contentType:(NSString *)contentType {
-    self = [super init];
-    if (self != nil) {
-        _code = code;
-        _message = message;
-        _data = data;
-        _contentType = contentType;
-    }
-    return self;
-}
-
-- (NSString *)description {
-    return [NSString stringWithFormat:@"OMWebViewHTTPResponse: {\n\tcode: %ld, \n\tmessage: %@, \n\tdata: %@, \n\tcontentType: %@\n}", (long)self.code, self.message, NSStringFromClass([self.data class]), self.contentType];
-}
-
-
-@end
 
 
 
@@ -496,162 +439,16 @@ inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor);
 
 
 
-@implementation OMWebViewUserInfo {
-    __weak WKWebView *_webView;
-}
-
-- (instancetype)initWithID:(NSString *)id name:(NSString *)name type:(OMWebViewInfoUserType)type coin:(NSInteger)coin {
-    self = [super init];
-    if (self != nil) {
-        _id   = id.copy;
-        _name = name.copy;
-        _type = type.copy;
-        _coin = coin;
-    }
-    return self;
-}
-
-- (void)readyForWebView:(WKWebView *)webView {
-    _webView = webView;
-    
-    NSString *js = [NSString stringWithFormat:@
-                    "window.omApp.currentUser.setName(%@);"
-                    "window.omApp.currentUser.setType(%@);"
-                    "window.omApp.currentUser.setCoin(%ld);"
-                    "window.omApp.currentUser.setID(%@);",
-                    JavaScriptCodeForNSString(_name),
-                    JavaScriptCodeForNSString(_type),
-                    (long)_coin,
-                    JavaScriptCodeForNSString(_id)];
-    [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-}
-
-- (void)setName:(NSString *)name {
-    if (_name != name) {
-        _name = [name copy];
-        
-        NSString *js = [NSString stringWithFormat:@"window.omApp.currentUser.setName(%@);", JavaScriptCodeForNSString(_name)];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
-
-- (void)setType:(OMWebViewInfoUserType)type {
-    if (_type != type) {
-        _type = [type copy];
-        
-        NSString *js = [NSString stringWithFormat:@"window.omApp.currentUser.setType(%@);", JavaScriptCodeForNSString(_type)];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
-
-- (void)setCoin:(NSInteger)coin {
-    if (_coin != coin) {
-        _coin = coin;
-        
-        NSString *js = [NSString stringWithFormat:@"window.omApp.currentUser.setCoin(%ld);", (long)_coin];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
-
-@end
 
 
 
 
-@implementation OMWebViewNavigationBarInfo {
-    __weak WKWebView *_webView;
-}
-
-- (instancetype)initWithTitle:(NSString *)title titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor isHidden:(BOOL)isHidden {
-    self = [super init];
-    if (self != nil) {
-        _title              = [title copy];
-        _titleColor         = titleColor;
-        _backgroundColor    = backgroundColor;
-        _isHidden           = isHidden;
-    }
-    return self;
-}
-
-- (void)readyForWebView:(WKWebView *)webView {
-    _webView = webView;
-    
-    NSString *js = [NSString stringWithFormat:@"window.omApp.navigation.bar.setTitle(%@, false); "
-                    "window.omApp.navigation.bar.setTitleColor(%@, false); "
-                    "window.omApp.navigation.bar.setBackgroundColor(%@, false); "
-                    "window.omApp.navigation.bar.setHidden(%@, false, false);",
-                    JavaScriptCodeForNSString(_title),
-                    JavaScriptCodeForUIColor(_titleColor),
-                    JavaScriptCodeForUIColor(_backgroundColor),
-                    JavaScriptCodeForBOOL(_isHidden)];
-    [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-}
 
 
-- (void)setTitle:(NSString *)title {
-    [self setTitle:title needsSync:YES];
-}
-
-- (void)setTitle:(NSString *)title needsSync:(BOOL)needsSync {
-    if (_title != title) {
-        _title = [title copy];
-        if (!needsSync) {
-            return;
-        }
-        NSString *js = [NSString stringWithFormat:@"window.omApp.navigation.bar.setTitle(%@, false);", JavaScriptCodeForNSString(_title)];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
 
 
-- (void)setTitleColor:(UIColor *)titleColor {
-    [self setTitleColor:titleColor needsSync:YES];
-}
-
-- (void)setTitleColor:(UIColor *)titleColor needsSync:(BOOL)needsSync {
-    if (_titleColor != titleColor) {
-        _titleColor = [titleColor copy];
-        if (!needsSync) {
-            return;
-        }
-        NSString *js = [NSString stringWithFormat:@"window.omApp.navigation.bar.setTitleColor(%@, false);", JavaScriptCodeForUIColor(_titleColor)];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
 
 
-- (void)setBackgroundColor:(UIColor *)backgroundColor {
-    [self setBackgroundColor:backgroundColor needsSync:YES];
-}
-
-- (void)setBackgroundColor:(UIColor *)backgroundColor needsSync:(BOOL)needsSync {
-    if (![_backgroundColor isEqual:backgroundColor]) {
-        _backgroundColor = backgroundColor;
-        if (!needsSync) {
-            return;
-        }
-        NSString *js = [NSString stringWithFormat:@"window.omApp.navigation.bar.setBackgroundColor(%@, false);", JavaScriptCodeForUIColor(_backgroundColor)];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
-
-
-- (void)setHidden:(BOOL)isHidden {
-    [self setHidden:isHidden needsSync:YES];
-}
-
-- (void)setHidden:(BOOL)hidden needsSync:(BOOL)needsSync {
-    if (_isHidden != hidden) {
-        _isHidden = hidden;
-        if (!needsSync) {
-            return;
-        }
-        NSString *js = [NSString stringWithFormat:@"window.omApp.navigation.bar.setHidden(%@, false, false);", JavaScriptCodeForBOOL(_isHidden)];
-        [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
-    }
-}
-
-@end
 
 
 /**
@@ -695,7 +492,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
  @param aString 字符串
  @return 可以直接执行的 JavaScript 代码。
  */
-inline static NSString *JavaScriptCodeForNSString(NSString *aString) {
+NSString *OMJavaScriptCodeForNSString(NSString *aString) {
     NSString *encoded = [aString stringByAddingPercentEncodingWithAllowedCharacters:[NSCharacterSet alphanumericCharacterSet]];
     if (encoded != nil) {
         return [NSString stringWithFormat:@"decodeURIComponent('%@')", encoded];
@@ -703,21 +500,15 @@ inline static NSString *JavaScriptCodeForNSString(NSString *aString) {
     return @"null";
 }
 
-inline static NSString *JavaScriptCodeForUIColor(UIColor *aColor) {
+NSString *OMJavaScriptCodeForUIColor(UIColor *aColor) {
     return [NSString stringWithFormat:@"'#%06X'", [aColor rgbaValue]];
 }
 
-inline static NSString *JavaScriptCodeForBOOL(BOOL aBool) {
+NSString *OMJavaScriptCodeForBOOL(BOOL aBool) {
     return (aBool ? @"true" : @"false");
 }
 
 
-OMWebViewInfoUserType const OMWebViewInfoUserTypeVisitor    = @"visitor";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeGoogle     = @"google";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeFacebook   = @"facebook";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeTwitter    = @"twitter";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeWhatsapp   = @"whatsapp";
 
-OMWebViewInfoTheme const OMWebViewInfoThemeDay              = @"day";
-OMWebViewInfoTheme const OMWebViewInfoThemeNight            = @"night";
+
 

@@ -19,24 +19,12 @@ NS_ASSUME_NONNULL_BEGIN
 @class OMWebViewHTTPRequest, OMWebViewHTTPResponse, OMWebViewUserInfo, OMWebViewNavigationBarInfo;
 
 /**
- 用户类型枚举。
- 对应 js 环境中的 OMApp.UserType 。
- */
-typedef NSString *OMWebViewInfoUserType NS_STRING_ENUM NS_SWIFT_NAME(WebViewInfoUserType);
-FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeVisitor;
-FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeGoogle;
-FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeFacebook;
-FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeTwitter;
-FOUNDATION_EXTERN OMWebViewInfoUserType const OMWebViewInfoUserTypeWhatsapp;
-
-/**
  主题枚举。
  对应 js 环境中的 OMApp.Theme 。
  */
 typedef NSString *OMWebViewInfoTheme NS_STRING_ENUM NS_SWIFT_NAME(WebViewInfoTheme);
 FOUNDATION_EXPORT OMWebViewInfoTheme const OMWebViewInfoThemeDay;
 FOUNDATION_EXPORT OMWebViewInfoTheme const OMWebViewInfoThemeNight;
-
 
 /**
  OMWebViewManager 是 HTML 与 App 交互过程中，负责实现 App 功能的类。
@@ -88,8 +76,7 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
 
 
 
-NS_SWIFT_NAME(WebViewMessage)
-@protocol OMWebViewMessage <NSObject>
+@interface OMWebViewManager (OMWebViewMessage)
 
 /**
  请在此方法中初始化 JavaScript 中的 omApp 对象。
@@ -97,7 +84,7 @@ NS_SWIFT_NAME(WebViewMessage)
  @param webView 发送此消息的 webView
  @param completion 请在初始化完成后执行此闭包。
  */
-- (void)webView:(WKWebView *)webView ready:(void (^)())completion;
+- (void)webView:(WKWebView *)webView ready:(void (^)(void))completion;
 
 /**
  请在此方法中执行登录操作。
@@ -132,7 +119,7 @@ NS_SWIFT_NAME(WebViewMessage)
  @param animated 是否呈现转场动画。
  @param completion 新页面呈现后，执行的回调。
  */
-- (void)webView:(WKWebView *)webView present:(nonnull NSString *)url animated:(BOOL)animated completion:(void (^)())completion;
+- (void)webView:(WKWebView *)webView present:(nonnull NSString *)url animated:(BOOL)animated completion:(void (^)(void))completion;
 
 /**
  导航到下级页面。
@@ -260,7 +247,7 @@ NS_SWIFT_NAME(WebViewMessage)
  @param index 行所在的索引
  @param completion 执行操作后的操作
  */
-- (void)webView:(WKWebView *)webView document:(NSString *)document list:(NSString *)list didSelectRowAtIndex:(NSInteger)index completion:(void (^)())completion;
+- (void)webView:(WKWebView *)webView document:(NSString *)document list:(NSString *)list didSelectRowAtIndex:(NSInteger)index completion:(void (^)(void))completion;
 
 /**
  HTML 页面的元素被点击时。
@@ -273,62 +260,20 @@ NS_SWIFT_NAME(WebViewMessage)
  */
 - (void)webView:(WKWebView *)webView document:(NSString *)document element:(NSString *)element wasClicked:(id)data completion:(void (^)(BOOL isSelected))completion;
 
-
-@end
-
-@interface OMWebViewManager (OMWebViewMessage) <OMWebViewMessage>
 @end
 
 
-NS_SWIFT_NAME(WebViewHTTPRequest)
-@interface OMWebViewHTTPRequest : NSObject
+/// 将布尔值转换成可以直接插入到 JS 代码串中的字符串。
+extern NSString *OMJavaScriptCodeForBOOL(BOOL aBool);
 
-@property (nonatomic, copy, readonly, nonnull) NSString *method;
-@property (nonatomic, copy, readonly, nonnull) NSString *url;
-@property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, id> *data;
-@property (nonatomic, copy, readonly, nullable) NSDictionary<NSString *, NSString *> *headers;
+/// 将字符串转换成可以直接插入到 JS 代码串中的字符串。
+extern NSString *OMJavaScriptCodeForNSString(NSString *aString);
 
-- (instancetype)initWithMethod:(NSString *)method url:(NSString *)url data:(NSDictionary<NSString *, id> *)data headers:(NSDictionary<NSString *, NSString *> *)headers;
+/// 将 UIColor 对象转换成 JS 字符串。
+extern NSString *OMJavaScriptCodeForUIColor(UIColor *aColor);
 
-@end
-
-NS_SWIFT_NAME(WebViewHTTPResponse)
-@interface OMWebViewHTTPResponse : NSObject
-
-@property (nonatomic, readonly) NSInteger code;
-@property (nonatomic, readonly, nonnull) NSString *message;
-@property (nonatomic, readonly, nullable) id data;
-@property (nonatomic, readonly, nonnull) NSString *contentType;
-
-- (instancetype)initWithCode:(NSInteger)code message:(NSString *)message data:(id)data contentType:(NSString *)contentType;
-
-@end
-
-NS_SWIFT_NAME(WebViewUserInfo)
-@interface OMWebViewUserInfo : NSObject
-
-@property (nonatomic, copy) NSString *id;
-@property (nonatomic, copy) NSString *name;
-@property (nonatomic, copy) OMWebViewInfoUserType type;
-@property (nonatomic) NSInteger coin;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithID:(NSString *)id name:(NSString *)name type:(OMWebViewInfoUserType)type coin:(NSInteger)coin NS_DESIGNATED_INITIALIZER;
-
-@end
-
-NS_SWIFT_NAME(WebViewNavigationBarInfo)
-@interface OMWebViewNavigationBarInfo : NSObject
-
-@property (nonatomic, setter=setHidden:) BOOL isHidden;
-@property (nonatomic, strong) NSString *title;
-@property (nonatomic, strong) UIColor *titleColor;
-@property (nonatomic, strong) UIColor *backgroundColor;
-
-- (instancetype)init NS_UNAVAILABLE;
-- (instancetype)initWithTitle:(NSString *)title titleColor:(UIColor *)titleColor backgroundColor:(UIColor *)backgroundColor isHidden:(BOOL)isHidden NS_DESIGNATED_INITIALIZER;
-
-@end
 
 NS_ASSUME_NONNULL_END
+
+
 

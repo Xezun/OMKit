@@ -404,7 +404,6 @@
 				PROVISIONING_PROFILE_SPECIFIER = "Wildcard Development";
 				SWIFT_OBJC_BRIDGING_HEADER = "OMKit/OMKit_Example-Bridging-Header.h";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -425,7 +424,6 @@
 				PROVISIONING_PROFILE = "8b356526-5bbb-4e1b-9c7c-dd5fcf672aa8";
 				PROVISIONING_PROFILE_SPECIFIER = "Wildcard Distribution";
 				SWIFT_OBJC_BRIDGING_HEADER = "OMKit/OMKit_Example-Bridging-Header.h";
-				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;

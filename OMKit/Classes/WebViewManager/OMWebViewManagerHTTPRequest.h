@@ -7,8 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
-NS_SWIFT_NAME(WebViewHTTPRequest)
-@interface OMWebViewHTTPRequest : NSObject
+NS_SWIFT_NAME(WebViewManager.HTTPRequest)
+@interface OMWebViewManagerHTTPRequest : NSObject
 
 @property (nonatomic, copy, readonly, nonnull) NSString *method;
 @property (nonatomic, copy, readonly, nonnull) NSString *url;

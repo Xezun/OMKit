@@ -243,13 +243,13 @@ extension WebViewController {
         
         // 标题颜色
         if let navigationBarTitleColor = parmaters["titleColor"] as? String {
-            let titleColor = UIColor(string: navigationBarTitleColor)
+            let titleColor = UIColor(navigationBarTitleColor)
             customNavigationBar.titleButton.setTitleColor(titleColor, for: .normal)
         }
         
         // 渲染色
         if let barTintColor = parmaters["tintColor"] as? String {
-            customNavigationBar.tintColor = UIColor(string: barTintColor)
+            customNavigationBar.tintColor = UIColor(barTintColor)
         }
         
         // 是否透明
@@ -264,7 +264,7 @@ extension WebViewController {
         
         // 背景色
         if let backgroundColor = parmaters["backgroundColor"] as? String {
-            customNavigationBar.barTintColor = UIColor(string: backgroundColor)
+            customNavigationBar.barTintColor = UIColor(backgroundColor)
         }
         
         // 返回按钮

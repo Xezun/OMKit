@@ -187,7 +187,7 @@
 
 - (void)navigation:(OMAppNavigationExport *)navigation titleColor:(NSString *)titleColor {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIColor *color = [[UIColor alloc] initWithString:titleColor];
+        UIColor *color = [[UIColor alloc] initWithStringLiteral:titleColor];
         [_delegate appExport:self updateNavigationBarTitleColor:color];
     });
 }
@@ -200,7 +200,7 @@
 
 - (void)navigation:(OMAppNavigationExport *)navigation backgroundColor:(NSString *)backgroundColor {
     dispatch_async(dispatch_get_main_queue(), ^{
-        UIColor *color = [[UIColor alloc] initWithString:backgroundColor];
+        UIColor *color = [[UIColor alloc] initWithStringLiteral:backgroundColor];
         [_delegate appExport:self updateNavigationBarBackgroundColor:color];
     });
 }

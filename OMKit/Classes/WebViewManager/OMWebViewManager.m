@@ -11,10 +11,10 @@
 #import <SDWebImage/SDWebImageManager.h>
 #import <XZKit/XZKit-Swift.h>
 
-#import "OMWebViewUserInfo.h"
-#import "OMWebViewNavigationBarInfo.h"
-#import "OMWebViewHTTPRequest.h"
-#import "OMWebViewHTTPResponse.h"
+#import "OMWebViewManagerUser.h"
+#import "OMWebViewManagerNavigationBar.h"
+#import "OMWebViewManagerHTTPRequest.h"
+#import "OMWebViewManagerHTTPResponse.h"
 
 #if DEBUG
 /**
@@ -41,14 +41,15 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"%s", __func__);
 }
 
-- (instancetype)initWithWebView:(WKWebView *)webView currentUser:(nonnull OMWebViewUserInfo *)currentUser navigationBar:(nonnull OMWebViewNavigationBarInfo *)navigationBar currentTheme:(OMWebViewInfoTheme)currentTheme {
+- (instancetype)initWithWebView:(WKWebView *)webView currentUser:(OMWebViewManagerUser *)currentUser navigationBar:(OMWebViewManagerNavigationBar *)navigationBar currentTheme:(OMWebViewManagerTheme)currentTheme networkType:(nonnull OMWebViewManagerNetworkingType)networkType {
     self = [super init];
     if (self != nil) {
         _isReady        = NO;
         _webView        = webView;
         _currentUser    = currentUser;
         _navigationBar  = navigationBar;
-        _currentTheme   = currentTheme;
+        _currentTheme   = [currentTheme copy];
+        _networkType    = [networkType copy];
         
         [_webView.configuration.userContentController addScriptMessageHandler:self name:@"omApp"];
         NSString *js = @"OMApp.current.delegate = function(message){ window.webkit.messageHandlers.omApp.postMessage(message); }";
@@ -59,10 +60,10 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 - (instancetype)initWithWebView:(WKWebView *)webView {
-    OMWebViewInfoTheme currentTheme = OMWebViewInfoThemeDay;
-    OMWebViewUserInfo *currentUser = [[OMWebViewUserInfo alloc] initWithID:@"" name:@"Onemena" type:OMWebViewInfoUserTypeVisitor coin:0];
-    OMWebViewNavigationBarInfo *navigationBar = [[OMWebViewNavigationBarInfo alloc] initWithTitle:@"Onemena" titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor] isHidden:false];
-    return [self initWithWebView:webView currentUser:currentUser navigationBar:navigationBar currentTheme:currentTheme];
+    OMWebViewManagerTheme currentTheme = OMWebViewManagerThemeDay;
+    OMWebViewManagerUser *currentUser = [[OMWebViewManagerUser alloc] initWithID:@"-1" name:@"Onemena" type:OMWebViewManagerUserTypeVisitor coin:0];
+    OMWebViewManagerNavigationBar *navigationBar = [[OMWebViewManagerNavigationBar alloc] initWithTitle:@"Onemena" titleColor:[UIColor blackColor] backgroundColor:[UIColor whiteColor] isHidden:false];
+    return [self initWithWebView:webView currentUser:currentUser navigationBar:navigationBar currentTheme:currentTheme networkType:OMWebViewManagerNetworkingTypeOther];
 }
 
 - (void)removeFromWebView {
@@ -98,8 +99,8 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     if ([method isEqualToString:@"ready"]) {
         NSAssert(callbackID != nil, @"The callbackID for ready method is not exists.");
         [self webViewWasReady];
-        [self webView:webView ready:^{
-            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@')", callbackID];
+        [self webView:webView ready:^(BOOL isDebug){
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %@)", callbackID, OMJavaScriptCodeForBOOL(isDebug)];
             [webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
         }];
         return;
@@ -174,14 +175,16 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     
     if ([method isEqualToString:@"setNavigationBarTitleColor"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString], 1);
-        [_navigationBar setTitleColor:[[UIColor alloc] initWithString:arguments[0]] needsSync:NO];
+        UIColor *color = [[UIColor alloc] initWithStringLiteral:arguments[0]];
+        [_navigationBar setTitleColor:color needsSync:NO];
         [self webView:webView setNavigationBarTitleColor:_navigationBar.titleColor];
         return;
     }
     
     if ([method isEqualToString:@"setNavigationBarBackgroundColor"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString], 1);
-        [_navigationBar setBackgroundColor:[[UIColor alloc] initWithString:arguments[0]] needsSync:NO];
+        UIColor *color = [[UIColor alloc] initWithStringLiteral:arguments[0]];
+        [_navigationBar setBackgroundColor:color needsSync:NO];
         [self webView:webView setNavigationBarBackgroundColor:_navigationBar.backgroundColor];
         return;
     }
@@ -196,8 +199,8 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     if ([method isEqualToString:@"http"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeDictionary], 1);
         NSDictionary *dictionary = arguments[0];
-        OMWebViewHTTPRequest *request = [[OMWebViewHTTPRequest alloc] initWithMethod:dictionary[@"method"] url:dictionary[@"url"] data:dictionary[@"data"] headers:dictionary[@"headers"]];
-        [self webView:webView http:request completion:^(OMWebViewHTTPResponse * _Nonnull response) {
+        OMWebViewManagerHTTPRequest *request = [[OMWebViewManagerHTTPRequest alloc] initWithMethod:dictionary[@"method"] url:dictionary[@"url"] data:dictionary[@"data"] headers:dictionary[@"headers"]];
+        [self webView:webView http:request completion:^(OMWebViewManagerHTTPResponse * _Nonnull response) {
             if (callbackID == nil) {
                 return;
             }
@@ -288,15 +291,25 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     _isReady = true;
     [_currentUser webViewWasReady:_webView];
     [_navigationBar webViewWasReady:_webView];
-    NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@, false);", _currentTheme];
+    NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@, false);window.omApp.networking.setType('%@');", _currentTheme, _networkType];
     [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
 }
 
-- (void)setCurrentTheme:(OMWebViewInfoTheme)currentTheme {
+- (void)setCurrentTheme:(OMWebViewManagerTheme)currentTheme {
     if (![_currentTheme isEqualToString:currentTheme]) {
         _currentTheme = [currentTheme copy];
         if ([self isReady]) {
             NSString *js = [NSString stringWithFormat:@"window.omApp.setCurrentTheme(OMApp.Theme.%@, false);", currentTheme];
+            [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
+        }
+    }
+}
+
+- (void)setNetworkType:(OMWebViewManagerNetworkingType)networkType {
+    if (![_networkType isEqualToString:networkType]) {
+        _networkType = [networkType copy];
+        if ([self isReady]) {
+            NSString *js = [NSString stringWithFormat:@"window.omApp.networking.setType('%@');", _networkType];
             [_webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
         }
     }
@@ -309,7 +322,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 
 #pragma mark - OMAppSystem
 
-- (void)webView:(WKWebView *)webView ready:(void (^)())completion {
+- (void)webView:(WKWebView *)webView ready:(void (^)(BOOL isDebug))completion {
     NSLog(@"[OMWebViewManager] Message `ready(callback)` is not handled.");
 }
 
@@ -327,7 +340,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"[OMWebViewManager] Message `open(%@, %@)` is not handled.", page, parameters);
 }
 
-- (void)webView:(WKWebView *)webView present:(NSString *)url animated:(BOOL)animated completion:(void (^)())completion {
+- (void)webView:(WKWebView *)webView present:(NSString *)url animated:(BOOL)animated completion:(void (^)(void))completion {
     NSLog(@"[OMWebViewManager] Message `present(%@, %@, callback)` is not handled.", url, OMJavaScriptCodeForBOOL(animated));
 }
 
@@ -370,7 +383,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 
 #pragma mark - OMAppNetworking
 
-- (void)webView:(WKWebView *)webView http:(OMWebViewHTTPRequest *)request completion:(void (^)(OMWebViewHTTPResponse * _Nonnull))completion {
+- (void)webView:(WKWebView *)webView http:(OMWebViewManagerHTTPRequest *)request completion:(void (^)(OMWebViewManagerHTTPResponse * _Nonnull))completion {
     NSLog(@"[OMWebViewManager] Message `http(%@, callback)` is not handled.", request);
 }
 
@@ -420,7 +433,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 
-- (void)webView:(WKWebView *)webView document:(NSString *)document list:(NSString *)list didSelectRowAtIndex:(NSInteger)index completion:(void (^)())completion {
+- (void)webView:(WKWebView *)webView document:(NSString *)document list:(NSString *)list didSelectRowAtIndex:(NSInteger)index completion:(void (^)(void))completion {
     NSLog(@"[OMWebViewManager] Message `didSelectRowAtIndex(%@, %@, %ld, callback)` is not handled.", document, list, (long)index);
 }
 
@@ -508,7 +521,17 @@ NSString *OMJavaScriptCodeForBOOL(BOOL aBool) {
     return (aBool ? @"true" : @"false");
 }
 
+OMWebViewManagerTheme const OMWebViewManagerThemeDay              = @"day";
+OMWebViewManagerTheme const OMWebViewManagerThemeNight            = @"night";
 
+
+
+OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeNone   = @"none";
+OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWiFi   = @"WiFi";
+OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan2G = @"2G";
+OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan3G = @"3G";
+OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan4G = @"4G";
+OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeOther  = @"other";
 
 
 

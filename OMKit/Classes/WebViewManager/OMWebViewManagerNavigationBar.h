@@ -8,8 +8,10 @@
 #import <Foundation/Foundation.h>
 @class WKWebView;
 
-NS_SWIFT_NAME(WebViewNavigationBarInfo)
-@interface OMWebViewNavigationBarInfo : NSObject
+NS_ASSUME_NONNULL_BEGIN
+
+NS_SWIFT_NAME(WebViewManager.NavigationBar)
+@interface OMWebViewManagerNavigationBar: NSObject
 
 @property (nonatomic, setter=setHidden:) BOOL isHidden;
 @property (nonatomic, strong) NSString *title;
@@ -28,3 +30,5 @@ NS_SWIFT_NAME(WebViewNavigationBarInfo)
 - (void)setBackgroundColor:(UIColor *)backgroundColor  needsSync:(BOOL)needsSync;
 
 @end
+
+NS_ASSUME_NONNULL_END

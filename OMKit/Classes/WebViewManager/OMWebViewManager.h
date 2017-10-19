@@ -16,15 +16,23 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OMWebViewHTTPRequest, OMWebViewHTTPResponse, OMWebViewUserInfo, OMWebViewNavigationBarInfo;
+@class OMWebViewManagerHTTPRequest, OMWebViewManagerHTTPResponse, OMWebViewManagerUser, OMWebViewManagerNavigationBar;
 
 /**
  主题枚举。
  对应 js 环境中的 OMApp.Theme 。
  */
-typedef NSString *OMWebViewInfoTheme NS_STRING_ENUM NS_SWIFT_NAME(WebViewInfoTheme);
-FOUNDATION_EXPORT OMWebViewInfoTheme const OMWebViewInfoThemeDay;
-FOUNDATION_EXPORT OMWebViewInfoTheme const OMWebViewInfoThemeNight;
+typedef NSString *OMWebViewManagerTheme NS_STRING_ENUM NS_SWIFT_NAME(WebViewManager.Theme);
+FOUNDATION_EXPORT OMWebViewManagerTheme const OMWebViewManagerThemeDay;
+FOUNDATION_EXPORT OMWebViewManagerTheme const OMWebViewManagerThemeNight;
+
+typedef NSString *OMWebViewManagerNetworkingType NS_STRING_ENUM NS_SWIFT_NAME(WebViewManager.NetworkingType);
+FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeNone   NS_SWIFT_NAME(none);
+FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWiFi   NS_SWIFT_NAME(WiFi);
+FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan2G NS_SWIFT_NAME(WWan2G);
+FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan3G NS_SWIFT_NAME(WWan3G);
+FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan4G NS_SWIFT_NAME(WWan4G);
+FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeOther  NS_SWIFT_NAME(other);
 
 /**
  OMWebViewManager 是 HTML 与 App 交互过程中，负责实现 App 功能的类。
@@ -37,13 +45,15 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
 @property (nonatomic, readonly) BOOL isReady;
 
 /** 直接修改 currentUser 属性，会同步复制到 JS 环境中的对象。*/
-@property (nonatomic, strong, readonly) OMWebViewUserInfo *currentUser;
+@property (nonatomic, strong, readonly) OMWebViewManagerUser *currentUser;
 
 /** 直接修改 navigationBar 属性，会同步复制到 JS 环境中的对象。*/
-@property (nonatomic, strong, readonly) OMWebViewNavigationBarInfo *navigationBar;
+@property (nonatomic, strong, readonly) OMWebViewManagerNavigationBar *navigationBar;
 
 /** 直接修改 currentTheme 属性，会同步复制到 JS 环境中的对象。*/
-@property (nonatomic, copy) OMWebViewInfoTheme currentTheme;
+@property (nonatomic, copy) OMWebViewManagerTheme currentTheme;
+
+@property (nonatomic, copy) OMWebViewManagerNetworkingType networkType;
 
 - (instancetype)init NS_UNAVAILABLE;
 
@@ -58,7 +68,7 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  @param currentTheme currentTheme description
  @return return value description
  */
-- (instancetype)initWithWebView:(WKWebView *)webView currentUser:(OMWebViewUserInfo *)currentUser navigationBar:(OMWebViewNavigationBarInfo *)navigationBar currentTheme:(OMWebViewInfoTheme)currentTheme NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithWebView:(WKWebView *)webView currentUser:(OMWebViewManagerUser *)currentUser navigationBar:(OMWebViewManagerNavigationBar *)navigationBar currentTheme:(OMWebViewManagerTheme)currentTheme networkType:(OMWebViewManagerNetworkingType)networkType NS_DESIGNATED_INITIALIZER;
 
 - (instancetype)initWithWebView:(WKWebView *)webView;
 
@@ -84,7 +94,7 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  @param webView 发送此消息的 webView
  @param completion 请在初始化完成后执行此闭包。
  */
-- (void)webView:(WKWebView *)webView ready:(void (^)(void))completion;
+- (void)webView:(WKWebView *)webView ready:(void (^)(BOOL isDebug))completion;
 
 /**
  请在此方法中执行登录操作。
@@ -195,7 +205,7 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  @param request 网络请求对象。
  @param completion 请求完毕后执行的回调。
  */
-- (void)webView:(WKWebView *)webView http:(OMWebViewHTTPRequest *)request completion:(void (^)(OMWebViewHTTPResponse *response))completion;
+- (void)webView:(WKWebView *)webView http:(OMWebViewManagerHTTPRequest *)request completion:(void (^)(OMWebViewManagerHTTPResponse *response))completion;
 
 /**
  HTML 页面查询列表的行数。

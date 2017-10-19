@@ -5,7 +5,7 @@
 //  Created by mlibai on 2017/10/12.
 //
 
-#import "OMWebViewNavigationBarInfo.h"
+#import "OMWebViewManagerNavigationBar.h"
 #import "OMWebViewManager.h"
 
 #if DEBUG
@@ -18,10 +18,7 @@
 #define JS_COMPLETION_HANDLER(...) nil
 #endif
 
-OMWebViewInfoTheme const OMWebViewInfoThemeDay              = @"day";
-OMWebViewInfoTheme const OMWebViewInfoThemeNight            = @"night";
-
-@implementation OMWebViewNavigationBarInfo {
+@implementation OMWebViewManagerNavigationBar {
     __weak WKWebView *_webView;
 }
 

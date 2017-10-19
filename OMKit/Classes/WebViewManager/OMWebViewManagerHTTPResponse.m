@@ -5,9 +5,9 @@
 //  Created by mlibai on 2017/10/12.
 //
 
-#import "OMWebViewHTTPResponse.h"
+#import "OMWebViewManagerHTTPResponse.h"
 
-@implementation OMWebViewHTTPResponse
+@implementation OMWebViewManagerHTTPResponse
 
 - (instancetype)initWithCode:(NSInteger)code message:(NSString *)message data:(id)data contentType:(NSString *)contentType {
     self = [super init];

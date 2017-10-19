@@ -514,8 +514,8 @@ public class MediaPlayerPlaybackControlsToolBar: UIView {
         addSubview(playedDurationLabel)
         
         progressView.autoresizingMask           = [.flexibleWidth, .flexibleHeight]
-        progressView.progressTintColor          = UIColor(r: 62, g: 132, b: 224, a: 255)
-        progressView.bufferProgressTintColor    = UIColor(r: 224, g: 224, b: 224, a: 255)
+        progressView.progressTintColor          = UIColor(red: 62, green: 132, blue: 224, alpha: 255)
+        progressView.bufferProgressTintColor    = UIColor(red: 224, green: 224, blue: 224, alpha: 255)
         progressView.trackTintColor             = UIColor(white: 1.0, alpha: 0.3)
         addSubview(progressView)
         
@@ -604,7 +604,7 @@ public class MediaPlayerPlaybackControlsErrorView: UIView {
     private func didInitialize() {
         addSubview(infoLabel)
         infoLabel.font = UIFont.systemFont(ofSize: 16)
-        infoLabel.textColor = UIColor(rgb: 0xf5f5f5)
+        infoLabel.textColor = UIColor(0xf5f5f5)
         infoLabel.translatesAutoresizingMaskIntoConstraints = false
         
         let lc1 = NSLayoutConstraint(item: infoLabel, attribute: .centerX, relatedBy: .equal, toItem: self, attribute: .centerX, multiplier: 1.0, constant: 0)

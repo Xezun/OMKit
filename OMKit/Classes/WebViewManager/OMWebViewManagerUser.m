@@ -5,7 +5,7 @@
 //  Created by mlibai on 2017/10/12.
 //
 
-#import "OMWebViewUserInfo.h"
+#import "OMWebViewManagerUser.h"
 #import "OMWebViewManager.h"
 
 #if DEBUG
@@ -19,19 +19,19 @@
 #endif
 
 
-OMWebViewInfoUserType const OMWebViewInfoUserTypeVisitor    = @"visitor";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeGoogle     = @"google";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeFacebook   = @"facebook";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeTwitter    = @"twitter";
-OMWebViewInfoUserType const OMWebViewInfoUserTypeWhatsapp   = @"whatsapp";
+OMWebViewManagerUserType const OMWebViewManagerUserTypeVisitor    = @"visitor";
+OMWebViewManagerUserType const OMWebViewManagerUserTypeGoogle     = @"google";
+OMWebViewManagerUserType const OMWebViewManagerUserTypeFacebook   = @"facebook";
+OMWebViewManagerUserType const OMWebViewManagerUserTypeTwitter    = @"twitter";
+OMWebViewManagerUserType const OMWebViewManagerUserTypeWhatsapp   = @"whatsapp";
 
 
 
-@implementation OMWebViewUserInfo {
+@implementation OMWebViewManagerUser {
     __weak WKWebView *_webView;
 }
 
-- (instancetype)initWithID:(NSString *)id name:(NSString *)name type:(OMWebViewInfoUserType)type coin:(NSInteger)coin {
+- (instancetype)initWithID:(NSString *)id name:(NSString *)name type:(OMWebViewManagerUserType)type coin:(NSInteger)coin {
     self = [super init];
     if (self != nil) {
         _id   = id.copy;
@@ -66,7 +66,7 @@ OMWebViewInfoUserType const OMWebViewInfoUserTypeWhatsapp   = @"whatsapp";
     }
 }
 
-- (void)setType:(OMWebViewInfoUserType)type {
+- (void)setType:(OMWebViewManagerUserType)type {
     if (_type != type) {
         _type = [type copy];
         

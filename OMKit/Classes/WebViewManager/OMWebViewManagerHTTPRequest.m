@@ -5,9 +5,9 @@
 //  Created by mlibai on 2017/10/12.
 //
 
-#import "OMWebViewHTTPRequest.h"
+#import "OMWebViewManagerHTTPRequest.h"
 
-@implementation OMWebViewHTTPRequest
+@implementation OMWebViewManagerHTTPRequest
 
 - (instancetype)initWithMethod:(NSString *)method url:(NSString *)url data:(NSDictionary<NSString *,id> *)data headers:(NSDictionary<NSString *,NSString *> *)headers {
     self = [super init];

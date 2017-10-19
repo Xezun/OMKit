@@ -7,8 +7,8 @@
 
 #import <Foundation/Foundation.h>
 
-NS_SWIFT_NAME(WebViewHTTPResponse)
-@interface OMWebViewHTTPResponse : NSObject
+NS_SWIFT_NAME(WebViewManager.HTTPResponse)
+@interface OMWebViewManagerHTTPResponse : NSObject
 
 @property (nonatomic, readonly) NSInteger code;
 @property (nonatomic, readonly, nonnull) NSString *message;

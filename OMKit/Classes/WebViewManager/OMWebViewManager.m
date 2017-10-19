@@ -52,7 +52,12 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
         _networkType    = [networkType copy];
         
         [_webView.configuration.userContentController addScriptMessageHandler:self name:@"omApp"];
-        NSString *js = @"OMApp.current.delegate = function(message){ window.webkit.messageHandlers.omApp.postMessage(message); }";
+        NSString *js = @"OMApp.current.delegate = function(method, parameters, callbackID) {"
+        "   var message = {method: method};"
+        "   if (parameters) { message.parameters = parameters; }"
+        "   if (callbackID) { message.callbackID = callbackID; }"
+        "   window.webkit.messageHandlers.omApp.postMessage(message); "
+        "}; ";
         WKUserScript *script = [[WKUserScript alloc] initWithSource:js injectionTime:(WKUserScriptInjectionTimeAtDocumentEnd) forMainFrameOnly:false];
         [_webView.configuration.userContentController addUserScript:script];
     }

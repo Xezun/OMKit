@@ -110,7 +110,7 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  @param webView 发送此消息的 webView
  @param theme 主题
  */
-- (void)webView:(WKWebView *)webView setCurrentTheme:(nonnull NSString *)theme;
+- (void)webView:(WKWebView *)webView setCurrentTheme:(nonnull OMWebViewManagerTheme)theme;
 
 /**
  页面跳转。

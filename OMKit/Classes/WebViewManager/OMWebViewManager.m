@@ -335,7 +335,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"[OMWebViewManager] Message `login(callback)` is not handled.");
 }
 
-- (void)webView:(WKWebView *)webView setCurrentTheme:(NSString *)theme {
+- (void)webView:(WKWebView *)webView setCurrentTheme:(OMWebViewManagerTheme)theme {
     NSLog(@"[OMWebViewManager] Message `setCurrentTheme(%@)` is not handled.", theme);
 }
 

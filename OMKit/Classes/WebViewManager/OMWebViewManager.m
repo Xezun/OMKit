@@ -341,7 +341,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 
 #pragma mark - OMAppRedirection
 
-- (void)webView:(WKWebView *)webView open:(NSString *)page parameters:(NSDictionary *)parameters {
+- (void)webView:(WKWebView *)webView open:(OMWebViewManagerPage)page parameters:(NSDictionary *)parameters {
     NSLog(@"[OMWebViewManager] Message `open(%@, %@)` is not handled.", page, parameters);
 }
 

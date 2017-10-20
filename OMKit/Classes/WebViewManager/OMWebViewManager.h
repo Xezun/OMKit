@@ -18,14 +18,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @class OMWebViewManagerHTTPRequest, OMWebViewManagerHTTPResponse, OMWebViewManagerUser, OMWebViewManagerNavigationBar;
 
-/**
- 主题枚举。
- 对应 js 环境中的 OMApp.Theme 。
- */
+/** 主题枚举。 对应 js 环境中的 OMApp.Theme 。*/
 typedef NSString *OMWebViewManagerTheme NS_STRING_ENUM NS_SWIFT_NAME(WebViewManager.Theme);
 FOUNDATION_EXPORT OMWebViewManagerTheme const OMWebViewManagerThemeDay;
 FOUNDATION_EXPORT OMWebViewManagerTheme const OMWebViewManagerThemeNight;
 
+/** 网络类型。 */
 typedef NSString *OMWebViewManagerNetworkingType NS_STRING_ENUM NS_SWIFT_NAME(WebViewManager.NetworkingType);
 FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeNone   NS_SWIFT_NAME(none);
 FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWiFi   NS_SWIFT_NAME(WiFi);
@@ -33,6 +31,9 @@ FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkin
 FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan3G NS_SWIFT_NAME(WWan3G);
 FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeWWan4G NS_SWIFT_NAME(WWan4G);
 FOUNDATION_EXPORT OMWebViewManagerNetworkingType const OMWebViewManagerNetworkingTypeOther  NS_SWIFT_NAME(other);
+
+/* App 原生页面类型。 */
+typedef NSString *OMWebViewManagerPage NS_STRING_ENUM NS_SWIFT_NAME(WebViewManager.Page);
 
 /**
  OMWebViewManager 是 HTML 与 App 交互过程中，负责实现 App 功能的类。
@@ -119,7 +120,7 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  @param page 目的页面。
  @param parameters 页面所需参数。
  */
-- (void)webView:(WKWebView *)webView open:(nonnull NSString *)page parameters:(nullable NSDictionary *)parameters;
+- (void)webView:(WKWebView *)webView open:(nonnull OMWebViewManagerPage)page parameters:(nullable NSDictionary *)parameters;
 
 /**
  打开新的页面。
@@ -273,13 +274,34 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
 @end
 
 
-/// 将布尔值转换成可以直接插入到 JS 代码串中的字符串。
+/**
+ 将布尔值转换成 @"true" 或 @"false" 。
+
+ @param aBool 布尔值
+ @return 在 JS 环境中表示布尔值的字符串
+ */
 extern NSString *OMJavaScriptCodeForBOOL(BOOL aBool);
 
-/// 将字符串转换成可以直接插入到 JS 代码串中的字符串。
+/**
+ 将 OC 字符串转换成 JavaScript 字符串。转换后的内容，在 JS 环境中是字符串对象，而非字符串字面量。
+ 该方法先将字符串进行 URL 编码，然后在 JS 环境中 URL 解码。
+ ```
+ NSString *aString = "Some string";
+ NSLog(@"%@", OMJavaScriptCodeForNSString(aString));
+ // decodeURIComponent('Some%20string')
+ ```
+
+ @param aString 需要在 JS 中使用的字符串
+ @return 在 JS 中表示原字符串的对象
+ */
 extern NSString *OMJavaScriptCodeForNSString(NSString *aString);
 
-/// 将 UIColor 对象转换成 JS 字符串。
+/**
+ 将 UIColor 对象转换成颜色值字符串，如 '#FFAABB' 。
+
+ @param aColor UIColor 对象
+ @return 表示颜色值字符串
+ */
 extern NSString *OMJavaScriptCodeForUIColor(UIColor *aColor);
 
 

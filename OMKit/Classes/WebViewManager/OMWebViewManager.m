@@ -15,6 +15,7 @@
 #import "OMWebViewManagerNavigationBar.h"
 #import "OMWebViewManagerHTTPRequest.h"
 #import "OMWebViewManagerHTTPResponse.h"
+#import "OMWebViewManagerAlert.h"
 
 #if DEBUG
 /**
@@ -31,6 +32,7 @@ typedef NSString * ArgumentsType;
 static ArgumentsType const kArgumentsTypeString         = @"string";        // 字符串
 static ArgumentsType const kArgumentsTypeNumber         = @"number";        // 数字或布尔值
 static ArgumentsType const kArgumentsTypeDictionary     = @"dictionary";    // 字典
+static ArgumentsType const kArgumentsTypeArray          = @"array";         // 字典
 static ArgumentsType const kArgumentsTypeObject         = @"object";        // 任意类型
 inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArray<ArgumentsType> *types, NSInteger numberOfRequiredArguments);
 
@@ -222,6 +224,30 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
         return;
     }
     
+    if ([method isEqualToString:@"alert"]) {
+        kArgumentsAssert(method, arguments, @[kArgumentsTypeDictionary], 1);
+        NSDictionary *message = arguments[0];
+        NSString *title = message[@"title"];
+        if (![title isKindOfClass:[NSString class]]) {
+            title = [NSBundle mainBundle].displayName;
+        }
+        NSString *body = message[@"body"];
+        if (![body isKindOfClass:[NSString class]]) {
+            body = @"";
+        }
+        NSArray<NSString *> *actions = message[@"actions"];
+        if (![actions isKindOfClass:[NSArray class]]) {
+            actions = [NSArray array];
+        }
+        [self webView:webView alert:[[OMWebViewManagerAlert alloc] initWithTitle:title body:body actions:actions] completion:^(NSInteger index) {
+            if (callbackID == nil) {
+                return;
+            }
+            NSString *js = [NSString stringWithFormat:@"omApp.dispatch('%@', %ld)", callbackID, (long)index];
+            [webView evaluateJavaScript:js completionHandler:JS_COMPLETION_HANDLER(js)];
+        }];
+    }
+    
     // data service
     
     if ([method isEqualToString:@"numberOfRowsInList"]) {
@@ -392,6 +418,25 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     NSLog(@"[OMWebViewManager] Message `http(%@, callback)` is not handled.", request);
 }
 
+- (void)webView:(WKWebView *)webView alert:(OMWebViewManagerAlert *)alert completion:(void (^)(NSInteger))completion {
+    dispatch_async(dispatch_get_main_queue(), ^{
+        UIAlertController *alertVC = [UIAlertController alertControllerWithTitle:alert.title message:alert.body preferredStyle:(UIAlertControllerStyleAlert)];
+        if ([alert.actions count] > 0) {
+            [alert.actions enumerateObjectsUsingBlock:^(NSString * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+                UIAlertAction *action = [UIAlertAction actionWithTitle:obj style:(UIAlertActionStyleDefault) handler:^(UIAlertAction * _Nonnull action) {
+                    completion(idx);
+                }];
+                [alertVC addAction:action];
+            }];
+        } else {
+            NSString *title = NSLocalizedString(@"确定", @"HTML 页面显示 alert 的默认 “确定” 按钮，请在国际化文件中适配此文字。");
+            UIAlertAction *action = [UIAlertAction actionWithTitle:title style:(UIAlertActionStyleDefault) handler:nil];
+            [alertVC addAction:action];
+        }
+        [UIApplication.sharedApplication.keyWindow.rootViewController presentViewController:alertVC animated:true completion:nil];
+    });
+}
+
 #pragma mark - OMAppData
 
 -  (void)webView:(WKWebView *)webView document:(NSString *)document numberOfRowsInList:(NSString *)list completion:(void (^)(NSInteger))completion {
@@ -495,6 +540,13 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
                 continue;
             }
             NSString *reson = [NSString stringWithFormat:@"The argument for method `%@` at `%ld` expect to a number/bool value", method, (long)index];
+            @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reson userInfo:nil];
+        }
+        if ([types[index] isEqualToString:kArgumentsTypeArray]) {
+            if ([arguments[index] isKindOfClass:[NSArray class]]) {
+                continue;
+            }
+            NSString *reson = [NSString stringWithFormat:@"The argument for method `%@` at `%ld` expect to an array", method, (long)index];
             @throw [NSException exceptionWithName:NSInvalidArgumentException reason:reson userInfo:nil];
         }
         if ([types[index] isEqualToString:kArgumentsTypeObject]) {

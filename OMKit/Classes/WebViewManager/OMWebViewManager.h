@@ -16,7 +16,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@class OMWebViewManagerHTTPRequest, OMWebViewManagerHTTPResponse, OMWebViewManagerUser, OMWebViewManagerNavigationBar;
+@class OMWebViewManagerHTTPRequest, OMWebViewManagerHTTPResponse, OMWebViewManagerAlert, OMWebViewManagerUser, OMWebViewManagerNavigationBar;
 
 /** 主题枚举。 对应 js 环境中的 OMApp.Theme 。*/
 typedef NSString *OMWebViewManagerTheme NS_STRING_ENUM NS_SWIFT_NAME(WebViewManager.Theme);
@@ -207,6 +207,15 @@ NS_SWIFT_NAME(WebViewManager) @interface OMWebViewManager: NSObject <WKScriptMes
  @param completion 请求完毕后执行的回调。
  */
 - (void)webView:(WKWebView *)webView http:(OMWebViewManagerHTTPRequest *)request completion:(void (^)(OMWebViewManagerHTTPResponse *response))completion;
+
+/**
+ WebView 展示 alert 视图
+
+ @param webView WebView
+ @param alert alert
+ @param completion completion
+ */
+- (void)webView:(WKWebView *)webView alert:(OMWebViewManagerAlert *)alert completion:(void (^)(NSInteger index))completion;
 
 /**
  HTML 页面查询列表的行数。

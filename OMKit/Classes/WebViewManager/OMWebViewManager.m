@@ -9,7 +9,7 @@
 #import "OMWebViewManager.h"
 #import <objc/runtime.h>
 #import <SDWebImage/SDWebImageManager.h>
-#import <XZKit/XZKit-Swift.h>
+@import XZKit;
 
 #import "OMWebViewManagerUser.h"
 #import "OMWebViewManagerNavigationBar.h"
@@ -182,7 +182,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     
     if ([method isEqualToString:@"setNavigationBarTitleColor"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString], 1);
-        UIColor *color = [[UIColor alloc] initWithStringLiteral:arguments[0]];
+        UIColor *color = [UIColor xz_colorWithString:arguments[0]];
         [_navigationBar setTitleColor:color needsSync:NO];
         [self webView:webView setNavigationBarTitleColor:_navigationBar.titleColor];
         return;
@@ -190,7 +190,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
     
     if ([method isEqualToString:@"setNavigationBarBackgroundColor"]) {
         kArgumentsAssert(method, arguments, @[kArgumentsTypeString], 1);
-        UIColor *color = [[UIColor alloc] initWithStringLiteral:arguments[0]];
+        UIColor *color = [UIColor xz_colorWithString:arguments[0]];
         [_navigationBar setBackgroundColor:color needsSync:NO];
         [self webView:webView setNavigationBarBackgroundColor:_navigationBar.backgroundColor];
         return;
@@ -399,11 +399,11 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarTitleColor:(UIColor *)titleColor {
-    NSLog(@"[OMWebViewManager] Message `setNavigationBarTitleColor(#%06X)` is not handled.", [titleColor rgbaValue]);
+    NSLog(@"[OMWebViewManager] Message `setNavigationBarTitleColor(#%06X)` is not handled.", [titleColor xz_rgbaValue]);
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarBackgroundColor:(UIColor *)backgrondColor {
-    NSLog(@"[OMWebViewManager] Message `popTo(3%06X)` is not handled.", [backgrondColor rgbaValue]);
+    NSLog(@"[OMWebViewManager] Message `popTo(3%06X)` is not handled.", [backgrondColor xz_rgbaValue]);
 }
 
 #pragma mark - OMAppAnalytics
@@ -571,7 +571,7 @@ NSString *OMJavaScriptCodeForNSString(NSString *aString) {
 }
 
 NSString *OMJavaScriptCodeForUIColor(UIColor *aColor) {
-    return [NSString stringWithFormat:@"'#%06X'", [aColor rgbaValue]];
+    return [NSString stringWithFormat:@"'#%06X'", [aColor xz_rgbaValue]];
 }
 
 NSString *OMJavaScriptCodeForBOOL(BOOL aBool) {

@@ -8,6 +8,8 @@
 
 import UIKit
 import OMKit
+import XZKit
+
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -21,6 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let m = WebViewManager.NetworkingType.WWan2G;
         print(m.rawValue)
         
+        
+        let c = UIColor.init(red: 2, green: 3, blue: 4, alpha: 2);
+        
+        print(c.rgbaValue)
         
         return true
     }

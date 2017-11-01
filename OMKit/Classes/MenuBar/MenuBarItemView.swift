@@ -9,11 +9,13 @@
 import Foundation
 import XZKit
 
+public typealias TitledImageView = XZKit.TextImageView
+
 internal protocol MenuBarItemViewDelegate: class {
     func menuBarItemViewWasTapped(_ menuBarItemView: MenuBarItemView)
 }
 
-open class MenuBarItemView: XZKit.TitledImageView {
+open class MenuBarItemView: TitledImageView {
     open var isSelected: Bool = false
     
     public override init(frame: CGRect) {

@@ -399,11 +399,11 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarTitleColor:(UIColor *)titleColor {
-    NSLog(@"[OMWebViewManager] Message `setNavigationBarTitleColor(#%06X)` is not handled.", [titleColor xz_rgbaValue]);
+    NSLog(@"[OMWebViewManager] Message `setNavigationBarTitleColor(#%08lX)` is not handled.", (unsigned long)[titleColor xz_rgbaValue]);
 }
 
 - (void)webView:(WKWebView *)webView setNavigationBarBackgroundColor:(UIColor *)backgrondColor {
-    NSLog(@"[OMWebViewManager] Message `popTo(3%06X)` is not handled.", [backgrondColor xz_rgbaValue]);
+    NSLog(@"[OMWebViewManager] Message `popTo(3%08lX)` is not handled.", (unsigned long)[backgrondColor xz_rgbaValue]);
 }
 
 #pragma mark - OMAppAnalytics
@@ -571,7 +571,7 @@ NSString *OMJavaScriptCodeForNSString(NSString *aString) {
 }
 
 NSString *OMJavaScriptCodeForUIColor(UIColor *aColor) {
-    return [NSString stringWithFormat:@"'#%06X'", [aColor xz_rgbaValue]];
+    return [NSString stringWithFormat:@"'#%08lX'", (unsigned long)[aColor xz_rgbaValue]];
 }
 
 NSString *OMJavaScriptCodeForBOOL(BOOL aBool) {

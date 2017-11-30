@@ -111,9 +111,11 @@ public class TextInputView: UIView {
         backgroundImageView.backgroundColor = UIColor(0xf3f4f5ff)
         confirmButton.setBackgroundImage(UIImage.init(filled: UIColor(0xec764dff), rounded: 15), for: .normal)
         numberOfCharactersLabel.textColor = UIColor(0x999999ff)
+        numberOfCharactersLabel.text = "0"
         
         placeholderLabel.textColor = UIColor.lightGray;
-        
+        confirmButton.isEnabled = false;
+
         NotificationCenter.default.addObserver(self, selector: #selector(textViewTextDidChange(_:)), name: .UITextViewTextDidChange, object: textView);
     }
     
@@ -133,7 +135,7 @@ public class TextInputView: UIView {
 }
 
 
-class TextInputViewTextView: UITextView {
+fileprivate class TextInputViewTextView: UITextView {
     
     weak var placeholderLabel: UILabel? = nil {
         didSet {

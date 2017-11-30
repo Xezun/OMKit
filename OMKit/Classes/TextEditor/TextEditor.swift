@@ -8,22 +8,22 @@
 
 import UIKit
 
-protocol TextEditorDelegate: NSObjectProtocol {
+public protocol TextEditorDelegate: NSObjectProtocol {
     
     func textEditor(_ textEditor: TextEditor, didCancelEdting content: String)
     func textEditor(_ textEditor: TextEditor, didFinishEditing content: String)
     
 }
 
-class TextEditor: UIViewController {
+public class TextEditor: UIViewController {
     
     /// 转场代理已被设置为控制器自己。
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+    override public init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil);
         super.transitioningDelegate = self;
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder);
         super.transitioningDelegate = self;
     }
@@ -35,21 +35,16 @@ class TextEditor: UIViewController {
         NotificationCenter.default.removeObserver(self, name: .UIKeyboardDidHide, object: nil);
     }
     
-    weak var delegate: TextEditorDelegate?
+    public weak var delegate: TextEditorDelegate?
     
-    let textInputView: TextInputView = TextInputView.init(frame: .init(x: 0, y: UIScreen.main.bounds.maxY - 88, width: UIScreen.main.bounds.width, height: 88));
+    public let textInputView: TextInputView = TextInputView.init(frame: .init(x: 0, y: UIScreen.main.bounds.maxY - 88, width: UIScreen.main.bounds.width, height: 88));
     
-    override func viewDidLoad() {
+    public override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor.init(white: 0.0, alpha: 0.6);
         view.addSubview(textInputView);
-        
-        textInputView.placeholderLabel.text = "ABCD";
-        textInputView.confirmButton.setTitle("OK", for: .normal)
-        textInputView.numberOfCharactersLabel.text = "323"
-        textInputView.textView.text = "ABCD";
-        
+                
         textInputView.textView.delegate = self;
         
         textInputView.confirmButton.addTarget(self, action: #selector(confirmButtonAction), for: .touchUpInside);
@@ -64,21 +59,21 @@ class TextEditor: UIViewController {
         view.addGestureRecognizer(tap);
     }
     
-    override func viewDidLayoutSubviews() {
+    public override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews();
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    public override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated);
         // Note: 第一次显示时，输入框动画会被键盘慢，这个问题似乎无解。
         textInputView.textView.becomeFirstResponder();
     }
     
-    override func viewDidAppear(_ animated: Bool) {
+    public override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated);
     }
     
-    @objc func tapAction(_ tap: UITapGestureRecognizer) {
+    @objc private func tapAction(_ tap: UITapGestureRecognizer) {
         guard !textInputView.frame.contains(tap.location(in: view)) else {
             return;
         }
@@ -135,11 +130,6 @@ class TextEditor: UIViewController {
         
     }
     
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-    }
-
 }
 
 extension TextEditor: UITextViewDelegate {
@@ -148,16 +138,16 @@ extension TextEditor: UITextViewDelegate {
 
 extension TextEditor: UIViewControllerTransitioningDelegate {
     
-    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return TransitionAnimator.init(for: .present);
     }
     
-    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+    public func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
         return TransitionAnimator.init(for: .dismiss);
     }
     
     
-    class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
+    private class TransitionAnimator: NSObject, UIViewControllerAnimatedTransitioning {
         
         enum TransitionEvent {
             case present;

@@ -136,7 +136,7 @@
     dispatch_async(dispatch_get_main_queue(), ^{
         NSString *title = message[@"title"];
         if (![title isKindOfClass:[NSString class]]) {
-            title = [NSBundle mainBundle].displayName;
+            title = [[NSBundle mainBundle] xz_displayName];
         }
         NSString *body = message[@"body"];
         UIAlertController *alert = [UIAlertController alertControllerWithTitle:title message:body preferredStyle:(UIAlertControllerStyleAlert)];

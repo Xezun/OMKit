@@ -19,15 +19,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         
-        
-        let m = WebViewManager.NetworkingType.WWan2G;
-        print(m.rawValue)
-        
-        
-        let c = UIColor.init(red: 2, green: 3, blue: 4, alpha: 2);
-        
-        print(c.rgbaValue)
-        
         return true
     }
 

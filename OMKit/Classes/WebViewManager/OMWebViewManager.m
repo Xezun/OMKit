@@ -229,7 +229,7 @@ inline static void kArgumentsAssert(NSString *method, NSArray *arguments, NSArra
         NSDictionary *message = arguments[0];
         NSString *title = message[@"title"];
         if (![title isKindOfClass:[NSString class]]) {
-            title = [NSBundle mainBundle].displayName;
+            title = [[NSBundle mainBundle] xz_displayName];
         }
         NSString *body = message[@"body"];
         if (![body isKindOfClass:[NSString class]]) {

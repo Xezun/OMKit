@@ -2,12 +2,10 @@ PODS:
   - OMKit (1.0.0):
     - SDWebImage (~> 4.0)
     - XZKit
-  - SDWebImage (4.2.1):
-    - SDWebImage/Core (= 4.2.1)
-  - SDWebImage/Core (4.2.1)
-  - XZKit (2.0.22):
-    - XZKit/Core (= 2.0.22)
-  - XZKit/Core (2.0.22)
+  - SDWebImage (4.2.2):
+    - SDWebImage/Core (= 4.2.2)
+  - SDWebImage/Core (4.2.2)
+  - XZKit (2.1.1)
 
 DEPENDENCIES:
   - OMKit (from `../`)
@@ -18,8 +16,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   OMKit: 1a41fd4fb509ad46e8dbd2f96861d8f600f01abd
-  SDWebImage: 1fa4c9edf525b744f002db89f3f5a38b3cd4c541
-  XZKit: 5a4bdc8cf10ea93621e16c1ba61ad2729568dba9
+  SDWebImage: 89a9d32cd520bbb46eb14e541d5109b3564af198
+  XZKit: 19e04ee9c4212e4f2be04c7b6b4d2d3d5682d86f
 
 PODFILE CHECKSUM: f474f6c3c5ee4f6ab4a58e11f00c4857d83d1774
 

@@ -12,6 +12,7 @@
 		607FACDD1AFB9204008FA782 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDC1AFB9204008FA782 /* Images.xcassets */; };
 		607FACE01AFB9204008FA782 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 607FACDE1AFB9204008FA782 /* LaunchScreen.xib */; };
 		95F6C65679460AF71010A13D /* Pods_OMKit_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 3DA0E8A9E5BD024AA3A64F2E /* Pods_OMKit_Example.framework */; };
+		DD67DAE71FEBBB4B00EC05C3 /* FirstViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = DD67DAE61FEBBB4B00EC05C3 /* FirstViewController.swift */; };
 		DDB2A6D31F5FE7EA0000AE4A /* HTML.bundle in Resources */ = {isa = PBXBuildFile; fileRef = DDB2A6D21F5FE7EA0000AE4A /* HTML.bundle */; };
 /* End PBXBuildFile section */
 
@@ -42,6 +43,7 @@
 		B581044CDFD01A92F6C9B5D0 /* Pods-OMKit_Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-OMKit_Example.release.xcconfig"; path = "Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example.release.xcconfig"; sourceTree = "<group>"; };
 		BD4597E0CC5F0BB9D78EC460 /* OMKit.podspec */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text; name = OMKit.podspec; path = ../OMKit.podspec; sourceTree = "<group>"; };
 		DD02FAAD1F57E0AF00F1C5CF /* OMKit_Example-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "OMKit_Example-Bridging-Header.h"; sourceTree = "<group>"; };
+		DD67DAE61FEBBB4B00EC05C3 /* FirstViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FirstViewController.swift; sourceTree = "<group>"; };
 		DDB2A6D21F5FE7EA0000AE4A /* HTML.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = HTML.bundle; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -90,6 +92,7 @@
 			children = (
 				DDB2A6D21F5FE7EA0000AE4A /* HTML.bundle */,
 				607FACD51AFB9204008FA782 /* AppDelegate.swift */,
+				DD67DAE61FEBBB4B00EC05C3 /* FirstViewController.swift */,
 				607FACD91AFB9204008FA782 /* Main.storyboard */,
 				607FACDC1AFB9204008FA782 /* Images.xcassets */,
 				607FACDE1AFB9204008FA782 /* LaunchScreen.xib */,
@@ -210,7 +213,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/OMKit/OMKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
-				"${BUILT_PRODUCTS_DIR}/XZKit/XZKit.framework",
+				"${PODS_ROOT}/XZKit/Product/XZKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -264,6 +267,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				607FACD61AFB9204008FA782 /* AppDelegate.swift in Sources */,
+				DD67DAE71FEBBB4B00EC05C3 /* FirstViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

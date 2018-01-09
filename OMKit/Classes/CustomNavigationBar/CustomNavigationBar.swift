@@ -51,33 +51,24 @@ class CustomNavigationBarBackView: UIView {
 
 open class CustomNavigationBar: XZKit.NavigationBar {
     
-    private let _backView: CustomNavigationBarBackView = CustomNavigationBarBackView.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
-    
-    public required init(frame: CGRect) {
-        super.init(frame: frame)
-        super.backView = _backView;
-    }
-    
-    required public init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
-    }
-    
-    /// backView 不再可以重新赋值
-    open override var backView: UIView? {
-        get {
-            return super.backView
-        }
-        set {
-            fatalError("CustomNavigationBar's backView can not be reset.")
-        }
-    }
-    
     override open var backButton: UIButton? {
-        return _backView.backButton
+        if let backView = self.backView {
+            guard let customBackView = backView as? CustomNavigationBarBackView else { return nil }
+            return customBackView.backButton
+        }
+        let customBackView = CustomNavigationBarBackView.init(frame: .zero)
+        self.backView = customBackView
+        return customBackView.backButton
     }
     
-    open var closeButton: UIButton {
-        return _backView.closeButton
+    open var closeButton: UIButton? {
+        if let backView = self.backView {
+            guard let customBackView = backView as? CustomNavigationBarBackView else { return nil }
+            return customBackView.closeButton
+        }
+        let customBackView = CustomNavigationBarBackView.init(frame: .zero)
+        self.backView = customBackView
+        return customBackView.closeButton
     }
     
     override open func layoutSubviews() {

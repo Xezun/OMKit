@@ -9,219 +9,101 @@
 import UIKit
 import XZKit
 
+
+class CustomNavigationBarBackView: UIView {
+    
+    let backButton: UIButton = UIButton.init(type: .system)
+    let closeButton: UIButton = UIButton.init(type: .system)
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        
+        self.backgroundColor = UIColor.white
+        
+        backButton.translatesAutoresizingMaskIntoConstraints = false;
+        addSubview(backButton)
+        closeButton.translatesAutoresizingMaskIntoConstraints = false
+        addSubview(closeButton)
+        
+        let views: [String: Any] = ["backButton": backButton, "closeButton": closeButton]
+        
+        let lcs1 = NSLayoutConstraint.constraints(withVisualFormat: "H:|-[backButton]-(>=8)-[closeButton]-|", options: [.directionLeadingToTrailing, .alignAllCenterY], metrics: nil, views: views)
+        let lcs2 = NSLayoutConstraint.init(item: backButton, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0)
+        addConstraints(lcs1)
+        addConstraint(lcs2)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        let size1 = backButton.sizeThatFits(size)
+        let size2 = closeButton.sizeThatFits(size)
+        
+        return CGSize.init(width: size1.width + size2.width + 24, height: max(size1.height, size2.height))
+    }
+    
+    override var intrinsicContentSize: CGSize {
+        return sizeThatFits(CGSize.init(width: 1000, height: 1000))
+    }
+    
+}
+
+
 open class CustomNavigationBar: XZKit.NavigationBar {
     
-    open override var tintColor: UIColor! {
+    private let _backView: CustomNavigationBarBackView = CustomNavigationBarBackView.init(frame: CGRect.init(x: 0, y: 0, width: 0, height: 0))
+    
+    public required init(frame: CGRect) {
+        super.init(frame: frame)
+        super.backView = _backView;
+    }
+    
+    required public init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    /// backView 不再可以重新赋值
+    open override var backView: UIView? {
         get {
-            return super.tintColor
+            return super.backView
         }
         set {
-            super.tintColor = tintColor
-            _titleButton?.tintColor = newValue
-            _infoButton?.tintColor = newValue
-            _backButton?.tintColor = newValue
-            _closeButton?.tintColor = newValue
+            fatalError("CustomNavigationBar's backView can not be reset.")
         }
     }
     
-    private var _titleButton: UIButton?
-    open var titleButton: UIButton {
-        get {
-            if let button = _titleButton {
-                return button
-            }
-            let button = UIButton()
-            button.titleLabel?.font = UIFont(name: "OM-Arabic-Title-Regular", size: 18.0)
-            self.addSubview(button)
-            _titleButton = button
-            return button
-        }
-        set {
-            _titleButton?.removeFromSuperview()
-            addSubview(newValue)
-            _titleButton = newValue
-        }
+    override open var backButton: UIButton? {
+        return _backView.backButton
     }
     
-    private var _infoButton: UIButton?
-    open var infoButton: UIButton {
-        get {
-            if let button = _infoButton {
-                return button
-            }
-            let button = UIButton()
-            self.addSubview(button)
-            _infoButton = button
-            return button
-        }
-        set {
-            _infoButton?.removeFromSuperview()
-            addSubview(newValue)
-            _infoButton = newValue
-        }
-    }
-    
-    private var _backButton: UIButton?
-    open var backButton: UIButton {
-        get {
-            if let button = _backButton {
-                return button
-            }
-            let button = UIButton()
-            self.addSubview(button)
-            _backButton = button
-            return button
-        }
-        set {
-            _backButton?.removeFromSuperview()
-            addSubview(newValue)
-            _backButton = newValue
-        }
-    }
-    
-    private var _closeButton: UIButton?
     open var closeButton: UIButton {
-        get {
-            if let button = _closeButton {
-                return button
-            }
-            let button = UIButton()
-            self.addSubview(button)
-            _closeButton = button
-            return button
-        }
-        set {
-            _closeButton?.removeFromSuperview()
-            addSubview(newValue)
-            _closeButton = newValue
-        }
-    }
-    
-    open var title: String? {
-        get {
-            return self.titleButton.title(for: .normal)
-        }
-        set {
-            self.titleButton.setTitle(newValue, for: .normal)
-            titleButton.sizeToFit();
-        }
-    }
-    
-    open var titleImage: UIImage? {
-        get {
-            return self.titleButton.image(for: .normal)
-        }
-        set {
-            self.titleButton.setImage(newValue, for: .normal)
-        }
+        return _backView.closeButton
     }
     
     override open func layoutSubviews() {
         super.layoutSubviews()
-        
-        let BOUNDS = self.bounds
-        
-        if let infoButton = _infoButton {
-            if infoButton.frame.isEmpty {
-                infoButton.sizeToFit()
-            }
-            var frame = infoButton.frame
-            frame.origin.x = BOUNDS.minX + 16.0
-            frame.origin.y = (BOUNDS.height - frame.height) * 0.5
-            infoButton.frame = frame
-        }
-        
-        if let titleButton = _titleButton {
-            if titleButton.frame.isEmpty {
-                titleButton.sizeToFit()
-            }
-            var frame = titleButton.frame
-            frame.origin.x = (BOUNDS.width - frame.width) * 0.5
-            frame.origin.y = (BOUNDS.height - frame.height) * 0.5
-            titleButton.frame = frame
-        }
-        
-        if let backButton = _backButton {
-            if backButton.frame.isEmpty {
-                backButton.sizeToFit()
-            }
-            var frame = backButton.frame
-            frame.origin.x = BOUNDS.maxX - frame.width - 16
-            frame.origin.y = (BOUNDS.height - frame.height) * 0.5
-            backButton.frame = frame
-        }
-        
-        if let closeButton = _closeButton {
-            if closeButton.frame.isEmpty {
-                closeButton.sizeToFit()
-            }
-            var frame = closeButton.frame
-            frame.origin.x = BOUNDS.maxX - frame.width - 16
-            frame.origin.y = (BOUNDS.height - frame.height) * 0.5
-            
-            if let backButton = _backButton {
-                frame.origin.x -= (backButton.frame.width + 20.0)
-            }
-            
-            closeButton.frame = frame
-        }
-        
-        _separatorView.frame.origin.y = BOUNDS.maxY - 0.5
-        
     }
     
-    private lazy var _separatorView: UIView = self.loadSeparatorView()
-    
-    open var shadowColor: UIColor? {
-        get {
-            return _separatorView.backgroundColor
-        }
-        set {
-            _separatorView.backgroundColor = newValue
-        }
-    }
-    
-    /*
-    // Only override draw() if you perform custom drawing.
-    // An empty implementation adversely affects performance during animation.
-    override func draw(_ rect: CGRect) {
-        // Drawing code
-    }
-    */
+}
 
-    private func loadSeparatorView() -> UIView {
-        let view = UIView()
-        view.autoresizingMask = [.flexibleWidth, .flexibleTopMargin]
-        var frame = self.bounds
-        frame.origin.y = frame.maxY - 0.5
-        frame.size.height = 0.5
-        view.frame = frame
-        addSubview(view)
-        return view
+extension NavigationBarCustomizable where Self: UIViewController {
+    
+    public static var navigationBarClass: XZKit.NavigationBar.Type {
+        return CustomNavigationBar.self
+    }
+    
+    public var customNavigationBar: CustomNavigationBar {
+        guard let customNavigationBar = self.navigationBar as? CustomNavigationBar else {
+            fatalError("当前控制器的导航条类型不为 CustomNavigationBar 请检查！")
+        }
+        return customNavigationBar
     }
     
 }
 
 extension UIViewController {
-    
-    /// 自定义的导航条。与 navigationBar  属性相同，但是在控制器生命周期内，必须首先调用此属性。
-    @objc open var customNavigationBar: CustomNavigationBar! {
-        if let vc = (self as? NavigationBarCustomizable) {
-            if vc.isNavigationBarLoaded {
-                return vc.navigationBar as? CustomNavigationBar
-            } else {
-                let bar = CustomNavigationBar()
-                bar.autoresizingMask = [.flexibleWidth]
-                bar.isTranslucent = false
-                bar.isHidden      = false
-                vc.navigationBar  = bar
-                return bar
-            }
-        }
-        assert(false, "current controller `\(self)` is not NavigationBarCustomizable")
-        return nil
-    }
-    
     
     /// 控制器将自己从 UINavigationController 栈中弹出。
     ///

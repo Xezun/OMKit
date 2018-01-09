@@ -7,8 +7,12 @@
 //
 
 import UIKit
+import XZKit
+import OMKit
 
-class FirstViewController: UIViewController {
+
+
+class FirstViewController: UIViewController, NavigationBarCustomizable {
 
     @IBOutlet weak var testView: UIView!
     
@@ -22,6 +26,12 @@ class FirstViewController: UIViewController {
         self.testView.layer.shadowRadius    = 3.0
         self.testView.layer.borderWidth     = 1.0;
         self.testView.layer.borderColor     = UIColor.red.cgColor
+        
+        self.customNavigationBar.barTintColor = UIColor.white
+        self.customNavigationBar.backButton?.backgroundColor = UIColor.red
+        self.customNavigationBar.closeButton.backgroundColor = UIColor.blue
+
+        
     }
 
     override func didReceiveMemoryWarning() {

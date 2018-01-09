@@ -54,8 +54,8 @@ open class WebViewController: UIViewController {
         super.viewWillAppear(animated)
         
         guard let count = self.navigationController?.viewControllers.count else { return }
-        customNavigationBar.backButton.isHidden = (count < 2)
-        customNavigationBar.closeButton.isHidden = (count < 3)
+//        customNavigationBar.backButton.isHidden = (count < 2)
+//        customNavigationBar.closeButton.isHidden = (count < 3)
     }
 
     override open func didReceiveMemoryWarning() {
@@ -237,50 +237,50 @@ extension WebViewController {
     
     fileprivate func configureNavigationBar(with parmaters: [String: Any?]) {
         // 标题
-        if let title = parmaters["title"] as? String {
-            customNavigationBar.title = title
-        }
-        
-        // 标题颜色
-        if let navigationBarTitleColor = parmaters["titleColor"] as? String {
-            let titleColor = UIColor(navigationBarTitleColor)
-            customNavigationBar.titleButton.setTitleColor(titleColor, for: .normal)
-        }
-        
-        // 渲染色
-        if let barTintColor = parmaters["tintColor"] as? String {
-            customNavigationBar.tintColor = UIColor(barTintColor)
-        }
-        
-        // 是否透明
-        if let isTranslucent = parmaters["translucent"] as? String {
-            customNavigationBar.isTranslucent = (isTranslucent == "true")
-        }
-        
-        // 是否隐藏
-        if let isHidden = parmaters["isHidden"] as? String {
-            customNavigationBar.isHidden = (isHidden == "true")
-        }
-        
-        // 背景色
-        if let backgroundColor = parmaters["backgroundColor"] as? String {
-            customNavigationBar.barTintColor = UIColor(backgroundColor)
-        }
-        
-        // 返回按钮
-        if let isBackButtonHidden = parmaters["backButtonHidden"] as? String {
-            customNavigationBar.backButton.isHidden = (isBackButtonHidden == "true")
-        }
-        
-        // 关闭按钮
-        if let isCloseButtonHidden = parmaters["closeButtonHidden"] as? String {
-            customNavigationBar.closeButton.isHidden = (isCloseButtonHidden == "true")
-        }
-        
-        // 更多按钮
-        if let isInfoButtonHidden = parmaters["infoButtonHidden"] as? String {
-            customNavigationBar.infoButton.isHidden = (isInfoButtonHidden == "true")
-        }
+//        if let title = parmaters["title"] as? String {
+//            customNavigationBar.title = title
+//        }
+//        
+//        // 标题颜色
+//        if let navigationBarTitleColor = parmaters["titleColor"] as? String {
+//            let titleColor = UIColor(navigationBarTitleColor)
+//            customNavigationBar.titleButton.setTitleColor(titleColor, for: .normal)
+//        }
+//        
+//        // 渲染色
+//        if let barTintColor = parmaters["tintColor"] as? String {
+//            customNavigationBar.tintColor = UIColor(barTintColor)
+//        }
+//        
+//        // 是否透明
+//        if let isTranslucent = parmaters["translucent"] as? String {
+//            customNavigationBar.isTranslucent = (isTranslucent == "true")
+//        }
+//        
+//        // 是否隐藏
+//        if let isHidden = parmaters["isHidden"] as? String {
+//            customNavigationBar.isHidden = (isHidden == "true")
+//        }
+//        
+//        // 背景色
+//        if let backgroundColor = parmaters["backgroundColor"] as? String {
+//            customNavigationBar.barTintColor = UIColor(backgroundColor)
+//        }
+//        
+//        // 返回按钮
+//        if let isBackButtonHidden = parmaters["backButtonHidden"] as? String {
+//            customNavigationBar.backButton.isHidden = (isBackButtonHidden == "true")
+//        }
+//        
+//        // 关闭按钮
+//        if let isCloseButtonHidden = parmaters["closeButtonHidden"] as? String {
+//            customNavigationBar.closeButton.isHidden = (isCloseButtonHidden == "true")
+//        }
+//        
+//        // 更多按钮
+//        if let isInfoButtonHidden = parmaters["infoButtonHidden"] as? String {
+//            customNavigationBar.infoButton.isHidden = (isInfoButtonHidden == "true")
+//        }
         
     }
 }

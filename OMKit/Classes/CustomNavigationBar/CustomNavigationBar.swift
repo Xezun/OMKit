@@ -48,41 +48,64 @@ class CustomNavigationBarBackView: UIView {
     
 }
 
+extension NavigationBar {
+    
+    /// 关闭按钮。
+    /// - 只有当导航条类型为 CustomNavigationBar 时，才能使用此属性。
+    /// - 在引用了 OMKit 时，遵循 NavigationBarCustomizable 协议默认生成的到导航条类型即为 CustomNavigationBar 。
+    @objc(om_closeButton) open var closeButton: UIButton? {
+        fatalError("必须在导航条类型为 CustomNavigationBar 时才能使用此属性。")
+    }
+    
+}
+
 
 open class CustomNavigationBar: XZKit.NavigationBar {
     
+    /// OMKit 重写了返回按钮，但保持其基本特性与父类一致。
     override open var backButton: UIButton? {
         if let backView = self.backView {
             guard let customBackView = backView as? CustomNavigationBarBackView else { return nil }
             return customBackView.backButton
         }
-        let customBackView = CustomNavigationBarBackView.init(frame: .zero)
+        let customBackView = loadCustomBackView()
         self.backView = customBackView
         return customBackView.backButton
     }
     
-    open var closeButton: UIButton? {
+    /// 导航条关闭按钮。
+    /// - 关闭按钮与返回按钮同时存在。
+    override open var closeButton: UIButton? {
         if let backView = self.backView {
             guard let customBackView = backView as? CustomNavigationBarBackView else { return nil }
             return customBackView.closeButton
         }
-        let customBackView = CustomNavigationBarBackView.init(frame: .zero)
-        self.backView = customBackView
+        let customBackView = loadCustomBackView()
         return customBackView.closeButton
     }
     
-    override open func layoutSubviews() {
-        super.layoutSubviews()
+    private func loadCustomBackView() -> CustomNavigationBarBackView {
+        let customBackView = CustomNavigationBarBackView.init(frame: .zero)
+        customBackView.backButton.addTarget(self, action: #selector(customBackButtonAction(_:)), for: .touchUpInside)
+        self.backView = customBackView
+        return customBackView
+    }
+    
+    /// 返回按钮事件。
+    @objc private func customBackButtonAction(_ button: UIButton) {
+        navigationController?.popViewController(animated: true)
     }
     
 }
 
 extension NavigationBarCustomizable where Self: UIViewController {
     
+    /// 在 OMKit 环境中，实现 NavigationBarCustomizable 协议默认创建类型为 CustomNavigationBar 的导航条。
     public static var navigationBarClass: XZKit.NavigationBar.Type {
         return CustomNavigationBar.self
     }
     
+    /// OMKit 自定义导航条。大部分情况下，只需要使用 navigationBar 属性即可。
     public var customNavigationBar: CustomNavigationBar {
         guard let customNavigationBar = self.navigationBar as? CustomNavigationBar else {
             fatalError("当前控制器的导航条类型不为 CustomNavigationBar 请检查！")
@@ -118,3 +141,4 @@ extension UIViewController {
     }
     
 }
+

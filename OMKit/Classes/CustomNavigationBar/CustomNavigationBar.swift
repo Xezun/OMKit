@@ -12,8 +12,20 @@ import XZKit
 
 class CustomNavigationBarBackView: UIView {
     
-    let backButton: UIButton = UIButton.init(type: .system)
-    let closeButton: UIButton = UIButton.init(type: .system)
+    private class Button: UIButton {
+        override func setTitle(_ title: String?, for state: UIControlState) {
+            super.setTitle(title, for: state)
+            superview?.setNeedsLayout()
+        }
+        
+        override func setImage(_ image: UIImage?, for state: UIControlState) {
+            super.setImage(image, for: state)
+            superview?.setNeedsLayout()
+        }
+    }
+    
+    let backButton: UIButton = Button.init(type: .system)
+    let closeButton: UIButton = Button.init(type: .system)
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -23,12 +35,15 @@ class CustomNavigationBarBackView: UIView {
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(closeButton)
         
+        
+        
         let views: [String: Any] = ["backButton": backButton, "closeButton": closeButton]
         
-        let lcs1 = NSLayoutConstraint.constraints(withVisualFormat: "H:|-[backButton]-(>=8)-[closeButton]-|", options: [.directionLeadingToTrailing, .alignAllCenterY], metrics: nil, views: views)
-        let lcs2 = NSLayoutConstraint.init(item: backButton, attribute: .centerY, relatedBy: .equal, toItem: self, attribute: .centerY, multiplier: 1.0, constant: 0)
+        let lcs1 = NSLayoutConstraint.constraints(withVisualFormat: "H:|-[backButton]-(>=8@999)-[closeButton]-|", options: [.directionLeadingToTrailing, .alignAllCenterY], metrics: nil, views: views)
+        let lcs2 = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButton]|", options: .alignAllLeading, metrics: nil, views: views)
         addConstraints(lcs1)
-        addConstraint(lcs2)
+        addConstraints(lcs2)
+        
     }
     
     required init?(coder aDecoder: NSCoder) {
@@ -141,4 +156,5 @@ extension UIViewController {
     }
     
 }
+
 

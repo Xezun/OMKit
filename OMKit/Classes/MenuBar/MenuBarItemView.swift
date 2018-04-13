@@ -9,7 +9,6 @@
 import Foundation
 import XZKit
 
-public typealias TitledImageView = XZKit.TextImageView
 
 internal protocol MenuBarItemViewDelegate: class {
     func menuBarItemViewWasTapped(_ menuBarItemView: MenuBarItemView)

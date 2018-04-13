@@ -29,7 +29,7 @@ class FirstViewController: UIViewController, NavigationBarCustomizable {
         
         self.customNavigationBar.barTintColor = UIColor.white
         self.customNavigationBar.backButton?.backgroundColor = UIColor.red
-        self.customNavigationBar.closeButton.backgroundColor = UIColor.blue
+        self.customNavigationBar.closeButton?.backgroundColor = UIColor.blue
 
         
     }

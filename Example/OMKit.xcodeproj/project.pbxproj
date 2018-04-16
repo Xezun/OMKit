@@ -144,7 +144,6 @@
 				607FACCD1AFB9204008FA782 /* Frameworks */,
 				607FACCE1AFB9204008FA782 /* Resources */,
 				74ACE7D2320FA1AC25F01469 /* [CP] Embed Pods Frameworks */,
-				D711E113FE8128229A433C8B /* [CP] Copy Pods Resources */,
 				DD20692F1ED02EE800D86A3C /* Embed Frameworks */,
 			);
 			buildRules = (
@@ -216,7 +215,7 @@
 				"${SRCROOT}/Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example-frameworks.sh",
 				"${BUILT_PRODUCTS_DIR}/OMKit/OMKit.framework",
 				"${BUILT_PRODUCTS_DIR}/SDWebImage/SDWebImage.framework",
-				"${PODS_ROOT}/XZKit/Product/XZKit.framework",
+				"${PODS_ROOT}/XZKit/Products/XZKit.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
 			outputPaths = (
@@ -227,21 +226,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		D711E113FE8128229A433C8B /* [CP] Copy Pods Resources */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			name = "[CP] Copy Pods Resources";
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-OMKit_Example/Pods-OMKit_Example-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		DE5CED3ADC7C9001FC2B1652 /* [CP] Check Pods Manifest.lock */ = {

@@ -210,7 +210,7 @@ extension WebViewController: UIWebViewDelegate {
         guard scheme == eventScheme else { return true }
         
         let event: WebViewEvent = WebViewEvent(url: url) ?? .undefined
-        let parameters: [String: Any?]? = url.queryKeyedValues
+        let parameters: [String: Any?]? = url.queryValues
 
         DispatchQueue.main.async {
             self.didRecevie(event, parameters: parameters)

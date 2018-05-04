@@ -68,16 +68,8 @@
 - (void)setCurrentTheme:(NSString *)currentTheme {
     _currentTheme = currentTheme;
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self currentTheme:currentTheme];
+        [self->_delegate appExport:self currentTheme:currentTheme];
     });
-}
-
-- (NSString *)theme {
-    return [self currentTheme];
-}
-
-- (void)setTheme:(NSString *)theme {
-    [self setCurrentTheme:theme];
 }
 
 - (id<OMAppAnalyticsExport>)analytics {
@@ -86,13 +78,13 @@
 
 - (void)track:(NSString *)event parameters:(NSDictionary<NSString *,id> *)parameters {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self analyticsTrack:event parameters:parameters];
+        [self->_delegate appExport:self analyticsTrack:event parameters:parameters];
     });
 }
 
 - (void)login:(JSValue *)completion {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self login:^(BOOL success) {
+        [self->_delegate appExport:self login:^(BOOL success) {
             [completion callWithArguments:@[@(success)]];
         }];
     });
@@ -100,13 +92,13 @@
 
 - (void)open:(NSString *)page parameters:(nullable NSDictionary<NSString *,id> *)parameters {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self open:page parameters:parameters];
+        [self->_delegate appExport:self open:page parameters:parameters];
     });
 }
 
 - (void)present:(NSString *)url {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self present:url];
+        [self->_delegate appExport:self present:url];
     });
 }
 
@@ -119,7 +111,7 @@
     object.params   = request[@"params"];
     object.data     = request[@"data"] != nil ? request[@"data"] : request[@"params"];
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self http:object completion:^(BOOL success, id _Nullable result) {
+        [self->_delegate appExport:self http:object completion:^(BOOL success, id _Nullable result) {
             if (completion == nil) {
                 return;
             }
@@ -163,45 +155,45 @@
 
 - (void)navigation:(OMAppNavigationExport *)navigation push:(NSString *)url animated:(BOOL)animated {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self navigationPush:url animated:animated];
+        [self->_delegate appExport:self navigationPush:url animated:animated];
     });
 }
 
 - (void)navigation:(OMAppNavigationExport *)navigation pop:(BOOL)animated {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self navigationPop:animated];
+        [self->_delegate appExport:self navigationPop:animated];
     });
 }
 
 - (void)navigation:(OMAppNavigationExport *)navigation popTo:(NSInteger)index animated:(BOOL)animated {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self navigationPopTo:index animated:animated];
+        [self->_delegate appExport:self navigationPopTo:index animated:animated];
     });
 }
 
 - (void)navigation:(OMAppNavigationExport *)navigation title:(nullable NSString *)title {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self updateNavigationBarTitle:title];
+        [self->_delegate appExport:self updateNavigationBarTitle:title];
     });
 }
 
 - (void)navigation:(OMAppNavigationExport *)navigation titleColor:(NSString *)titleColor {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIColor *color = [UIColor xz_colorWithString:titleColor];
-        [_delegate appExport:self updateNavigationBarTitleColor:color];
+        [self->_delegate appExport:self updateNavigationBarTitleColor:color];
     });
 }
 
 - (void)navigation:(OMAppNavigationExport *)navigation isHidden:(BOOL)isHidden {
     dispatch_async(dispatch_get_main_queue(), ^{
-        [_delegate appExport:self updateNavigationBarVisibility:isHidden];
+        [self->_delegate appExport:self updateNavigationBarVisibility:isHidden];
     });
 }
 
 - (void)navigation:(OMAppNavigationExport *)navigation backgroundColor:(NSString *)backgroundColor {
     dispatch_async(dispatch_get_main_queue(), ^{
         UIColor *color = [UIColor xz_colorWithString:backgroundColor];
-        [_delegate appExport:self updateNavigationBarBackgroundColor:color];
+        [self->_delegate appExport:self updateNavigationBarBackgroundColor:color];
     });
 }
 

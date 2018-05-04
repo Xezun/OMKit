@@ -106,10 +106,10 @@ public class TextInputView: UIView {
             textViewBackgroundImageView.addConstraints(lcs6);
             textViewBackgroundImageView.addConstraints(lcs7);
         }
-        textViewBackgroundImageView.image = UIImage.init(filled: .white, bordered: UIColor(0xcbcbcbff), rounded: 4)
+        textViewBackgroundImageView.image = UIImage.init(filled: .white, borderColor: UIColor(0xcbcbcbff), cornerRadius: 4)
         
         backgroundImageView.backgroundColor = UIColor(0xf3f4f5ff)
-        confirmButton.setBackgroundImage(UIImage.init(filled: UIColor(0xec764dff), rounded: 15), for: .normal)
+        confirmButton.setBackgroundImage(UIImage.init(filled: UIColor(0xec764dff), cornerRadius: 15), for: .normal)
         numberOfCharactersLabel.textColor = UIColor(0x999999ff)
         numberOfCharactersLabel.text = "0"
         

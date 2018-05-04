@@ -30,7 +30,7 @@ JSExportAs(open, - (void)open:(nonnull NSString *)page parameters:(nullable NSDi
 @property (nonatomic, nonnull, readonly) OMAppNavigationExport *navigation;
 // 4.4
 @property (nonatomic, nonnull) NSString *currentTheme;
-@property (nonatomic, nonnull) NSString *theme __deprecated;
+// @property (nonatomic, nonnull) NSString *theme NS_DEPRECATED_IOS(1.0, 1.0, "Use currentTheme instead.");
 // 4.5
 @property (nonatomic, readonly, nonnull) id<OMAppAnalyticsExport> analytics;
 // 4.6

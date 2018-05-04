@@ -52,10 +52,6 @@ open class WebViewController: UIViewController {
     
     open override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        guard let count = self.navigationController?.viewControllers.count else { return }
-//        customNavigationBar.backButton.isHidden = (count < 2)
-//        customNavigationBar.closeButton.isHidden = (count < 3)
     }
 
     override open func didReceiveMemoryWarning() {

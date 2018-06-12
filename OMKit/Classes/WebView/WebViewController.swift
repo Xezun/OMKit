@@ -89,7 +89,7 @@ open class WebViewController: UIViewController {
                 return
             }
             guard let value = parameters?["index"] else { return }
-            let index = min(0, Int(forceCast: value))
+            let index = min(0, Int(cast: value))
             let viewControllers = navigationController.viewControllers
             
             var find: Int = -1

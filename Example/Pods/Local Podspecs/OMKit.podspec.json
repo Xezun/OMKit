@@ -1,0 +1,35 @@
+{
+  "name": "OMKit",
+  "version": "1.0.0",
+  "summary": "The OMKit is an iOS develop libiray.",
+  "description": "OMKit is a framework for iOS.\nPowered by Onemena.",
+  "homepage": "https://github.com/onemena",
+  "license": {
+    "type": "MIT",
+    "file": "LICENSE"
+  },
+  "authors": {
+    "mlibai": "mlibai@163.com"
+  },
+  "source": {
+    "git": "https://github.com/onemena/ios_anaween.git",
+    "tag": "1.0.0"
+  },
+  "platforms": {
+    "ios": "8.0"
+  },
+  "source_files": "OMKit/Classes/**/*",
+  "resource_bundles": {
+    "OMKit": [
+      "OMKit/Assets/**/*.png"
+    ]
+  },
+  "dependencies": {
+    "SDWebImage": [
+      "~> 4.0"
+    ],
+    "XZKit": [
+
+    ]
+  }
+}

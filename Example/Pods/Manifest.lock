@@ -1,0 +1,29 @@
+PODS:
+  - OMKit (1.0.0):
+    - SDWebImage (~> 4.0)
+    - XZKit
+  - SDWebImage (4.4.1):
+    - SDWebImage/Core (= 4.4.1)
+  - SDWebImage/Core (4.4.1)
+  - XZKit (2.3.6)
+
+DEPENDENCIES:
+  - OMKit (from `../`)
+
+SPEC REPOS:
+  https://github.com/cocoapods/specs.git:
+    - SDWebImage
+    - XZKit
+
+EXTERNAL SOURCES:
+  OMKit:
+    :path: "../"
+
+SPEC CHECKSUMS:
+  OMKit: f8e8934c58bc8675205dff541fbde2337f1a45e1
+  SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
+  XZKit: 51cd465f5705981c85b053f4d0874ba4eaa6e48d
+
+PODFILE CHECKSUM: f474f6c3c5ee4f6ab4a58e11f00c4857d83d1774
+
+COCOAPODS: 1.5.3

@@ -10,7 +10,7 @@ import UIKit
 import XZKit
 
 
-class CustomNavigationBarBackView: UIView {
+public class CustomNavigationBarBackView: UIView {
     
     private class Button: UIButton {
         override func setTitle(_ title: String?, for state: UIControlState) {
@@ -30,12 +30,12 @@ class CustomNavigationBarBackView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        self.layoutMargins = UIEdgeInsets.init(top: 0, left: 14, bottom: 0, right: 14)
+        
         backButton.translatesAutoresizingMaskIntoConstraints = false;
         addSubview(backButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
         addSubview(closeButton)
-        
-        
         
         let views: [String: Any] = ["backButton": backButton, "closeButton": closeButton]
         
@@ -43,21 +43,24 @@ class CustomNavigationBarBackView: UIView {
         let lcs2 = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButton]|", options: .alignAllLeading, metrics: nil, views: views)
         addConstraints(lcs1)
         addConstraints(lcs2)
-        
     }
     
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func sizeThatFits(_ size: CGSize) -> CGSize {
+    override public func sizeThatFits(_ size: CGSize) -> CGSize {
         let size1 = backButton.sizeThatFits(size)
         let size2 = closeButton.sizeThatFits(size)
+        let edges = self.layoutMargins
         
-        return CGSize.init(width: size1.width + size2.width + 24, height: max(size1.height, size2.height))
+        return CGSize.init(
+            width: edges.left + size1.width + 8 + size2.width + edges.right,
+            height: edges.top + max(size1.height, size2.height) + edges.bottom
+        )
     }
     
-    override var intrinsicContentSize: CGSize {
+    override public var intrinsicContentSize: CGSize {
         return sizeThatFits(CGSize.init(width: 1000, height: 1000))
     }
     

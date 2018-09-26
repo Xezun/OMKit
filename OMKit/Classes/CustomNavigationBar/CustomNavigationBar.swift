@@ -30,8 +30,6 @@ public class CustomNavigationBarBackView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        self.layoutMargins = UIEdgeInsets.init(top: 0, left: 14, bottom: 0, right: 14)
-        
         backButton.translatesAutoresizingMaskIntoConstraints = false;
         addSubview(backButton)
         closeButton.translatesAutoresizingMaskIntoConstraints = false
@@ -39,7 +37,7 @@ public class CustomNavigationBarBackView: UIView {
         
         let views: [String: Any] = ["backButton": backButton, "closeButton": closeButton]
         
-        let lcs1 = NSLayoutConstraint.constraints(withVisualFormat: "H:|-[backButton]-(>=8@999)-[closeButton]-|", options: [.directionLeadingToTrailing, .alignAllCenterY], metrics: nil, views: views)
+        let lcs1 = NSLayoutConstraint.constraints(withVisualFormat: "H:|-14-[backButton]-(>=8@999)-[closeButton]-14-|", options: [.directionLeadingToTrailing, .alignAllCenterY], metrics: nil, views: views)
         let lcs2 = NSLayoutConstraint.constraints(withVisualFormat: "V:|[backButton]|", options: .alignAllLeading, metrics: nil, views: views)
         addConstraints(lcs1)
         addConstraints(lcs2)
@@ -55,7 +53,7 @@ public class CustomNavigationBarBackView: UIView {
         let edges = self.layoutMargins
         
         return CGSize.init(
-            width: edges.left + size1.width + 8 + size2.width + edges.right,
+            width: 14 + size1.width + 8 + size2.width + 14,
             height: edges.top + max(size1.height, size2.height) + edges.bottom
         )
     }

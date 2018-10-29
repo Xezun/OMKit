@@ -12,15 +12,15 @@ import SDWebImage
 
 extension UIButton {
     
-    public func setImage(with url: URL?, for state: UIControlState) {
+    public func setImage(with url: URL?, for state: UIControl.State) {
         setImage(with: url, for: state, placeholderImage: nil, completed: nil)
     }
     
-    public func setImage(with url: URL?, placeholderImage: UIImage, for state: UIControlState) {
+    public func setImage(with url: URL?, placeholderImage: UIImage, for state: UIControl.State) {
         setImage(with: url, for: state, placeholderImage: placeholderImage, completed: nil)
     }
     
-    func setImage(with url: URL?, for state: UIControlState, placeholderImage placeholder: UIImage?, completed completedBlock: ((_ image: UIImage?, _ imageURL: URL?, _ error: Error?)->Void)?) {
+    func setImage(with url: URL?, for state: UIControl.State, placeholderImage placeholder: UIImage?, completed completedBlock: ((_ image: UIImage?, _ imageURL: URL?, _ error: Error?)->Void)?) {
         sd_setImage(with: url, for: state, placeholderImage: placeholder, options: []) { (image, error, cacheType, url) in
             completedBlock?(image, url, error)
         }

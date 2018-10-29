@@ -116,7 +116,7 @@ public class TextInputView: UIView {
         placeholderLabel.textColor = UIColor.lightGray;
         confirmButton.isEnabled = false;
 
-        NotificationCenter.default.addObserver(self, selector: #selector(textViewTextDidChange(_:)), name: .UITextViewTextDidChange, object: textView);
+        NotificationCenter.default.addObserver(self, selector: #selector(textViewTextDidChange(_:)), name: UITextView.textDidChangeNotification, object: textView);
     }
     
     @objc private func textViewTextDidChange(_ notification: Notification) {
@@ -127,7 +127,7 @@ public class TextInputView: UIView {
     }
     
     deinit {
-        NotificationCenter.default.removeObserver(self, name: .UITextViewTextDidChange, object: textView);
+        NotificationCenter.default.removeObserver(self, name: UITextView.textDidChangeNotification, object: textView);
     }
     
     
@@ -147,7 +147,7 @@ fileprivate class TextInputViewTextView: UITextView {
     
     override var text: String! {
         didSet {
-            NotificationCenter.default.post(name: .UITextViewTextDidChange, object: self);
+            NotificationCenter.default.post(name: UITextView.textDidChangeNotification, object: self);
         }
     }
     

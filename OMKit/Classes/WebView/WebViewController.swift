@@ -200,7 +200,7 @@ open class WebViewController: UIViewController {
 
 extension WebViewController: UIWebViewDelegate {
     
-    open func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebViewNavigationType) -> Bool {
+    open func webView(_ webView: UIWebView, shouldStartLoadWith request: URLRequest, navigationType: UIWebView.NavigationType) -> Bool {
         guard let url = request.url else { return true }
         guard let scheme = url.scheme else { return true }
         guard scheme == eventScheme else { return true }

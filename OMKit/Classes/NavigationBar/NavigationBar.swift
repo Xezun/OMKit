@@ -46,7 +46,7 @@ private struct AssociationKey {
 @objc(OMNavigationBar)
 open class NavigationBar: XZKit.NavigationBar {
     
-    weak var viewController: UIViewController?
+    open weak var viewController: UIViewController?
     
     public init(for viewController: UIViewController) {
         self.viewController = viewController
@@ -133,10 +133,6 @@ open class NavigationBar: XZKit.NavigationBar {
                 self.titleView = textImageView
             }
         }
-    }
-    
-    @objc private func XZKit_backButtonAction(_ button: UIButton) {
-        viewController?.navigationController?.popViewController(animated: true)
     }
     
     /// 信息按钮，懒加载。右起第一个按钮。
@@ -227,12 +223,12 @@ extension UIViewController {
 public class NavigationBarItemView: UIView {
     
     private class Button: UIButton {
-        override func setTitle(_ title: String?, for state: UIControlState) {
+        override func setTitle(_ title: String?, for state: UIControl.State) {
             super.setTitle(title, for: state)
             superview?.setNeedsLayout()
         }
         
-        override func setImage(_ image: UIImage?, for state: UIControlState) {
+        override func setImage(_ image: UIImage?, for state: UIControl.State) {
             super.setImage(image, for: state)
             superview?.setNeedsLayout()
         }

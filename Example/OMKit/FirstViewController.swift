@@ -27,10 +27,12 @@ class FirstViewController: UIViewController, NavigationBarCustomizable {
         self.testView.layer.borderWidth     = 1.0;
         self.testView.layer.borderColor     = UIColor.red.cgColor
         
-        self.customNavigationBar.barTintColor = UIColor.white
-        self.customNavigationBar.backButton?.backgroundColor = UIColor.red
-        self.customNavigationBar.closeButton?.backgroundColor = UIColor.blue
+        self.navigationBar.barTintColor = UIColor.white
+        self.navigationBar.backButton?.backgroundColor = UIColor.red
+        self.navigationBar.closeButton?.backgroundColor = UIColor.blue
 
+        self.navigationBar.infoButton?.backgroundColor = .orange
+        self.navigationBar.helpButton?.backgroundColor = .green
         
     }
 

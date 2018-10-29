@@ -14,9 +14,6 @@ class SampleNavigationController: NavigationController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        isNavigationBarCustomizable = true
-        
         
     }
 

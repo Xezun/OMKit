@@ -2,10 +2,115 @@ PODS:
   - OMKit (1.0.0):
     - SDWebImage (~> 4.0)
     - XZKit
-  - SDWebImage (4.4.1):
-    - SDWebImage/Core (= 4.4.1)
-  - SDWebImage/Core (4.4.1)
-  - XZKit (2.3.6)
+  - SDWebImage (4.4.2):
+    - SDWebImage/Core (= 4.4.2)
+  - SDWebImage/Core (4.4.2)
+  - XZKit (3.1.0):
+    - XZKit/AppLanguage (= 3.1.0)
+    - XZKit/AppRedirection (= 3.1.0)
+    - XZKit/CacheManager (= 3.1.0)
+    - XZKit/CarouselView (= 3.1.0)
+    - XZKit/Castable (= 3.1.0)
+    - XZKit/Category (= 3.1.0)
+    - XZKit/CollectionViewFlowLayout (= 3.1.0)
+    - XZKit/Constant (= 3.1.0)
+    - XZKit/ContentStatusRepresentable (= 3.1.0)
+    - XZKit/DataCryptor (= 3.1.0)
+    - XZKit/DataDigester (= 3.1.0)
+    - XZKit/DispatchQueue (= 3.1.0)
+    - XZKit/NavigationController (= 3.1.0)
+    - XZKit/Networking (= 3.1.0)
+    - XZKit/ProgressView (= 3.1.0)
+    - XZKit/TitledImageView (= 3.1.0)
+  - XZKit/AppLanguage (3.1.0):
+    - XZKit/Category/Bundle
+  - XZKit/AppRedirection (3.1.0):
+    - XZKit/Category/UIViewController
+    - XZKit/Constant
+  - XZKit/CacheManager (3.1.0):
+    - XZKit/Category/UIColor
+    - XZKit/Category/UIImage
+    - XZKit/Constant
+    - XZKit/DataDigester
+  - XZKit/CarouselView (3.1.0):
+    - XZKit/Category/UIImage
+    - XZKit/Constant
+  - XZKit/Castable (3.1.0):
+    - XZKit/Constant
+  - XZKit/Category (3.1.0):
+    - XZKit/Category/Bundle (= 3.1.0)
+    - XZKit/Category/CGGeometry (= 3.1.0)
+    - XZKit/Category/Data (= 3.1.0)
+    - XZKit/Category/Date (= 3.1.0)
+    - XZKit/Category/Int (= 3.1.0)
+    - XZKit/Category/JSON (= 3.1.0)
+    - XZKit/Category/OptionSet (= 3.1.0)
+    - XZKit/Category/String (= 3.1.0)
+    - XZKit/Category/TimeInterval (= 3.1.0)
+    - XZKit/Category/UIAlertController (= 3.1.0)
+    - XZKit/Category/UIApplication (= 3.1.0)
+    - XZKit/Category/UIColor (= 3.1.0)
+    - XZKit/Category/UIDevice (= 3.1.0)
+    - XZKit/Category/UIImage (= 3.1.0)
+    - XZKit/Category/UIImageView (= 3.1.0)
+    - XZKit/Category/UIView (= 3.1.0)
+    - XZKit/Category/UIViewController (= 3.1.0)
+    - XZKit/Category/UIWebView (= 3.1.0)
+    - XZKit/Category/URL (= 3.1.0)
+  - XZKit/Category/Bundle (3.1.0):
+    - XZKit/Constant
+  - XZKit/Category/CGGeometry (3.1.0)
+  - XZKit/Category/Data (3.1.0):
+    - XZKit/Category/String
+  - XZKit/Category/Date (3.1.0)
+  - XZKit/Category/Int (3.1.0)
+  - XZKit/Category/JSON (3.1.0):
+    - XZKit/Category/OptionSet
+    - XZKit/Constant
+  - XZKit/Category/OptionSet (3.1.0)
+  - XZKit/Category/String (3.1.0):
+    - XZKit/Category/OptionSet
+    - XZKit/Constant
+  - XZKit/Category/TimeInterval (3.1.0):
+    - XZKit/Constant
+  - XZKit/Category/UIAlertController (3.1.0)
+  - XZKit/Category/UIApplication (3.1.0):
+    - XZKit/Category/UIDevice
+  - XZKit/Category/UIColor (3.1.0)
+  - XZKit/Category/UIDevice (3.1.0)
+  - XZKit/Category/UIImage (3.1.0):
+    - XZKit/Category/Bundle
+  - XZKit/Category/UIImageView (3.1.0)
+  - XZKit/Category/UIView (3.1.0)
+  - XZKit/Category/UIViewController (3.1.0):
+    - XZKit/Category/UIView
+  - XZKit/Category/UIWebView (3.1.0)
+  - XZKit/Category/URL (3.1.0):
+    - XZKit/Category/String
+  - XZKit/CollectionViewFlowLayout (3.1.0)
+  - XZKit/Constant (3.1.0):
+    - XZKit/Category/Date
+  - XZKit/ContentStatusRepresentable (3.1.0):
+    - XZKit/TitledImageView
+  - XZKit/DataCryptor (3.1.0)
+  - XZKit/DataDigester (3.1.0):
+    - XZKit/Category/Data
+    - XZKit/Category/String
+  - XZKit/DispatchQueue (3.1.0):
+    - XZKit/Category/OptionSet
+    - XZKit/Constant
+  - XZKit/NavigationController (3.1.0):
+    - XZKit/Category/UIImage
+    - XZKit/Category/UIViewController
+    - XZKit/Constant
+    - XZKit/TitledImageView
+  - XZKit/Networking (3.1.0):
+    - XZKit/Constant
+    - XZKit/DispatchQueue
+  - XZKit/ProgressView (3.1.0)
+  - XZKit/TitledImageView (3.1.0):
+    - XZKit/Category/CGGeometry
+    - XZKit/Category/UIView
 
 DEPENDENCIES:
   - OMKit (from `../`)
@@ -21,8 +126,8 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   OMKit: f8e8934c58bc8675205dff541fbde2337f1a45e1
-  SDWebImage: 47e9b5b925cbce75946c23f0c42dd19464189af4
-  XZKit: 51cd465f5705981c85b053f4d0874ba4eaa6e48d
+  SDWebImage: 624d6e296c69b244bcede364c72ae0430ac14681
+  XZKit: 27abc6399f5329e6f8a021f560d07e21bf258e0b
 
 PODFILE CHECKSUM: f474f6c3c5ee4f6ab4a58e11f00c4857d83d1774
 
